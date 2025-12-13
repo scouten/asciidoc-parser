@@ -20,6 +20,7 @@ mod bulleted_lists {
             Parser,
             blocks::{ContentModel, IsBlock, ListType, SimpleBlockStyle},
             content::SubstitutionGroup,
+            document::RefType,
             tests::prelude::*,
         };
 
@@ -7120,29 +7121,204 @@ mod bulleted_lists {
         }
 
         #[test]
+        fn list_should_terminate_before_next_lower_section_heading() {
+            let doc =
+                Parser::default().parse("= List\n\n* first\nitem\n* second\nitem\n\n== Section");
+
+            assert_eq!(
+                doc,
+                Document {
+                    header: Header {
+                        title_source: Some(Span {
+                            data: "List",
+                            line: 1,
+                            col: 3,
+                            offset: 2,
+                        },),
+                        title: Some("List",),
+                        attributes: &[],
+                        author_line: None,
+                        revision_line: None,
+                        comments: &[],
+                        source: Span {
+                            data: "= List",
+                            line: 1,
+                            col: 1,
+                            offset: 0,
+                        },
+                    },
+                    blocks: &[
+                        Block::Preamble(Preamble {
+                            blocks: &[Block::List(ListBlock {
+                                type_: ListType::Unordered,
+                                items: &[
+                                    Block::ListItem(ListItem {
+                                        marker: ListItemMarker::Asterisks(Span {
+                                            data: "*",
+                                            line: 3,
+                                            col: 1,
+                                            offset: 8,
+                                        },),
+                                        blocks: &[Block::Simple(SimpleBlock {
+                                            content: Content {
+                                                original: Span {
+                                                    data: "first\nitem",
+                                                    line: 3,
+                                                    col: 3,
+                                                    offset: 10,
+                                                },
+                                                rendered: "first\nitem",
+                                            },
+                                            source: Span {
+                                                data: "first\nitem",
+                                                line: 3,
+                                                col: 3,
+                                                offset: 10,
+                                            },
+                                            style: SimpleBlockStyle::Paragraph,
+                                            title_source: None,
+                                            title: None,
+                                            anchor: None,
+                                            anchor_reftext: None,
+                                            attrlist: None,
+                                        },),],
+                                        source: Span {
+                                            data: "* first\nitem",
+                                            line: 3,
+                                            col: 1,
+                                            offset: 8,
+                                        },
+                                        anchor: None,
+                                        anchor_reftext: None,
+                                        attrlist: None,
+                                    },),
+                                    Block::ListItem(ListItem {
+                                        marker: ListItemMarker::Asterisks(Span {
+                                            data: "*",
+                                            line: 5,
+                                            col: 1,
+                                            offset: 21,
+                                        },),
+                                        blocks: &[Block::Simple(SimpleBlock {
+                                            content: Content {
+                                                original: Span {
+                                                    data: "second\nitem",
+                                                    line: 5,
+                                                    col: 3,
+                                                    offset: 23,
+                                                },
+                                                rendered: "second\nitem",
+                                            },
+                                            source: Span {
+                                                data: "second\nitem",
+                                                line: 5,
+                                                col: 3,
+                                                offset: 23,
+                                            },
+                                            style: SimpleBlockStyle::Paragraph,
+                                            title_source: None,
+                                            title: None,
+                                            anchor: None,
+                                            anchor_reftext: None,
+                                            attrlist: None,
+                                        },),],
+                                        source: Span {
+                                            data: "* second\nitem",
+                                            line: 5,
+                                            col: 1,
+                                            offset: 21,
+                                        },
+                                        anchor: None,
+                                        anchor_reftext: None,
+                                        attrlist: None,
+                                    },),
+                                ],
+                                source: Span {
+                                    data: "* first\nitem\n* second\nitem",
+                                    line: 3,
+                                    col: 1,
+                                    offset: 8,
+                                },
+                                title_source: None,
+                                title: None,
+                                anchor: None,
+                                anchor_reftext: None,
+                                attrlist: None,
+                            },),],
+                            source: Span {
+                                data: "* first\nitem\n* second\nitem",
+                                line: 3,
+                                col: 1,
+                                offset: 8,
+                            },
+                        },),
+                        Block::Section(SectionBlock {
+                            level: 1,
+                            section_title: Content {
+                                original: Span {
+                                    data: "Section",
+                                    line: 8,
+                                    col: 4,
+                                    offset: 39,
+                                },
+                                rendered: "Section",
+                            },
+                            blocks: &[],
+                            source: Span {
+                                data: "== Section",
+                                line: 8,
+                                col: 1,
+                                offset: 36,
+                            },
+                            title_source: None,
+                            title: None,
+                            anchor: None,
+                            anchor_reftext: None,
+                            attrlist: None,
+                            section_type: SectionType::Normal,
+                            section_id: Some("_section-2",),
+                            section_number: None,
+                        },),
+                    ],
+                    source: Span {
+                        data: "= List\n\n* first\nitem\n* second\nitem\n\n== Section",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    warnings: &[],
+                    source_map: SourceMap(&[]),
+                    catalog: Catalog {
+                        refs: HashMap::from([
+                            (
+                                "_section",
+                                RefEntry {
+                                    id: "_section",
+                                    reftext: Some("Section",),
+                                    ref_type: RefType::Section,
+                                },
+                            ),
+                            (
+                                "_section-2",
+                                RefEntry {
+                                    id: "_section-2",
+                                    reftext: Some("Section",),
+                                    ref_type: RefType::Section,
+                                },
+                            ),
+                        ]),
+                        reftext_to_id: HashMap::from([("Section", "_section",),]),
+                    },
+                }
+            );
+        }
+
+        #[test]
         #[ignore]
         fn port_from_ruby() {
             todo!(
                 "Port this: {}",
                 r###"
-    test 'list should terminate before next lower section heading' do
-      input = <<~'EOS'
-      List
-      ====
-
-      * first
-      item
-      * second
-      item
-
-      == Section
-      EOS
-      output = convert_string input
-      assert_xpath '//ul', output, 1
-      assert_xpath '//ul/li', output, 2
-      assert_xpath '//h2[text() = "Section"]', output, 1
-    end
-
     test 'list should terminate before next lower section heading with implicit id' do
       input = <<~'EOS'
       List
