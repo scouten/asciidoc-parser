@@ -6325,30 +6325,185 @@ mod bulleted_lists {
         }
 
         #[test]
+        fn asterisk_elements_with_interspersed_line_comments_should_be_skipped_and_not_break_list()
+        {
+            let doc = Parser::default().parse("* Foo\n// line comment\n// another line comment\n* Boo\n// line comment\nmore text\n// another line comment\n* Blech");
+
+            assert_eq!(
+                doc,
+                Document {
+                    header: Header {
+                        title_source: None,
+                        title: None,
+                        attributes: &[],
+                        author_line: None,
+                        revision_line: None,
+                        comments: &[],
+                        source: Span {
+                            data: "",
+                            line: 1,
+                            col: 1,
+                            offset: 0,
+                        },
+                    },
+                    blocks: &[Block::List(ListBlock {
+                        type_: ListType::Unordered,
+                        items: &[
+                            Block::ListItem(ListItem {
+                                marker: ListItemMarker::Asterisks(Span {
+                                    data: "*",
+                                    line: 1,
+                                    col: 1,
+                                    offset: 0,
+                                },),
+                                blocks: &[Block::Simple(SimpleBlock {
+                                    content: Content {
+                                        original: Span {
+                                            data: "Foo\n// line comment\n// another line comment",
+                                            line: 1,
+                                            col: 3,
+                                            offset: 2,
+                                        },
+                                        rendered: "Foo",
+                                    },
+                                    source: Span {
+                                        data: "Foo\n// line comment\n// another line comment",
+                                        line: 1,
+                                        col: 3,
+                                        offset: 2,
+                                    },
+                                    style: SimpleBlockStyle::Paragraph,
+                                    title_source: None,
+                                    title: None,
+                                    anchor: None,
+                                    anchor_reftext: None,
+                                    attrlist: None,
+                                },),],
+                                source: Span {
+                                    data: "* Foo\n// line comment\n// another line comment",
+                                    line: 1,
+                                    col: 1,
+                                    offset: 0,
+                                },
+                                anchor: None,
+                                anchor_reftext: None,
+                                attrlist: None,
+                            },),
+                            Block::ListItem(ListItem {
+                                marker: ListItemMarker::Asterisks(Span {
+                                    data: "*",
+                                    line: 4,
+                                    col: 1,
+                                    offset: 46,
+                                },),
+                                blocks: &[Block::Simple(SimpleBlock {
+                                    content: Content {
+                                        original: Span {
+                                            data: "Boo\n// line comment\nmore text\n// another line comment",
+                                            line: 4,
+                                            col: 3,
+                                            offset: 48,
+                                        },
+                                        rendered: "Boo\nmore text",
+                                    },
+                                    source: Span {
+                                        data: "Boo\n// line comment\nmore text\n// another line comment",
+                                        line: 4,
+                                        col: 3,
+                                        offset: 48,
+                                    },
+                                    style: SimpleBlockStyle::Paragraph,
+                                    title_source: None,
+                                    title: None,
+                                    anchor: None,
+                                    anchor_reftext: None,
+                                    attrlist: None,
+                                },),],
+                                source: Span {
+                                    data: "* Boo\n// line comment\nmore text\n// another line comment",
+                                    line: 4,
+                                    col: 1,
+                                    offset: 46,
+                                },
+                                anchor: None,
+                                anchor_reftext: None,
+                                attrlist: None,
+                            },),
+                            Block::ListItem(ListItem {
+                                marker: ListItemMarker::Asterisks(Span {
+                                    data: "*",
+                                    line: 8,
+                                    col: 1,
+                                    offset: 102,
+                                },),
+                                blocks: &[Block::Simple(SimpleBlock {
+                                    content: Content {
+                                        original: Span {
+                                            data: "Blech",
+                                            line: 8,
+                                            col: 3,
+                                            offset: 104,
+                                        },
+                                        rendered: "Blech",
+                                    },
+                                    source: Span {
+                                        data: "Blech",
+                                        line: 8,
+                                        col: 3,
+                                        offset: 104,
+                                    },
+                                    style: SimpleBlockStyle::Paragraph,
+                                    title_source: None,
+                                    title: None,
+                                    anchor: None,
+                                    anchor_reftext: None,
+                                    attrlist: None,
+                                },),],
+                                source: Span {
+                                    data: "* Blech",
+                                    line: 8,
+                                    col: 1,
+                                    offset: 102,
+                                },
+                                anchor: None,
+                                anchor_reftext: None,
+                                attrlist: None,
+                            },),
+                        ],
+                        source: Span {
+                            data: "* Foo\n// line comment\n// another line comment\n* Boo\n// line comment\nmore text\n// another line comment\n* Blech",
+                            line: 1,
+                            col: 1,
+                            offset: 0,
+                        },
+                        title_source: None,
+                        title: None,
+                        anchor: None,
+                        anchor_reftext: None,
+                        attrlist: None,
+                    },),],
+                    source: Span {
+                        data: "* Foo\n// line comment\n// another line comment\n* Boo\n// line comment\nmore text\n// another line comment\n* Blech",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    warnings: &[],
+                    source_map: SourceMap(&[]),
+                    catalog: Catalog {
+                        refs: HashMap::from([]),
+                        reftext_to_id: HashMap::from([]),
+                    },
+                }
+            );
+        }
+
+        #[test]
         #[ignore]
         fn port_from_ruby() {
             todo!(
                 "Port this: {}",
                 r###"
-    test 'asterisk elements with interspersed line comments should be skipped and not break list' do
-      input = <<~'EOS'
-      == List
-
-      * Foo
-      // line comment
-      // another line comment
-      * Boo
-      // line comment
-      more text
-      // another line comment
-      * Blech
-      EOS
-      output = convert_string_to_embedded input
-      assert_xpath '//ul', output, 1
-      assert_xpath '//ul/li', output, 3
-      assert_xpath %((//ul/li)[2]/p[text()="Boo\nmore text"]), output, 1
-    end
-
     test 'asterisk elements separated by a line comment offset by blank lines should not merge lists' do
       input = <<~'EOS'
       List
