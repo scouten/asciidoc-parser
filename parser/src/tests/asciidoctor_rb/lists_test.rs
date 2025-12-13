@@ -6714,29 +6714,206 @@ mod bulleted_lists {
         }
 
         #[test]
+        fn asterisk_elements_separated_by_a_block_title_offset_by_a_blank_line_should_not_merge_lists()
+         {
+            let doc = Parser::default().parse("* Foo\n* Boo\n\n.Also\n* Blech");
+
+            assert_eq!(
+                doc,
+                Document {
+                    header: Header {
+                        title_source: None,
+                        title: None,
+                        attributes: &[],
+                        author_line: None,
+                        revision_line: None,
+                        comments: &[],
+                        source: Span {
+                            data: "",
+                            line: 1,
+                            col: 1,
+                            offset: 0,
+                        },
+                    },
+                    blocks: &[
+                        Block::List(ListBlock {
+                            type_: ListType::Unordered,
+                            items: &[
+                                Block::ListItem(ListItem {
+                                    marker: ListItemMarker::Asterisks(Span {
+                                        data: "*",
+                                        line: 1,
+                                        col: 1,
+                                        offset: 0,
+                                    },),
+                                    blocks: &[Block::Simple(SimpleBlock {
+                                        content: Content {
+                                            original: Span {
+                                                data: "Foo",
+                                                line: 1,
+                                                col: 3,
+                                                offset: 2,
+                                            },
+                                            rendered: "Foo",
+                                        },
+                                        source: Span {
+                                            data: "Foo",
+                                            line: 1,
+                                            col: 3,
+                                            offset: 2,
+                                        },
+                                        style: SimpleBlockStyle::Paragraph,
+                                        title_source: None,
+                                        title: None,
+                                        anchor: None,
+                                        anchor_reftext: None,
+                                        attrlist: None,
+                                    },),],
+                                    source: Span {
+                                        data: "* Foo",
+                                        line: 1,
+                                        col: 1,
+                                        offset: 0,
+                                    },
+                                    anchor: None,
+                                    anchor_reftext: None,
+                                    attrlist: None,
+                                },),
+                                Block::ListItem(ListItem {
+                                    marker: ListItemMarker::Asterisks(Span {
+                                        data: "*",
+                                        line: 2,
+                                        col: 1,
+                                        offset: 6,
+                                    },),
+                                    blocks: &[Block::Simple(SimpleBlock {
+                                        content: Content {
+                                            original: Span {
+                                                data: "Boo",
+                                                line: 2,
+                                                col: 3,
+                                                offset: 8,
+                                            },
+                                            rendered: "Boo",
+                                        },
+                                        source: Span {
+                                            data: "Boo",
+                                            line: 2,
+                                            col: 3,
+                                            offset: 8,
+                                        },
+                                        style: SimpleBlockStyle::Paragraph,
+                                        title_source: None,
+                                        title: None,
+                                        anchor: None,
+                                        anchor_reftext: None,
+                                        attrlist: None,
+                                    },),],
+                                    source: Span {
+                                        data: "* Boo",
+                                        line: 2,
+                                        col: 1,
+                                        offset: 6,
+                                    },
+                                    anchor: None,
+                                    anchor_reftext: None,
+                                    attrlist: None,
+                                },),
+                            ],
+                            source: Span {
+                                data: "* Foo\n* Boo",
+                                line: 1,
+                                col: 1,
+                                offset: 0,
+                            },
+                            title_source: None,
+                            title: None,
+                            anchor: None,
+                            anchor_reftext: None,
+                            attrlist: None,
+                        },),
+                        Block::List(ListBlock {
+                            type_: ListType::Unordered,
+                            items: &[Block::ListItem(ListItem {
+                                marker: ListItemMarker::Asterisks(Span {
+                                    data: "*",
+                                    line: 5,
+                                    col: 1,
+                                    offset: 19,
+                                },),
+                                blocks: &[Block::Simple(SimpleBlock {
+                                    content: Content {
+                                        original: Span {
+                                            data: "Blech",
+                                            line: 5,
+                                            col: 3,
+                                            offset: 21,
+                                        },
+                                        rendered: "Blech",
+                                    },
+                                    source: Span {
+                                        data: "Blech",
+                                        line: 5,
+                                        col: 3,
+                                        offset: 21,
+                                    },
+                                    style: SimpleBlockStyle::Paragraph,
+                                    title_source: None,
+                                    title: None,
+                                    anchor: None,
+                                    anchor_reftext: None,
+                                    attrlist: None,
+                                },),],
+                                source: Span {
+                                    data: "* Blech",
+                                    line: 5,
+                                    col: 1,
+                                    offset: 19,
+                                },
+                                anchor: None,
+                                anchor_reftext: None,
+                                attrlist: None,
+                            },),],
+                            source: Span {
+                                data: "* Blech",
+                                line: 5,
+                                col: 1,
+                                offset: 19,
+                            },
+                            title_source: Some(Span {
+                                data: "Also",
+                                line: 4,
+                                col: 2,
+                                offset: 14,
+                            },),
+                            title: Some("Also",),
+                            anchor: None,
+                            anchor_reftext: None,
+                            attrlist: None,
+                        },),
+                    ],
+                    source: Span {
+                        data: "* Foo\n* Boo\n\n.Also\n* Blech",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    warnings: &[],
+                    source_map: SourceMap(&[]),
+                    catalog: Catalog {
+                        refs: HashMap::from([]),
+                        reftext_to_id: HashMap::from([]),
+                    },
+                }
+            );
+        }
+
+        #[test]
         #[ignore]
         fn port_from_ruby() {
             todo!(
                 "Port this: {}",
                 r###"
-    test 'asterisk elements separated by a block title offset by a blank line should not merge lists' do
-      input = <<~'EOS'
-      List
-      ====
-
-      * Foo
-      * Boo
-
-      .Also
-      * Blech
-      EOS
-      output = convert_string input
-      assert_xpath '//ul', output, 2
-      assert_xpath '(//ul)[1]/li', output, 2
-      assert_xpath '(//ul)[2]/li', output, 1
-      assert_xpath '(//ul)[2]/preceding-sibling::*[@class = "title"][text() = "Also"]', output, 1
-    end
-
     test 'asterisk elements separated by an attribute entry offset by a blank line should not merge lists' do
       input = <<~'EOS'
       == List
