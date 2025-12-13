@@ -5954,25 +5954,200 @@ mod bulleted_lists {
         }
 
         #[test]
+        fn should_represent_block_style_as_style_class() {
+            // NOTE: The original test in Ruby Asciidoctor on which this is based also
+            // tested "square" and "circle" styles, but since we don't do any special
+            // behavior for list style, I'm not bothering to repeat those tests.
+            let doc = Parser::default().parse("[disc]\n* a\n* b\n* c");
+
+            assert_eq!(
+                doc,
+                Document {
+                    header: Header {
+                        title_source: None,
+                        title: None,
+                        attributes: &[],
+                        author_line: None,
+                        revision_line: None,
+                        comments: &[],
+                        source: Span {
+                            data: "",
+                            line: 1,
+                            col: 1,
+                            offset: 0,
+                        },
+                    },
+                    blocks: &[Block::List(ListBlock {
+                        type_: ListType::Unordered,
+                        items: &[
+                            Block::ListItem(ListItem {
+                                marker: ListItemMarker::Asterisks(Span {
+                                    data: "*",
+                                    line: 2,
+                                    col: 1,
+                                    offset: 7,
+                                },),
+                                blocks: &[Block::Simple(SimpleBlock {
+                                    content: Content {
+                                        original: Span {
+                                            data: "a",
+                                            line: 2,
+                                            col: 3,
+                                            offset: 9,
+                                        },
+                                        rendered: "a",
+                                    },
+                                    source: Span {
+                                        data: "a",
+                                        line: 2,
+                                        col: 3,
+                                        offset: 9,
+                                    },
+                                    style: SimpleBlockStyle::Paragraph,
+                                    title_source: None,
+                                    title: None,
+                                    anchor: None,
+                                    anchor_reftext: None,
+                                    attrlist: None,
+                                },),],
+                                source: Span {
+                                    data: "* a",
+                                    line: 2,
+                                    col: 1,
+                                    offset: 7,
+                                },
+                                anchor: None,
+                                anchor_reftext: None,
+                                attrlist: None,
+                            },),
+                            Block::ListItem(ListItem {
+                                marker: ListItemMarker::Asterisks(Span {
+                                    data: "*",
+                                    line: 3,
+                                    col: 1,
+                                    offset: 11,
+                                },),
+                                blocks: &[Block::Simple(SimpleBlock {
+                                    content: Content {
+                                        original: Span {
+                                            data: "b",
+                                            line: 3,
+                                            col: 3,
+                                            offset: 13,
+                                        },
+                                        rendered: "b",
+                                    },
+                                    source: Span {
+                                        data: "b",
+                                        line: 3,
+                                        col: 3,
+                                        offset: 13,
+                                    },
+                                    style: SimpleBlockStyle::Paragraph,
+                                    title_source: None,
+                                    title: None,
+                                    anchor: None,
+                                    anchor_reftext: None,
+                                    attrlist: None,
+                                },),],
+                                source: Span {
+                                    data: "* b",
+                                    line: 3,
+                                    col: 1,
+                                    offset: 11,
+                                },
+                                anchor: None,
+                                anchor_reftext: None,
+                                attrlist: None,
+                            },),
+                            Block::ListItem(ListItem {
+                                marker: ListItemMarker::Asterisks(Span {
+                                    data: "*",
+                                    line: 4,
+                                    col: 1,
+                                    offset: 15,
+                                },),
+                                blocks: &[Block::Simple(SimpleBlock {
+                                    content: Content {
+                                        original: Span {
+                                            data: "c",
+                                            line: 4,
+                                            col: 3,
+                                            offset: 17,
+                                        },
+                                        rendered: "c",
+                                    },
+                                    source: Span {
+                                        data: "c",
+                                        line: 4,
+                                        col: 3,
+                                        offset: 17,
+                                    },
+                                    style: SimpleBlockStyle::Paragraph,
+                                    title_source: None,
+                                    title: None,
+                                    anchor: None,
+                                    anchor_reftext: None,
+                                    attrlist: None,
+                                },),],
+                                source: Span {
+                                    data: "* c",
+                                    line: 4,
+                                    col: 1,
+                                    offset: 15,
+                                },
+                                anchor: None,
+                                anchor_reftext: None,
+                                attrlist: None,
+                            },),
+                        ],
+                        source: Span {
+                            data: "* a\n* b\n* c",
+                            line: 2,
+                            col: 1,
+                            offset: 7,
+                        },
+                        title_source: None,
+                        title: None,
+                        anchor: None,
+                        anchor_reftext: None,
+                        attrlist: Some(Attrlist {
+                            attributes: &[ElementAttribute {
+                                name: None,
+                                value: "disc",
+                                shorthand_items: &["disc"],
+                            },],
+                            anchor: None,
+                            source: Span {
+                                data: "disc",
+                                line: 1,
+                                col: 2,
+                                offset: 1,
+                            },
+                        },),
+                    },),],
+                    source: Span {
+                        data: "[disc]\n* a\n* b\n* c",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    warnings: &[],
+                    source_map: SourceMap(&[]),
+                    catalog: Catalog {
+                        refs: HashMap::from([]),
+                        reftext_to_id: HashMap::from([]),
+                    },
+                }
+            );
+        }
+
+        #[test]
         #[ignore]
         fn port_from_ruby() {
             todo!(
                 "Port this: {}",
                 r###"
-    test 'should represent block style as style class' do
-      %w(disc square circle).each do |style|
-        input = <<~EOS
-        [#{style}]
-        * a
-        * b
-        * c
-        EOS
-        output = convert_string_to_embedded input
-        assert_css %(.ulist.#{style}), output, 1
-        assert_css %(.ulist.#{style} ul.#{style}), output, 1
-      end
-    end
-
     test 'asterisk elements separated by blank lines should merge lists' do
       input = <<~'EOS'
       List
