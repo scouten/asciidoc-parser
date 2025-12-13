@@ -9,7 +9,8 @@ mod bulleted_lists {
 
         use crate::{
             Parser,
-            blocks::{IsBlock, ListType, SimpleBlockStyle},
+            blocks::{ContentModel, IsBlock, ListType, SimpleBlockStyle},
+            content::SubstitutionGroup,
             tests::prelude::*,
         };
 
@@ -4260,34 +4261,177 @@ mod bulleted_lists {
         }
 
         #[test]
+        fn should_not_inherit_block_attributes_from_previous_block_when_block_is_attached_using_a_list_continuation()
+         {
+            let doc = Parser::default()
+                .parse("* complex list item\n+\n[source,xml]\n----\n<name>value</name> <!--1-->\n----\n<1> a configuration value");
+
+            // NOTE: This test will change when we implement callout lists.
+            assert_eq!(
+                doc,
+                Document {
+                    header: Header {
+                        title_source: None,
+                        title: None,
+                        attributes: &[],
+                        author_line: None,
+                        revision_line: None,
+                        comments: &[],
+                        source: Span {
+                            data: "",
+                            line: 1,
+                            col: 1,
+                            offset: 0,
+                        },
+                    },
+                    blocks: &[
+                        Block::List(ListBlock {
+                            type_: ListType::Unordered,
+                            items: &[Block::ListItem(ListItem {
+                                marker: ListItemMarker::Asterisks(Span {
+                                    data: "*",
+                                    line: 1,
+                                    col: 1,
+                                    offset: 0,
+                                },),
+                                blocks: &[
+                                    Block::Simple(SimpleBlock {
+                                        content: Content {
+                                            original: Span {
+                                                data: "complex list item",
+                                                line: 1,
+                                                col: 3,
+                                                offset: 2,
+                                            },
+                                            rendered: "complex list item",
+                                        },
+                                        source: Span {
+                                            data: "complex list item",
+                                            line: 1,
+                                            col: 3,
+                                            offset: 2,
+                                        },
+                                        style: SimpleBlockStyle::Paragraph,
+                                        title_source: None,
+                                        title: None,
+                                        anchor: None,
+                                        anchor_reftext: None,
+                                        attrlist: None,
+                                    },),
+                                    Block::RawDelimited(RawDelimitedBlock {
+                                        content: Content {
+                                            original: Span {
+                                                data: "<name>value</name> <!--1-->",
+                                                line: 5,
+                                                col: 1,
+                                                offset: 40,
+                                            },
+                                            rendered: "&lt;name&gt;value&lt;/name&gt; &lt;!--1--&gt;",
+                                        },
+                                        content_model: ContentModel::Verbatim,
+                                        context: "listing",
+                                        source: Span {
+                                            data: "[source,xml]\n----\n<name>value</name> <!--1-->\n----",
+                                            line: 3,
+                                            col: 1,
+                                            offset: 22,
+                                        },
+                                        title_source: None,
+                                        title: None,
+                                        anchor: None,
+                                        anchor_reftext: None,
+                                        attrlist: Some(Attrlist {
+                                            attributes: &[
+                                                ElementAttribute {
+                                                    name: None,
+                                                    value: "source",
+                                                    shorthand_items: &["source"],
+                                                },
+                                                ElementAttribute {
+                                                    name: None,
+                                                    value: "xml",
+                                                    shorthand_items: &[],
+                                                },
+                                            ],
+                                            anchor: None,
+                                            source: Span {
+                                                data: "source,xml",
+                                                line: 3,
+                                                col: 2,
+                                                offset: 23,
+                                            },
+                                        },),
+                                        substitution_group: SubstitutionGroup::Verbatim,
+                                    },),
+                                ],
+                                source: Span {
+                                    data: "* complex list item\n+\n[source,xml]\n----\n<name>value</name> <!--1-->\n----",
+                                    line: 1,
+                                    col: 1,
+                                    offset: 0,
+                                },
+                                anchor: None,
+                                anchor_reftext: None,
+                                attrlist: None,
+                            },),],
+                            source: Span {
+                                data: "* complex list item\n+\n[source,xml]\n----\n<name>value</name> <!--1-->\n----",
+                                line: 1,
+                                col: 1,
+                                offset: 0,
+                            },
+                            title_source: None,
+                            title: None,
+                            anchor: None,
+                            anchor_reftext: None,
+                            attrlist: None,
+                        },),
+                        Block::Simple(SimpleBlock {
+                            content: Content {
+                                original: Span {
+                                    data: "<1> a configuration value",
+                                    line: 7,
+                                    col: 1,
+                                    offset: 73,
+                                },
+                                rendered: "&lt;1&gt; a configuration value",
+                            },
+                            source: Span {
+                                data: "<1> a configuration value",
+                                line: 7,
+                                col: 1,
+                                offset: 73,
+                            },
+                            style: SimpleBlockStyle::Paragraph,
+                            title_source: None,
+                            title: None,
+                            anchor: None,
+                            anchor_reftext: None,
+                            attrlist: None,
+                        },),
+                    ],
+                    source: Span {
+                        data: "* complex list item\n+\n[source,xml]\n----\n<name>value</name> <!--1-->\n----\n<1> a configuration value",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    warnings: &[],
+                    source_map: SourceMap(&[]),
+                    catalog: Catalog {
+                        refs: HashMap::from([]),
+                        reftext_to_id: HashMap::from([]),
+                    },
+                }
+            );
+        }
+
+        #[test]
         #[ignore]
         fn port_from_ruby() {
             todo!(
                 "Port this: {}",
                 r###"
-    test 'should not inherit block attributes from previous block when block is attached using a list continuation' do
-      input = <<~'EOS'
-      * complex list item
-      +
-      [source,xml]
-      ----
-      <name>value</name> <!--1-->
-      ----
-      <1> a configuration value
-      EOS
-
-      doc = document_from_string input
-      colist = doc.blocks[0].items[0].blocks[-1]
-      assert_equal :colist, colist.context
-      refute_equal 'source', colist.style
-      output = doc.convert standalone: false
-      assert_css 'ul', output, 1
-      assert_css 'ul > li', output, 1
-      assert_css 'ul > li > p', output, 1
-      assert_css 'ul > li > .listingblock', output, 1
-      assert_css 'ul > li > .colist', output, 1
-    end
-
     test 'should continue to parse blocks attached by a list continuation after block is dropped' do
       input = <<~'EOS'
       * item
