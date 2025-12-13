@@ -80,15 +80,14 @@ impl<'src> ListBlock<'src> {
             // If this item's marker doesn't match the existing list marker, we are changing
             // levels in the list hierarchy.
             if let Some(ref first_marker) = first_marker {
-                if !first_marker.is_match_for(&this_item_marker) {
-                    if parent_list_markers
+                if !first_marker.is_match_for(&this_item_marker)
+                    && parent_list_markers
                         .iter()
                         .any(|parent| parent.is_match_for(&this_item_marker))
-                    {
-                        // We matched a parent marker type. This list is complete; roll up the
-                        // hierarchy.
-                        break;
-                    }
+                {
+                    // We matched a parent marker type. This list is complete; roll up the
+                    // hierarchy.
+                    break;
                 }
             } else {
                 first_marker = Some(this_item_marker);
