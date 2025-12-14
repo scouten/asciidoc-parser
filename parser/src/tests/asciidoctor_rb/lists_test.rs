@@ -8295,29 +8295,175 @@ mod bulleted_lists {
         }
 
         #[test]
-        #[ignore]
         fn leading_dot_is_treated_as_text_not_block_title() {
-            let doc = Parser::default().parse("xxx");
+            let doc = Parser::default().parse("* .first\n* .second\n* .third");
 
-            dbg!(&doc);
-
-            todo!(
-                "Port this: {}",
-                r###"
-    test 'leading dot is treated as text not block title' do
-      input = <<~'EOS'
-      * .first
-      * .second
-      * .third
-      EOS
-      output = convert_string input
-      assert_xpath '//ul', output, 1
-      assert_xpath '//ul/li', output, 3
-      %w(.first .second .third).each_with_index do |text, index|
-        assert_xpath %((//ul/li)[#{index + 1}]//p[text() = '#{text}']), output, 1
-      end
-    end
-"###
+            assert_eq!(
+                doc,
+                Document {
+                    header: Header {
+                        title_source: None,
+                        title: None,
+                        attributes: &[],
+                        author_line: None,
+                        revision_line: None,
+                        comments: &[],
+                        source: Span {
+                            data: "",
+                            line: 1,
+                            col: 1,
+                            offset: 0,
+                        },
+                    },
+                    blocks: &[Block::List(ListBlock {
+                        type_: ListType::Unordered,
+                        items: &[
+                            Block::ListItem(ListItem {
+                                marker: ListItemMarker::Asterisks(Span {
+                                    data: "*",
+                                    line: 1,
+                                    col: 1,
+                                    offset: 0,
+                                },),
+                                blocks: &[Block::Simple(SimpleBlock {
+                                    content: Content {
+                                        original: Span {
+                                            data: ".first",
+                                            line: 1,
+                                            col: 3,
+                                            offset: 2,
+                                        },
+                                        rendered: ".first",
+                                    },
+                                    source: Span {
+                                        data: ".first",
+                                        line: 1,
+                                        col: 3,
+                                        offset: 2,
+                                    },
+                                    style: SimpleBlockStyle::Paragraph,
+                                    title_source: None,
+                                    title: None,
+                                    anchor: None,
+                                    anchor_reftext: None,
+                                    attrlist: None,
+                                },),],
+                                source: Span {
+                                    data: "* .first",
+                                    line: 1,
+                                    col: 1,
+                                    offset: 0,
+                                },
+                                anchor: None,
+                                anchor_reftext: None,
+                                attrlist: None,
+                            },),
+                            Block::ListItem(ListItem {
+                                marker: ListItemMarker::Asterisks(Span {
+                                    data: "*",
+                                    line: 2,
+                                    col: 1,
+                                    offset: 9,
+                                },),
+                                blocks: &[Block::Simple(SimpleBlock {
+                                    content: Content {
+                                        original: Span {
+                                            data: ".second",
+                                            line: 2,
+                                            col: 3,
+                                            offset: 11,
+                                        },
+                                        rendered: ".second",
+                                    },
+                                    source: Span {
+                                        data: ".second",
+                                        line: 2,
+                                        col: 3,
+                                        offset: 11,
+                                    },
+                                    style: SimpleBlockStyle::Paragraph,
+                                    title_source: None,
+                                    title: None,
+                                    anchor: None,
+                                    anchor_reftext: None,
+                                    attrlist: None,
+                                },),],
+                                source: Span {
+                                    data: "* .second",
+                                    line: 2,
+                                    col: 1,
+                                    offset: 9,
+                                },
+                                anchor: None,
+                                anchor_reftext: None,
+                                attrlist: None,
+                            },),
+                            Block::ListItem(ListItem {
+                                marker: ListItemMarker::Asterisks(Span {
+                                    data: "*",
+                                    line: 3,
+                                    col: 1,
+                                    offset: 19,
+                                },),
+                                blocks: &[Block::Simple(SimpleBlock {
+                                    content: Content {
+                                        original: Span {
+                                            data: ".third",
+                                            line: 3,
+                                            col: 3,
+                                            offset: 21,
+                                        },
+                                        rendered: ".third",
+                                    },
+                                    source: Span {
+                                        data: ".third",
+                                        line: 3,
+                                        col: 3,
+                                        offset: 21,
+                                    },
+                                    style: SimpleBlockStyle::Paragraph,
+                                    title_source: None,
+                                    title: None,
+                                    anchor: None,
+                                    anchor_reftext: None,
+                                    attrlist: None,
+                                },),],
+                                source: Span {
+                                    data: "* .third",
+                                    line: 3,
+                                    col: 1,
+                                    offset: 19,
+                                },
+                                anchor: None,
+                                anchor_reftext: None,
+                                attrlist: None,
+                            },),
+                        ],
+                        source: Span {
+                            data: "* .first\n* .second\n* .third",
+                            line: 1,
+                            col: 1,
+                            offset: 0,
+                        },
+                        title_source: None,
+                        title: None,
+                        anchor: None,
+                        anchor_reftext: None,
+                        attrlist: None,
+                    },),],
+                    source: Span {
+                        data: "* .first\n* .second\n* .third",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    warnings: &[],
+                    source_map: SourceMap(&[]),
+                    catalog: Catalog {
+                        refs: HashMap::from([]),
+                        reftext_to_id: HashMap::from([]),
+                    },
+                }
             );
         }
 
