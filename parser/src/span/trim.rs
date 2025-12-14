@@ -8,7 +8,7 @@ impl Span<'_> {
         // whitespace doesn't match Asciidoc's definition.
         let new_len = self
             .data
-            .trim_end_matches(|c: char| matches!(c, ' ' | '\t' | '\n' | '\r' | '\x0C' | '\x0B'))
+            .trim_end_matches([' ', '\t', '\n', '\r', '\x0C', '\x0B'])
             .len();
         self.slice(0..new_len)
     }
