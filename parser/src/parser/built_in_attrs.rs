@@ -27,6 +27,15 @@ pub(super) fn built_in_attrs() -> HashMap<String, AttributeValue> {
     );
 
     attrs.insert(
+        "vbar".to_owned(),
+        AttributeValue {
+            allowable_value: AllowableValue::Any,
+            modification_context: ModificationContext::ApiOnly,
+            value: InterpretedValue::Value("|".into()),
+        },
+    );
+
+    attrs.insert(
         "deg".to_owned(),
         AttributeValue {
             allowable_value: AllowableValue::Any,
