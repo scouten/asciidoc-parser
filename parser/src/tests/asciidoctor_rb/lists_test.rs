@@ -7955,13 +7955,19 @@ mod bulleted_lists {
         }
     }
 
-    #[test]
-    #[ignore]
-    fn port_from_ruby() {
-        todo!(
-            "Port this: {}",
-            r###"
-  context 'Lists with inline markup' do
+    mod lists_with_inline_markup {
+        use crate::Parser;
+
+        #[test]
+        #[ignore]
+        fn quoted_text() {
+            let doc = Parser::default().parse("xxx");
+
+            dbg!(&doc);
+
+            todo!(
+                "Port this: {}",
+                r###"
     test 'quoted text' do
       input = <<~'EOS'
       List
@@ -7978,7 +7984,20 @@ mod bulleted_lists {
       assert_xpath '(//ul/li)[2]//em', output, 1
       assert_xpath '(//ul/li)[3]//code', output, 1
     end
+"###
+            );
+        }
 
+        #[test]
+        #[ignore]
+        fn attribute_substitutions() {
+            let doc = Parser::default().parse("xxx");
+
+            dbg!(&doc);
+
+            todo!(
+                "Port this: {}",
+                r###"
     test 'attribute substitutions' do
       input = <<~'EOS'
       List
@@ -7994,7 +8013,20 @@ mod bulleted_lists {
       assert_xpath '(//ul/li)[1]//p[text() = "side a | side b"]', output, 1
       assert_xpath '(//ul/li)[2]//p[text() = "Take me to a bar."]', output, 1
     end
+"###
+            );
+        }
 
+        #[test]
+        #[ignore]
+        fn leading_dot_is_treated_as_text_not_block_title() {
+            let doc = Parser::default().parse("xxx");
+
+            dbg!(&doc);
+
+            todo!(
+                "Port this: {}",
+                r###"
     test 'leading dot is treated as text not block title' do
       input = <<~'EOS'
       * .first
@@ -8008,7 +8040,20 @@ mod bulleted_lists {
         assert_xpath %((//ul/li)[#{index + 1}]//p[text() = '#{text}']), output, 1
       end
     end
+"###
+            );
+        }
 
+        #[test]
+        #[ignore]
+        fn word_ending_sentence_on_continuing_line_not_treated_as_a_list_item() {
+            let doc = Parser::default().parse("xxx");
+
+            dbg!(&doc);
+
+            todo!(
+                "Port this: {}",
+                r###"
     test 'word ending sentence on continuing line not treated as a list item' do
       input = <<~'EOS'
       A. This is the story about
@@ -8019,7 +8064,21 @@ mod bulleted_lists {
       assert_xpath '//ol', output, 1
       assert_xpath '//ol/li', output, 2
     end
+"###
+            );
+        }
 
+        #[test]
+        #[ignore]
+        fn should_discover_anchor_at_start_of_unordered_list_item_text_and_register_it_as_a_reference()
+         {
+            let doc = Parser::default().parse("xxx");
+
+            dbg!(&doc);
+
+            todo!(
+                "Port this: {}",
+                r###"
     test 'should discover anchor at start of unordered list item text and register it as a reference' do
       input = <<~'EOS'
       The highest peak in the Front Range is <<grays-peak>>, which tops <<mount-evans>> by just a few feet.
@@ -8039,7 +8098,21 @@ mod bulleted_lists {
       assert_xpath '(//p)[1]/a[@href="#grays-peak"][text()="Grays Peak"]', output, 1
       assert_xpath '(//p)[1]/a[@href="#mount-evans"][text()="Mount Evans"]', output, 1
     end
+"###
+            );
+        }
 
+        #[test]
+        #[ignore]
+        fn should_discover_anchor_at_start_of_ordered_list_item_text_and_register_it_as_a_reference()
+         {
+            let doc = Parser::default().parse("xxx");
+
+            dbg!(&doc);
+
+            todo!(
+                "Port this: {}",
+                r###"
     test 'should discover anchor at start of ordered list item text and register it as a reference' do
       input = <<~'EOS'
       This is a cross-reference to <<step-2>>.
@@ -8059,7 +8132,21 @@ mod bulleted_lists {
       assert_xpath '(//p)[1]/a[@href="#step-2"][text()="Step 2"]', output, 1
       assert_xpath '(//p)[1]/a[@href="#step-4"][text()="Step 4"]', output, 1
     end
+"###
+            );
+        }
 
+        #[test]
+        #[ignore]
+        fn should_discover_anchor_at_start_of_callout_list_item_text_and_register_it_as_a_reference()
+         {
+            let doc = Parser::default().parse("xxx");
+
+            dbg!(&doc);
+
+            todo!(
+                "Port this: {}",
+                r###"
     test 'should discover anchor at start of callout list item text and register it as a reference' do
       input = <<~'EOS'
       This is a cross-reference to <<url-mapping>>.
@@ -8083,8 +8170,17 @@ mod bulleted_lists {
       output = doc.convert standalone: false
       assert_xpath '(//p)[1]/a[@href="#url-mapping"][text()="url mapping"]', output, 1
     end
-  end
+"###
+            );
+        }
+    }
 
+    #[test]
+    #[ignore]
+    fn port_from_ruby() {
+        todo!(
+            "Port this: {}",
+            r###"
   context 'Nested lists' do
     test 'asterisk element mixed with dash elements should be nested' do
       input = <<~'EOS'
