@@ -7609,23 +7609,184 @@ mod bulleted_lists {
         }
 
         #[test]
+        fn should_match_trailing_line_separator_in_text_of_list_item() {
+            let doc = Parser::default().parse("* a\n* b\u{2028}\n* c");
+
+            assert_eq!(
+                doc,
+                Document {
+                    header: Header {
+                        title_source: None,
+                        title: None,
+                        attributes: &[],
+                        author_line: None,
+                        revision_line: None,
+                        comments: &[],
+                        source: Span {
+                            data: "",
+                            line: 1,
+                            col: 1,
+                            offset: 0,
+                        },
+                    },
+                    blocks: &[Block::List(ListBlock {
+                        type_: ListType::Unordered,
+                        items: &[
+                            Block::ListItem(ListItem {
+                                marker: ListItemMarker::Asterisks(Span {
+                                    data: "*",
+                                    line: 1,
+                                    col: 1,
+                                    offset: 0,
+                                },),
+                                blocks: &[Block::Simple(SimpleBlock {
+                                    content: Content {
+                                        original: Span {
+                                            data: "a",
+                                            line: 1,
+                                            col: 3,
+                                            offset: 2,
+                                        },
+                                        rendered: "a",
+                                    },
+                                    source: Span {
+                                        data: "a",
+                                        line: 1,
+                                        col: 3,
+                                        offset: 2,
+                                    },
+                                    style: SimpleBlockStyle::Paragraph,
+                                    title_source: None,
+                                    title: None,
+                                    anchor: None,
+                                    anchor_reftext: None,
+                                    attrlist: None,
+                                },),],
+                                source: Span {
+                                    data: "* a",
+                                    line: 1,
+                                    col: 1,
+                                    offset: 0,
+                                },
+                                anchor: None,
+                                anchor_reftext: None,
+                                attrlist: None,
+                            },),
+                            Block::ListItem(ListItem {
+                                marker: ListItemMarker::Asterisks(Span {
+                                    data: "*",
+                                    line: 2,
+                                    col: 1,
+                                    offset: 4,
+                                },),
+                                blocks: &[Block::Simple(SimpleBlock {
+                                    content: Content {
+                                        original: Span {
+                                            data: "b\u{2028}",
+                                            line: 2,
+                                            col: 3,
+                                            offset: 6,
+                                        },
+                                        rendered: "b\u{2028}",
+                                    },
+                                    source: Span {
+                                        data: "b\u{2028}",
+                                        line: 2,
+                                        col: 3,
+                                        offset: 6,
+                                    },
+                                    style: SimpleBlockStyle::Paragraph,
+                                    title_source: None,
+                                    title: None,
+                                    anchor: None,
+                                    anchor_reftext: None,
+                                    attrlist: None,
+                                },),],
+                                source: Span {
+                                    data: "* b\u{2028}",
+                                    line: 2,
+                                    col: 1,
+                                    offset: 4,
+                                },
+                                anchor: None,
+                                anchor_reftext: None,
+                                attrlist: None,
+                            },),
+                            Block::ListItem(ListItem {
+                                marker: ListItemMarker::Asterisks(Span {
+                                    data: "*",
+                                    line: 3,
+                                    col: 1,
+                                    offset: 11,
+                                },),
+                                blocks: &[Block::Simple(SimpleBlock {
+                                    content: Content {
+                                        original: Span {
+                                            data: "c",
+                                            line: 3,
+                                            col: 3,
+                                            offset: 13,
+                                        },
+                                        rendered: "c",
+                                    },
+                                    source: Span {
+                                        data: "c",
+                                        line: 3,
+                                        col: 3,
+                                        offset: 13,
+                                    },
+                                    style: SimpleBlockStyle::Paragraph,
+                                    title_source: None,
+                                    title: None,
+                                    anchor: None,
+                                    anchor_reftext: None,
+                                    attrlist: None,
+                                },),],
+                                source: Span {
+                                    data: "* c",
+                                    line: 3,
+                                    col: 1,
+                                    offset: 11,
+                                },
+                                anchor: None,
+                                anchor_reftext: None,
+                                attrlist: None,
+                            },),
+                        ],
+                        source: Span {
+                            data: "* a\n* b\u{2028}\n* c",
+                            line: 1,
+                            col: 1,
+                            offset: 0,
+                        },
+                        title_source: None,
+                        title: None,
+                        anchor: None,
+                        anchor_reftext: None,
+                        attrlist: None,
+                    },),],
+                    source: Span {
+                        data: "* a\n* b\u{2028}\n* c",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    warnings: &[],
+                    source_map: SourceMap(&[]),
+                    catalog: Catalog {
+                        refs: HashMap::from([]),
+                        reftext_to_id: HashMap::from([]),
+                    },
+                }
+            );
+        }
+
+        #[test]
         #[ignore]
         fn port_from_ruby() {
             todo!(
                 "Port this: {}",
                 r###"
-    test 'should match trailing line separator in text of list item' do
-      input = <<~EOS.chop
-      * a
-      * b#{decode_char 8232}
-      * c
-      EOS
-
-      output = convert_string input
-      assert_css 'li', output, 3
-      assert_xpath %((//li)[2]/p[text()="b#{decode_char 8232}"]), output, 1
-    end
-
     test 'should match line separator in text of list item' do
       input = <<~EOS.chop
       * a
