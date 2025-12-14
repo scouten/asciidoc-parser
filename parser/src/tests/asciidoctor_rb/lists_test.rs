@@ -8468,31 +8468,18 @@ mod bulleted_lists {
         }
 
         #[test]
-        #[ignore]
+        #[ignore] // TEMPORARY until we handle list items with lettered items.
         fn word_ending_sentence_on_continuing_line_not_treated_as_a_list_item() {
-            let doc = Parser::default().parse("xxx");
+            let doc = Parser::default().parse(
+                "A. This is the story about\n  AsciiDoc. It begins here.\nB. And it ends here.",
+            );
 
             dbg!(&doc);
-
-            todo!(
-                "Port this: {}",
-                r###"
-    test 'word ending sentence on continuing line not treated as a list item' do
-      input = <<~'EOS'
-      A. This is the story about
-         AsciiDoc. It begins here.
-      B. And it ends here.
-      EOS
-      output = convert_string input
-      assert_xpath '//ol', output, 1
-      assert_xpath '//ol/li', output, 2
-    end
-"###
-            );
+            todo!();
         }
 
         #[test]
-        #[ignore]
+        #[ignore] // TEMPORARY until we handle inline anchors
         fn should_discover_anchor_at_start_of_unordered_list_item_text_and_register_it_as_a_reference()
          {
             let doc = Parser::default().parse("xxx");
@@ -8526,7 +8513,7 @@ mod bulleted_lists {
         }
 
         #[test]
-        #[ignore]
+        #[ignore] // TEMPORARY until we handle inline anchors
         fn should_discover_anchor_at_start_of_ordered_list_item_text_and_register_it_as_a_reference()
          {
             let doc = Parser::default().parse("xxx");
@@ -8560,7 +8547,7 @@ mod bulleted_lists {
         }
 
         #[test]
-        #[ignore]
+        #[ignore] // TEMPORARY until we handle callouts
         fn should_discover_anchor_at_start_of_callout_list_item_text_and_register_it_as_a_reference()
          {
             let doc = Parser::default().parse("xxx");
