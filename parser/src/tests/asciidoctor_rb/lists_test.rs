@@ -8141,31 +8141,156 @@ mod bulleted_lists {
         }
 
         #[test]
-        #[ignore]
         fn attribute_substitutions() {
-            let doc = Parser::default().parse("xxx");
+            let doc = Parser::default()
+                .parse(":foo: bar\n\n- side a {vbar} side b\n- Take me to a {foo}.");
 
-            dbg!(&doc);
-
-            todo!(
-                "Port this: {}",
-                r###"
-    test 'attribute substitutions' do
-      input = <<~'EOS'
-      List
-      ====
-      :foo: bar
-
-      - side a {vbar} side b
-      - Take me to a {foo}.
-      EOS
-      output = convert_string input
-      assert_xpath '//ul', output, 1
-      assert_xpath '//ul/li', output, 2
-      assert_xpath '(//ul/li)[1]//p[text() = "side a | side b"]', output, 1
-      assert_xpath '(//ul/li)[2]//p[text() = "Take me to a bar."]', output, 1
-    end
-"###
+            assert_eq!(
+                doc,
+                Document {
+                    header: Header {
+                        title_source: None,
+                        title: None,
+                        attributes: &[Attribute {
+                            name: Span {
+                                data: "foo",
+                                line: 1,
+                                col: 2,
+                                offset: 1,
+                            },
+                            value_source: Some(Span {
+                                data: "bar",
+                                line: 1,
+                                col: 7,
+                                offset: 6,
+                            },),
+                            value: InterpretedValue::Value("bar",),
+                            source: Span {
+                                data: ":foo: bar",
+                                line: 1,
+                                col: 1,
+                                offset: 0,
+                            },
+                        },],
+                        author_line: None,
+                        revision_line: None,
+                        comments: &[],
+                        source: Span {
+                            data: ":foo: bar",
+                            line: 1,
+                            col: 1,
+                            offset: 0,
+                        },
+                    },
+                    blocks: &[Block::List(ListBlock {
+                        type_: ListType::Unordered,
+                        items: &[
+                            Block::ListItem(ListItem {
+                                marker: ListItemMarker::Hyphen(Span {
+                                    data: "-",
+                                    line: 3,
+                                    col: 1,
+                                    offset: 11,
+                                },),
+                                blocks: &[Block::Simple(SimpleBlock {
+                                    content: Content {
+                                        original: Span {
+                                            data: "side a {vbar} side b",
+                                            line: 3,
+                                            col: 3,
+                                            offset: 13,
+                                        },
+                                        rendered: "side a | side b",
+                                    },
+                                    source: Span {
+                                        data: "side a {vbar} side b",
+                                        line: 3,
+                                        col: 3,
+                                        offset: 13,
+                                    },
+                                    style: SimpleBlockStyle::Paragraph,
+                                    title_source: None,
+                                    title: None,
+                                    anchor: None,
+                                    anchor_reftext: None,
+                                    attrlist: None,
+                                },),],
+                                source: Span {
+                                    data: "- side a {vbar} side b",
+                                    line: 3,
+                                    col: 1,
+                                    offset: 11,
+                                },
+                                anchor: None,
+                                anchor_reftext: None,
+                                attrlist: None,
+                            },),
+                            Block::ListItem(ListItem {
+                                marker: ListItemMarker::Hyphen(Span {
+                                    data: "-",
+                                    line: 4,
+                                    col: 1,
+                                    offset: 34,
+                                },),
+                                blocks: &[Block::Simple(SimpleBlock {
+                                    content: Content {
+                                        original: Span {
+                                            data: "Take me to a {foo}.",
+                                            line: 4,
+                                            col: 3,
+                                            offset: 36,
+                                        },
+                                        rendered: "Take me to a bar.",
+                                    },
+                                    source: Span {
+                                        data: "Take me to a {foo}.",
+                                        line: 4,
+                                        col: 3,
+                                        offset: 36,
+                                    },
+                                    style: SimpleBlockStyle::Paragraph,
+                                    title_source: None,
+                                    title: None,
+                                    anchor: None,
+                                    anchor_reftext: None,
+                                    attrlist: None,
+                                },),],
+                                source: Span {
+                                    data: "- Take me to a {foo}.",
+                                    line: 4,
+                                    col: 1,
+                                    offset: 34,
+                                },
+                                anchor: None,
+                                anchor_reftext: None,
+                                attrlist: None,
+                            },),
+                        ],
+                        source: Span {
+                            data: "- side a {vbar} side b\n- Take me to a {foo}.",
+                            line: 3,
+                            col: 1,
+                            offset: 11,
+                        },
+                        title_source: None,
+                        title: None,
+                        anchor: None,
+                        anchor_reftext: None,
+                        attrlist: None,
+                    },),],
+                    source: Span {
+                        data: ":foo: bar\n\n- side a {vbar} side b\n- Take me to a {foo}.",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    warnings: &[],
+                    source_map: SourceMap(&[]),
+                    catalog: Catalog {
+                        refs: HashMap::from([]),
+                        reftext_to_id: HashMap::from([]),
+                    },
+                }
             );
         }
 
