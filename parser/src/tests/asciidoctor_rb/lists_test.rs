@@ -8585,13 +8585,28 @@ mod bulleted_lists {
         }
     }
 
-    #[test]
-    #[ignore]
-    fn port_from_ruby() {
-        todo!(
-            "Port this: {}",
-            r###"
-  context 'Nested lists' do
+    #[allow(unused)] // TEMPORARY while porting
+    mod nested_lists {
+        use std::collections::HashMap;
+
+        use pretty_assertions_sorted::assert_eq;
+
+        use crate::{
+            Parser,
+            blocks::{ListType, SimpleBlockStyle},
+            tests::prelude::*,
+        };
+
+        #[test]
+        #[ignore]
+        fn asterisk_element_mixed_with_dash_elements_should_be_nested() {
+            let doc = Parser::default().parse("xxx");
+
+            dbg!(&doc);
+
+            todo!(
+                "Port this: {}",
+                r###"
     test 'asterisk element mixed with dash elements should be nested' do
       input = <<~'EOS'
       List
@@ -8607,7 +8622,20 @@ mod bulleted_lists {
       assert_xpath '(//ul)[1]/li', output, 2
       assert_xpath '(//ul)[1]/li//ul/li', output, 1
     end
+"###
+            );
+        }
 
+        #[test]
+        #[ignore]
+        fn dash_element_mixed_with_asterisks_elements_should_be_nested() {
+            let doc = Parser::default().parse("xxx");
+
+            dbg!(&doc);
+
+            todo!(
+                "Port this: {}",
+                r###"
     test 'dash element mixed with asterisks elements should be nested' do
       input = <<~'EOS'
       List
@@ -8623,7 +8651,21 @@ mod bulleted_lists {
       assert_xpath '(//ul)[1]/li', output, 2
       assert_xpath '(//ul)[1]/li//ul/li', output, 1
     end
+"###
+            );
+        }
 
+        #[test]
+        #[ignore]
+        fn lines_prefixed_with_alternating_list_markers_separated_by_blank_lines_should_be_nested()
+        {
+            let doc = Parser::default().parse("xxx");
+
+            dbg!(&doc);
+
+            todo!(
+                "Port this: {}",
+                r###"
     test 'lines prefixed with alternating list markers separated by blank lines should be nested' do
       input = <<~'EOS'
       List
@@ -8642,7 +8684,20 @@ mod bulleted_lists {
       assert_xpath '(//ul)[1]/li', output, 2
       assert_xpath '(//ul)[1]/li//ul/li', output, 1
     end
+"###
+            );
+        }
 
+        #[test]
+        #[ignore]
+        fn nested_elements_2_with_asterisks() {
+            let doc = Parser::default().parse("xxx");
+
+            dbg!(&doc);
+
+            todo!(
+                "Port this: {}",
+                r###"
     test 'nested elements (2) with asterisks' do
       input = <<~'EOS'
       List
@@ -8658,7 +8713,20 @@ mod bulleted_lists {
       assert_xpath '(//ul)[1]/li', output, 2
       assert_xpath '(//ul)[1]/li//ul/li', output, 1
     end
+"###
+            );
+        }
 
+        #[test]
+        #[ignore]
+        fn nested_elements_3_with_asterisks() {
+            let doc = Parser::default().parse("xxx");
+
+            dbg!(&doc);
+
+            todo!(
+                "Port this: {}",
+                r###"
     test 'nested elements (3) with asterisks' do
       input = <<~'EOS'
       List
@@ -8675,7 +8743,20 @@ mod bulleted_lists {
       assert_xpath '((//ul)[1]/li//ul)[1]/li', output, 1
       assert_xpath '(((//ul)[1]/li//ul)[1]/li//ul)[1]/li', output, 1
     end
+"###
+            );
+        }
 
+        #[test]
+        #[ignore]
+        fn nested_elements_4_with_asterisks() {
+            let doc = Parser::default().parse("xxx");
+
+            dbg!(&doc);
+
+            todo!(
+                "Port this: {}",
+                r###"
     test 'nested elements (4) with asterisks' do
       input = <<~'EOS'
       List
@@ -8694,7 +8775,20 @@ mod bulleted_lists {
       assert_xpath '(((//ul)[1]/li//ul)[1]/li//ul)[1]/li', output, 1
       assert_xpath '((((//ul)[1]/li//ul)[1]/li//ul)[1]/li//ul)[1]/li', output, 1
     end
+"###
+            );
+        }
 
+        #[test]
+        #[ignore]
+        fn nested_elements_5_with_asterisks() {
+            let doc = Parser::default().parse("xxx");
+
+            dbg!(&doc);
+
+            todo!(
+                "Port this: {}",
+                r###"
     test 'nested elements (5) with asterisks' do
       input = <<~'EOS'
       List
@@ -8715,7 +8809,20 @@ mod bulleted_lists {
       assert_xpath '((((//ul)[1]/li//ul)[1]/li//ul)[1]/li//ul)[1]/li', output, 1
       assert_xpath '(((((//ul)[1]/li//ul)[1]/li//ul)[1]/li//ul)[1]/li//ul)[1]/li', output, 1
     end
+"###
+            );
+        }
 
+        #[test]
+        #[ignore]
+        fn nested_arbitrary_depth_with_asterisks() {
+            let doc = Parser::default().parse("xxx");
+
+            dbg!(&doc);
+
+            todo!(
+                "Port this: {}",
+                r###"
     test 'nested arbitrary depth with asterisks' do
       input = []
       ('a'..'z').each_with_index do |ch, i|
@@ -8725,7 +8832,20 @@ mod bulleted_lists {
       refute_includes output, '*'
       assert_css 'li', output, 26
     end
+"###
+            );
+        }
 
+        #[test]
+        #[ignore]
+        fn level_of_unordered_list_should_match_section_level() {
+            let doc = Parser::default().parse("xxx");
+
+            dbg!(&doc);
+
+            todo!(
+                "Port this: {}",
+                r###"
     test 'level of unordered list should match section level' do
       input = <<~'EOS'
       == Parent Section
@@ -8748,14 +8868,40 @@ mod bulleted_lists {
       assert_equal 1, lists[2].level
       assert_equal 2, lists[3].level
     end
+"###
+            );
+        }
 
+        #[test]
+        #[ignore]
+        fn does_not_recognize_lists_with_repeating_unicode_bullets() {
+            let doc = Parser::default().parse("xxx");
+
+            dbg!(&doc);
+
+            todo!(
+                "Port this: {}",
+                r###"
     test 'does not recognize lists with repeating unicode bullets' do
       input = '•• Boo'
       output = convert_string input
       assert_xpath '//ul', output, 0
       assert_includes output, '•'
     end
+"###
+            );
+        }
 
+        #[test]
+        #[ignore]
+        fn nested_ordered_elements_2() {
+            let doc = Parser::default().parse("xxx");
+
+            dbg!(&doc);
+
+            todo!(
+                "Port this: {}",
+                r###"
     test 'nested ordered elements (2)' do
       input = <<~'EOS'
       List
@@ -8771,7 +8917,20 @@ mod bulleted_lists {
       assert_xpath '(//ol)[1]/li', output, 2
       assert_xpath '(//ol)[1]/li//ol/li', output, 1
     end
+"###
+            );
+        }
 
+        #[test]
+        #[ignore]
+        fn nested_ordered_elements_3() {
+            let doc = Parser::default().parse("xxx");
+
+            dbg!(&doc);
+
+            todo!(
+                "Port this: {}",
+                r###"
     test 'nested ordered elements (3)' do
       input = <<~'EOS'
       List
@@ -8788,7 +8947,16 @@ mod bulleted_lists {
       assert_xpath '((//ol)[1]/li//ol)[1]/li', output, 1
       assert_xpath '(((//ol)[1]/li//ol)[1]/li//ol)[1]/li', output, 1
     end
+"###
+            );
+        }
 
+        #[test]
+        #[ignore]
+        fn nested_arbitrary_depth_with_dot_marker() {
+            todo!(
+                "Port this: {}",
+                r###"
     test 'nested arbitrary depth with dot marker' do
       input = []
       ('a'..'z').each_with_index do |ch, i|
@@ -8798,7 +8966,20 @@ mod bulleted_lists {
       refute_includes output, '.'
       assert_css 'li', output, 26
     end
+"###
+            );
+        }
 
+        #[test]
+        #[ignore]
+        fn level_of_ordered_list_should_match_section_level() {
+            let doc = Parser::default().parse("xxx");
+
+            dbg!(&doc);
+
+            todo!(
+                "Port this: {}",
+                r###"
     test 'level of ordered list should match section level' do
       input = <<~'EOS'
       == Parent Section
@@ -8821,7 +9002,20 @@ mod bulleted_lists {
       assert_equal 1, lists[2].level
       assert_equal 2, lists[3].level
     end
+"###
+            );
+        }
 
+        #[test]
+        #[ignore]
+        fn nested_unordered_inside_ordered_elements() {
+            let doc = Parser::default().parse("xxx");
+
+            dbg!(&doc);
+
+            todo!(
+                "Port this: {}",
+                r###"
     test 'nested unordered inside ordered elements' do
       input = <<~'EOS'
       List
@@ -8837,7 +9031,20 @@ mod bulleted_lists {
       assert_xpath '(//ol)[1]/li', output, 2
       assert_xpath '((//ol)[1]/li//ul)[1]/li', output, 1
     end
+"###
+            );
+        }
 
+        #[test]
+        #[ignore]
+        fn nested_ordered_inside_unordered_elements() {
+            let doc = Parser::default().parse("xxx");
+
+            dbg!(&doc);
+
+            todo!(
+                "Port this: {}",
+                r###"
     test 'nested ordered inside unordered elements' do
       input = <<~'EOS'
       List
@@ -8853,7 +9060,20 @@ mod bulleted_lists {
       assert_xpath '(//ul)[1]/li', output, 2
       assert_xpath '((//ul)[1]/li//ol)[1]/li', output, 1
     end
+"###
+            );
+        }
 
+        #[test]
+        #[ignore]
+        fn three_levels_of_alternating_unordered_and_ordered_elements() {
+            let doc = Parser::default().parse("xxx");
+
+            dbg!(&doc);
+
+            todo!(
+                "Port this: {}",
+                r###"
     test 'three levels of alternating unordered and ordered elements' do
       input = <<~'EOS'
       == Lists
@@ -8874,7 +9094,21 @@ mod bulleted_lists {
       assert_css '.ulist > ul > li > p + .olist > ol > li > p + .ulist > ul > li > p', output, 1
       assert_css '.ulist > ul > li + li > p', output, 1
     end
+"###
+            );
+        }
 
+        #[test]
+        #[ignore]
+        fn lines_with_alternating_markers_of_unordered_and_ordered_list_types_separated_by_blank_lines_should_be_nested()
+         {
+            let doc = Parser::default().parse("xxx");
+
+            dbg!(&doc);
+
+            todo!(
+                "Port this: {}",
+                r###"
     test 'lines with alternating markers of unordered and ordered list types separated by blank lines should be nested' do
       input = <<~'EOS'
       List
@@ -8893,7 +9127,20 @@ mod bulleted_lists {
       assert_xpath '(//ul)[1]/li', output, 2
       assert_xpath '((//ul)[1]/li//ol)[1]/li', output, 1
     end
+"###
+            );
+        }
 
+        #[test]
+        #[ignore]
+        fn list_item_with_literal_content_should_not_consume_nested_list_of_different_type() {
+            let doc = Parser::default().parse("xxx");
+
+            dbg!(&doc);
+
+            todo!(
+                "Port this: {}",
+                r###"
     test 'list item with literal content should not consume nested list of different type' do
       input = <<~'EOS'
       List
@@ -8918,7 +9165,20 @@ mod bulleted_lists {
       assert_xpath '//*[@class="literalblock"]/following-sibling::*[@class="olist arabic"]', output, 1
       assert_xpath '//*[@class="literalblock"]/following-sibling::*[@class="olist arabic"]//p[text()="numbered"]', output, 1
     end
+"###
+            );
+        }
 
+        #[test]
+        #[ignore]
+        fn nested_list_item_does_not_eat_the_title_of_the_following_detached_block() {
+            let doc = Parser::default().parse("xxx");
+
+            dbg!(&doc);
+
+            todo!(
+                "Port this: {}",
+                r###"
     test 'nested list item does not eat the title of the following detached block' do
       input = <<~'EOS'
       List
@@ -8939,7 +9199,21 @@ mod bulleted_lists {
       assert_xpath '(//*[@class="ulist"])[1]/following-sibling::*[@class="literalblock"]', output, 1
       assert_xpath '(//*[@class="ulist"])[1]/following-sibling::*[@class="literalblock"]/*[@class="title"]', output, 1
     end
+"###
+            );
+        }
 
+        #[test]
+        #[ignore]
+        fn lines_with_alternating_markers_of_bulleted_and_description_list_types_separated_by_blank_lines_should_be_nested()
+         {
+            let doc = Parser::default().parse("xxx");
+
+            dbg!(&doc);
+
+            todo!(
+                "Port this: {}",
+                r###"
     test 'lines with alternating markers of bulleted and description list types separated by blank lines should be nested' do
       input = <<~'EOS'
       List
@@ -8958,7 +9232,20 @@ mod bulleted_lists {
       assert_xpath '//ul[1]/li//dl[1]/dt', output, 1
       assert_xpath '//ul[1]/li//dl[1]/dd', output, 1
     end
+"###
+            );
+        }
 
+        #[test]
+        #[ignore]
+        fn nested_ordered_with_attribute_inside_unordered_elements() {
+            let doc = Parser::default().parse("xxx");
+
+            dbg!(&doc);
+
+            todo!(
+                "Port this: {}",
+                r###"
     test 'nested ordered with attribute inside unordered elements' do
       input = <<~'EOS'
       Blah
@@ -8975,8 +9262,17 @@ mod bulleted_lists {
       assert_xpath '(//ul)[1]/li', output, 2
       assert_xpath '((//ul)[1]/li//ol)[1][@start = 2]/li', output, 1
     end
-  end
+"###
+            );
+        }
+    }
 
+    #[test]
+    #[ignore]
+    fn port_from_ruby() {
+        todo!(
+            "Port this: {}",
+            r###"
   context 'List continuations' do
     test 'adjacent list continuation line attaches following paragraph' do
       input = <<~'EOS'
