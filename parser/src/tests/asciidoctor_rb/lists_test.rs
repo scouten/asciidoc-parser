@@ -9443,35 +9443,351 @@ mod bulleted_lists {
         }
 
         #[test]
-        #[ignore]
         fn nested_elements_4_with_asterisks() {
-            let doc = Parser::default().parse("xxx");
+            let doc = Parser::default().parse("* Foo\n** Boo\n*** Snoo\n**** Froo\n* Blech");
 
-            dbg!(&doc);
-
-            todo!(
-                "Port this: {}",
-                r###"
-    test 'nested elements (4) with asterisks' do
-      input = <<~'EOS'
-      List
-      ====
-
-      * Foo
-      ** Boo
-      *** Snoo
-      **** Froo
-      * Blech
-      EOS
-      output = convert_string input
-      assert_xpath '//ul', output, 4
-      assert_xpath '(//ul)[1]/li', output, 2
-      assert_xpath '((//ul)[1]/li//ul)[1]/li', output, 1
-      assert_xpath '(((//ul)[1]/li//ul)[1]/li//ul)[1]/li', output, 1
-      assert_xpath '((((//ul)[1]/li//ul)[1]/li//ul)[1]/li//ul)[1]/li', output, 1
-    end
-"###
-            );
+            assert_eq!(doc, Document {
+    header: Header {
+        title_source: None,
+        title: None,
+        attributes: &[],
+        author_line: None,
+        revision_line: None,
+        comments: &[],
+        source: Span {
+            data: "",
+            line: 1,
+            col: 1,
+            offset: 0,
+        },
+    },
+    blocks: &[
+        Block::List(
+            ListBlock {
+                type_: ListType::Unordered,
+                items: &[
+                    Block::ListItem(
+                        ListItem {
+                            marker: ListItemMarker::Asterisks(
+                                Span {
+                                    data: "*",
+                                    line: 1,
+                                    col: 1,
+                                    offset: 0,
+                                },
+                            ),
+                            blocks: &[
+                                Block::Simple(
+                                    SimpleBlock {
+                                        content: Content {
+                                            original: Span {
+                                                data: "Foo",
+                                                line: 1,
+                                                col: 3,
+                                                offset: 2,
+                                            },
+                                            rendered: "Foo",
+                                        },
+                                        source: Span {
+                                            data: "Foo",
+                                            line: 1,
+                                            col: 3,
+                                            offset: 2,
+                                        },
+                                        style: SimpleBlockStyle::Paragraph,
+                                        title_source: None,
+                                        title: None,
+                                        anchor: None,
+                                        anchor_reftext: None,
+                                        attrlist: None,
+                                    },
+                                ),
+                                Block::List(
+                                    ListBlock {
+                                        type_: ListType::Unordered,
+                                        items: &[
+                                            Block::ListItem(
+                                                ListItem {
+                                                    marker: ListItemMarker::Asterisks(
+                                                        Span {
+                                                            data: "**",
+                                                            line: 2,
+                                                            col: 1,
+                                                            offset: 6,
+                                                        },
+                                                    ),
+                                                    blocks: &[
+                                                        Block::Simple(
+                                                            SimpleBlock {
+                                                                content: Content {
+                                                                    original: Span {
+                                                                        data: "Boo",
+                                                                        line: 2,
+                                                                        col: 4,
+                                                                        offset: 9,
+                                                                    },
+                                                                    rendered: "Boo",
+                                                                },
+                                                                source: Span {
+                                                                    data: "Boo",
+                                                                    line: 2,
+                                                                    col: 4,
+                                                                    offset: 9,
+                                                                },
+                                                                style: SimpleBlockStyle::Paragraph,
+                                                                title_source: None,
+                                                                title: None,
+                                                                anchor: None,
+                                                                anchor_reftext: None,
+                                                                attrlist: None,
+                                                            },
+                                                        ),
+                                                        Block::List(
+                                                            ListBlock {
+                                                                type_: ListType::Unordered,
+                                                                items: &[
+                                                                    Block::ListItem(
+                                                                        ListItem {
+                                                                            marker: ListItemMarker::Asterisks(
+                                                                                Span {
+                                                                                    data: "***",
+                                                                                    line: 3,
+                                                                                    col: 1,
+                                                                                    offset: 13,
+                                                                                },
+                                                                            ),
+                                                                            blocks: &[
+                                                                                Block::Simple(
+                                                                                    SimpleBlock {
+                                                                                        content: Content {
+                                                                                            original: Span {
+                                                                                                data: "Snoo",
+                                                                                                line: 3,
+                                                                                                col: 5,
+                                                                                                offset: 17,
+                                                                                            },
+                                                                                            rendered: "Snoo",
+                                                                                        },
+                                                                                        source: Span {
+                                                                                            data: "Snoo",
+                                                                                            line: 3,
+                                                                                            col: 5,
+                                                                                            offset: 17,
+                                                                                        },
+                                                                                        style: SimpleBlockStyle::Paragraph,
+                                                                                        title_source: None,
+                                                                                        title: None,
+                                                                                        anchor: None,
+                                                                                        anchor_reftext: None,
+                                                                                        attrlist: None,
+                                                                                    },
+                                                                                ),
+                                                                                Block::List(
+                                                                                    ListBlock {
+                                                                                        type_: ListType::Unordered,
+                                                                                        items: &[
+                                                                                            Block::ListItem(
+                                                                                                ListItem {
+                                                                                                    marker: ListItemMarker::Asterisks(
+                                                                                                        Span {
+                                                                                                            data: "****",
+                                                                                                            line: 4,
+                                                                                                            col: 1,
+                                                                                                            offset: 22,
+                                                                                                        },
+                                                                                                    ),
+                                                                                                    blocks: &[
+                                                                                                        Block::Simple(
+                                                                                                            SimpleBlock {
+                                                                                                                content: Content {
+                                                                                                                    original: Span {
+                                                                                                                        data: "Froo",
+                                                                                                                        line: 4,
+                                                                                                                        col: 6,
+                                                                                                                        offset: 27,
+                                                                                                                    },
+                                                                                                                    rendered: "Froo",
+                                                                                                                },
+                                                                                                                source: Span {
+                                                                                                                    data: "Froo",
+                                                                                                                    line: 4,
+                                                                                                                    col: 6,
+                                                                                                                    offset: 27,
+                                                                                                                },
+                                                                                                                style: SimpleBlockStyle::Paragraph,
+                                                                                                                title_source: None,
+                                                                                                                title: None,
+                                                                                                                anchor: None,
+                                                                                                                anchor_reftext: None,
+                                                                                                                attrlist: None,
+                                                                                                            },
+                                                                                                        ),
+                                                                                                    ],
+                                                                                                    source: Span {
+                                                                                                        data: "**** Froo",
+                                                                                                        line: 4,
+                                                                                                        col: 1,
+                                                                                                        offset: 22,
+                                                                                                    },
+                                                                                                    anchor: None,
+                                                                                                    anchor_reftext: None,
+                                                                                                    attrlist: None,
+                                                                                                },
+                                                                                            ),
+                                                                                        ],
+                                                                                        source: Span {
+                                                                                            data: "**** Froo",
+                                                                                            line: 4,
+                                                                                            col: 1,
+                                                                                            offset: 22,
+                                                                                        },
+                                                                                        title_source: None,
+                                                                                        title: None,
+                                                                                        anchor: None,
+                                                                                        anchor_reftext: None,
+                                                                                        attrlist: None,
+                                                                                    },
+                                                                                ),
+                                                                            ],
+                                                                            source: Span {
+                                                                                data: "*** Snoo\n**** Froo",
+                                                                                line: 3,
+                                                                                col: 1,
+                                                                                offset: 13,
+                                                                            },
+                                                                            anchor: None,
+                                                                            anchor_reftext: None,
+                                                                            attrlist: None,
+                                                                        },
+                                                                    ),
+                                                                ],
+                                                                source: Span {
+                                                                    data: "*** Snoo\n**** Froo",
+                                                                    line: 3,
+                                                                    col: 1,
+                                                                    offset: 13,
+                                                                },
+                                                                title_source: None,
+                                                                title: None,
+                                                                anchor: None,
+                                                                anchor_reftext: None,
+                                                                attrlist: None,
+                                                            },
+                                                        ),
+                                                    ],
+                                                    source: Span {
+                                                        data: "** Boo\n*** Snoo\n**** Froo",
+                                                        line: 2,
+                                                        col: 1,
+                                                        offset: 6,
+                                                    },
+                                                    anchor: None,
+                                                    anchor_reftext: None,
+                                                    attrlist: None,
+                                                },
+                                            ),
+                                        ],
+                                        source: Span {
+                                            data: "** Boo\n*** Snoo\n**** Froo",
+                                            line: 2,
+                                            col: 1,
+                                            offset: 6,
+                                        },
+                                        title_source: None,
+                                        title: None,
+                                        anchor: None,
+                                        anchor_reftext: None,
+                                        attrlist: None,
+                                    },
+                                ),
+                            ],
+                            source: Span {
+                                data: "* Foo\n** Boo\n*** Snoo\n**** Froo",
+                                line: 1,
+                                col: 1,
+                                offset: 0,
+                            },
+                            anchor: None,
+                            anchor_reftext: None,
+                            attrlist: None,
+                        },
+                    ),
+                    Block::ListItem(
+                        ListItem {
+                            marker: ListItemMarker::Asterisks(
+                                Span {
+                                    data: "*",
+                                    line: 5,
+                                    col: 1,
+                                    offset: 32,
+                                },
+                            ),
+                            blocks: &[
+                                Block::Simple(
+                                    SimpleBlock {
+                                        content: Content {
+                                            original: Span {
+                                                data: "Blech",
+                                                line: 5,
+                                                col: 3,
+                                                offset: 34,
+                                            },
+                                            rendered: "Blech",
+                                        },
+                                        source: Span {
+                                            data: "Blech",
+                                            line: 5,
+                                            col: 3,
+                                            offset: 34,
+                                        },
+                                        style: SimpleBlockStyle::Paragraph,
+                                        title_source: None,
+                                        title: None,
+                                        anchor: None,
+                                        anchor_reftext: None,
+                                        attrlist: None,
+                                    },
+                                ),
+                            ],
+                            source: Span {
+                                data: "* Blech",
+                                line: 5,
+                                col: 1,
+                                offset: 32,
+                            },
+                            anchor: None,
+                            anchor_reftext: None,
+                            attrlist: None,
+                        },
+                    ),
+                ],
+                source: Span {
+                    data: "* Foo\n** Boo\n*** Snoo\n**** Froo\n* Blech",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                title_source: None,
+                title: None,
+                anchor: None,
+                anchor_reftext: None,
+                attrlist: None,
+            },
+        ),
+    ],
+    source: Span {
+        data: "* Foo\n** Boo\n*** Snoo\n**** Froo\n* Blech",
+        line: 1,
+        col: 1,
+        offset: 0,
+    },
+    warnings: &[],
+    source_map: SourceMap(&[]),
+    catalog: Catalog {
+        refs: HashMap::from([]),
+        reftext_to_id: HashMap::from([]),
+    },
+});
         }
 
         #[test]
