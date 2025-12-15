@@ -335,6 +335,7 @@ impl<'src> Block<'src> {
 
             let first_line = line.item.discard_whitespace();
             if (first_line.starts_with('-')
+                || first_line.starts_with('.')
                 || first_line.starts_with('*')
                 || first_line.starts_with('•'))
                 && let Some(mi_list) = ListBlock::parse(&metadata, parser, &mut warnings)
