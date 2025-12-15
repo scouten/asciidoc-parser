@@ -71,15 +71,16 @@ impl<'src> CompoundDelimitedBlock<'src> {
         // TO DO (https://github.com/scouten/asciidoc-parser/issues/146):
         // Seek spec clarity on whether three hyphens can be used to
         // delimit an open block. Assuming yes for now.
-        let context = match maybe_delimiter_text
-            .split_at(maybe_delimiter_text.len().min(4))
-            .0
-        {
-            "====" => "example",
-            "--" => "open",
-            "****" => "sidebar",
-            "____" => "quote",
-            _ => return None,
+
+        let context = {
+            let first_four: String = maybe_delimiter_text.chars().take(4).collect();
+            match first_four.as_str() {
+                "====" => "example",
+                "--" => "open",
+                "****" => "sidebar",
+                "____" => "quote",
+                _ => return None,
+            }
         };
 
         if !Self::is_valid_delimiter(&delimiter.item) {
