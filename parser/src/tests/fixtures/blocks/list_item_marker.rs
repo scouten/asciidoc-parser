@@ -6,6 +6,7 @@ use crate::tests::fixtures::{content::Content, span::Span};
 pub(crate) enum ListItemMarker {
     Hyphen(Span),
     Asterisks(Span),
+    #[allow(unused)] // TEMPORARY while building
     Bullet(Span),
     Dots(Span),
 
