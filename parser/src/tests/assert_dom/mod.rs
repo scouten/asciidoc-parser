@@ -18,6 +18,7 @@ use crate::Document;
 /// assert_xpath(&doc, "//ul", 1);
 /// assert_xpath(&doc, "//li", 3);
 /// ```
+#[track_caller]
 pub(crate) fn assert_xpath(doc: &Document, xpath: &str, expected_count: usize) {
     let vdom = doc.to_virtual_dom();
     let matches = query_xpath(&vdom, xpath);
@@ -47,6 +48,7 @@ pub(crate) fn assert_xpath(doc: &Document, xpath: &str, expected_count: usize) {
 /// assert_css(&doc, ".ulist", 1);
 /// assert_css(&doc, "ul li", 1);
 /// ```
+#[track_caller]
 pub(crate) fn assert_css(doc: &Document, selector: &str, expected_count: usize) {
     // For now, treat CSS selectors the same as XPath queries.
     // We support CSS-style syntax like .class and #id already.
