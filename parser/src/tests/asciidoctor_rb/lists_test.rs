@@ -39,11 +39,10 @@ mod bulleted_lists_ulist {
         use super::*;
 
         #[test]
-        #[ignore]
         fn dash_elements_with_no_blank_lines() {
-            let _doc = Parser::default().parse("List\n====\n\n- Foo\n- Boo\n- Blech\n");
-            todo!("assert_xpath: '//ul', output, 1");
-            todo!("assert_xpath: '//ul/li', output, 3");
+            let doc = Parser::default().parse("List\n====\n\n- Foo\n- Boo\n- Blech\n");
+            assert_xpath(&doc, "//ul", 1);
+            assert_xpath(&doc, "//ul/li", 3);
         }
 
         #[test]
