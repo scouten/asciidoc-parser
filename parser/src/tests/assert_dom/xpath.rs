@@ -14,6 +14,8 @@ use crate::tests::assert_dom::virtual_dom::VirtualNode;
 /// - `//tag[@attr="value"]` - Find elements with specific attribute values
 /// - `//tag[text()="value"]` - Find elements with specific text content
 /// - `//tag[N]` - Find the Nth element (1-indexed)
+/// - `//tag[N]/*` - Find all children of the Nth element
+/// - `//*` or `*` - Match any element
 ///
 /// # Example
 ///
@@ -51,6 +53,9 @@ fn query_descendant_or_self<'a>(node: &'a VirtualNode, pattern: &str) -> Vec<&'a
         let mut results = Vec::new();
         collect_descendants_matching(node, first, &mut results);
 
+        // Apply numeric predicate if present.
+        results = apply_numeric_predicate(results, first);
+
         // For each matching node, query its children with the rest of the path.
         let mut final_results = Vec::new();
         for matched_node in results {
@@ -70,7 +75,7 @@ fn query_descendant_or_self<'a>(node: &'a VirtualNode, pattern: &str) -> Vec<&'a
         // Simple tag match: Find all descendants (or self) matching this selector.
         let mut results = Vec::new();
         collect_descendants_matching(node, pattern.trim(), &mut results);
-        results
+        apply_numeric_predicate(results, pattern.trim())
     }
 }
 
@@ -95,13 +100,17 @@ fn query_from_root<'a>(node: &'a VirtualNode, pattern: &str) -> Vec<&'a VirtualN
                 }
             }
         }
-        results
+
+        apply_numeric_predicate(results, first.trim())
     } else {
         // Direct children only.
-        node.children
+        let results: Vec<&VirtualNode> = node
+            .children
             .iter()
             .filter(|child| matches_selector(child, pattern.trim()))
-            .collect()
+            .collect();
+
+        apply_numeric_predicate(results, pattern.trim())
     }
 }
 
@@ -121,14 +130,43 @@ fn collect_descendants_matching<'a>(
     }
 }
 
+/// Applies numeric predicate filtering (e.g., [1], [2]) to a results vector.
+/// Returns the filtered results or the original results if no numeric predicate
+/// is present.
+fn apply_numeric_predicate<'a>(
+    results: Vec<&'a VirtualNode>,
+    selector: &str,
+) -> Vec<&'a VirtualNode> {
+    // Extract numeric predicate [N] from selector.
+    if let Some(bracket_pos) = selector.find('[') {
+        if let Some(predicate) = selector[bracket_pos..]
+            .strip_prefix('[')
+            .and_then(|s| s.strip_suffix(']'))
+        {
+            // Check if it's a numeric predicate.
+            if let Ok(index) = predicate.trim().parse::<usize>() {
+                // XPath uses 1-based indexing.
+                if index > 0 && index <= results.len() {
+                    return vec![results[index - 1]];
+                } else {
+                    return vec![];
+                }
+            }
+        }
+    }
+
+    results
+}
+
 /// Checks if a node matches the given selector.
 ///
 /// Supports:
 /// - Tag name: `div`, `ul`, `li`
+/// - Wildcard: `*` (matches any element)
 /// - Class selector: `[@class="ulist"]` or `.ulist`
 /// - ID selector: `[@id="foo"]` or `#foo`
 /// - Text content: `[text()="value"]`
-/// - Index: `[1]`, `[2]`, etc. (not implemented here, handled in caller)
+/// - Index: `[1]`, `[2]`, etc. (handled by `apply_numeric_predicate`)
 fn matches_selector(node: &VirtualNode, selector: &str) -> bool {
     let selector = selector.trim();
 
@@ -140,12 +178,20 @@ fn matches_selector(node: &VirtualNode, selector: &str) -> bool {
         (selector, None)
     };
 
-    // CSS-style class selector: .classname
+    // Wildcard selector: matches any element.
+    if base_selector == "*" {
+        if let Some(predicate) = _predicate {
+            return matches_predicate(node, predicate);
+        }
+        return true;
+    }
+
+    // CSS-style class selector: `.classname`
     if let Some(class_name) = base_selector.strip_prefix('.') {
         return node.classes.iter().any(|c| c == class_name);
     }
 
-    // CSS-style ID selector: #id
+    // CSS-style ID selector: `#id`
     if let Some(id) = base_selector.strip_prefix('#') {
         return node.id.as_deref() == Some(id);
     }
@@ -303,5 +349,73 @@ mod tests {
         // The wrapper `div` has the `ulist` class, not the `ul` element.
         let ulist_wrapper = query_xpath(&vdom, "//div[@class=\"ulist\"]");
         assert_eq!(ulist_wrapper.len(), 1);
+    }
+
+    #[test]
+    fn query_with_numeric_predicate() {
+        let doc = Parser::default().parse("* item 1\n* item 2\n* item 3");
+        let vdom = doc.to_virtual_dom();
+
+        let first_li = query_xpath(&vdom, "//ul/li[1]");
+        assert_eq!(first_li.len(), 1);
+
+        let second_li = query_xpath(&vdom, "//ul/li[2]");
+        assert_eq!(second_li.len(), 1);
+
+        let third_li = query_xpath(&vdom, "//ul/li[3]");
+        assert_eq!(third_li.len(), 1);
+
+        let fourth_li = query_xpath(&vdom, "//ul/li[4]");
+        assert_eq!(fourth_li.len(), 0);
+    }
+
+    #[test]
+    fn query_with_wildcard() {
+        let doc = Parser::default().parse("* item 1\n* item 2");
+        let vdom = doc.to_virtual_dom();
+
+        let all_elements = query_xpath(&vdom, "//*");
+        assert!(all_elements.len() > 0);
+
+        let first_li_children = query_xpath(&vdom, "//ul/li[1]/*");
+        assert_eq!(first_li_children.len(), 1);
+        assert_eq!(first_li_children[0].tag, "p");
+    }
+
+    #[test]
+    fn query_numeric_predicate_with_wildcard() {
+        let doc = Parser::default().parse("* item 1\n* item 2\n* item 3");
+        let vdom = doc.to_virtual_dom();
+
+        let first_li_all_children = query_xpath(&vdom, "//ul/li[1]/*");
+        assert_eq!(first_li_all_children.len(), 1);
+        assert_eq!(first_li_all_children[0].tag, "p");
+
+        let second_li_all_children = query_xpath(&vdom, "//ul/li[2]/*");
+        assert_eq!(second_li_all_children.len(), 1);
+        assert_eq!(second_li_all_children[0].tag, "p");
+    }
+
+    #[test]
+    fn query_comprehensive_numeric_wildcard() {
+        // This test demonstrates the full `//ul/li[1]/*` pattern.
+        let doc = Parser::default().parse("* item 1\n* item 2\n* item 3");
+        let vdom = doc.to_virtual_dom();
+
+        // The pattern `//ul/li[1]/*` means:
+        // 1. Find all <ul> elements (//ul)
+        // 2. Get their <li> children (/li)
+        // 3. Take only the first one ([1])
+        // 4. Get all its children (/*)
+        let result = query_xpath(&vdom, "//ul/li[1]/*");
+
+        assert_eq!(result.len(), 1, "Should find exactly 1 child element");
+        assert_eq!(result[0].tag, "p", "The child should be a paragraph");
+
+        assert_eq!(
+            result[0].text.as_deref(),
+            Some("item 1"),
+            "The paragraph should contain 'item 1'"
+        );
     }
 }
