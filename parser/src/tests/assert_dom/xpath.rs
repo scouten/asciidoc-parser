@@ -16,6 +16,7 @@ use crate::tests::assert_dom::virtual_dom::VirtualNode;
 /// - `//tag[N]` - Find the Nth element (1-indexed)
 /// - `//tag[N]/*` - Find all children of the Nth element
 /// - `//*` or `*` - Match any element
+/// - `(//tag)[N]/child` - Apply predicate to subquery results
 ///
 /// # Example
 ///
@@ -28,6 +29,11 @@ use crate::tests::assert_dom::virtual_dom::VirtualNode;
 pub(crate) fn query_xpath<'a>(root: &'a VirtualNode, xpath: &str) -> Vec<&'a VirtualNode> {
     let xpath = xpath.trim();
 
+    // Handle parenthesized subqueries: (//tag)[N]/rest
+    if xpath.starts_with('(') {
+        return query_parenthesized(root, xpath);
+    }
+
     // Handle descendant-or-self pattern: //tag
     if let Some(rest) = xpath.strip_prefix("//") {
         return query_descendant_or_self(root, rest);
@@ -38,8 +44,70 @@ pub(crate) fn query_xpath<'a>(root: &'a VirtualNode, xpath: &str) -> Vec<&'a Vir
         return query_from_root(root, rest);
     }
 
-    // Default: treat as descendant-or-self
+    // Default: treat as descendant-or-self.
     query_descendant_or_self(root, xpath)
+}
+
+/// Handles parenthesized subqueries like `(//ul)[1]/li`.
+fn query_parenthesized<'a>(root: &'a VirtualNode, xpath: &str) -> Vec<&'a VirtualNode> {
+    // Find the matching closing parenthesis.
+    if let Some(close_paren) = xpath.find(')') {
+        let subquery = &xpath[1..close_paren]; // Extract content between parentheses.
+        let rest = &xpath[close_paren + 1..].trim_start(); // Everything after ).
+
+        // Execute the subquery.
+        let mut results = query_xpath(root, subquery);
+
+        // Check if there's a predicate immediately after the closing paren.
+        if let Some(rest) = rest.strip_prefix('[') {
+            if let Some(bracket_end) = rest.find(']') {
+                let predicate = &rest[..bracket_end];
+                let remaining = &rest[bracket_end + 1..];
+
+                // Apply numeric predicate.
+                if let Ok(index) = predicate.trim().parse::<usize>() {
+                    if index > 0 && index <= results.len() {
+                        results = vec![results[index - 1]];
+                    } else {
+                        return vec![];
+                    }
+                }
+
+                // Continue with the remaining path if any.
+                if !remaining.is_empty() {
+                    let mut final_results = Vec::new();
+                    for node in results {
+                        if remaining.starts_with('/') && !remaining.starts_with("//") {
+                            // Direct child path.
+                            final_results.extend(query_from_root(node, &remaining[1..]));
+                        } else if remaining.starts_with("//") {
+                            // Descendant path.
+                            final_results.extend(query_descendant_or_self(node, &remaining[2..]));
+                        }
+                    }
+                    return final_results;
+                }
+            }
+        } else if !rest.is_empty() {
+            // Continue with the remaining path without a predicate.
+            let mut final_results = Vec::new();
+            for node in results {
+                if rest.starts_with('/') && !rest.starts_with("//") {
+                    // Direct child path.
+                    final_results.extend(query_from_root(node, &rest[1..]));
+                } else if rest.starts_with("//") {
+                    // Descendant path.
+                    final_results.extend(query_descendant_or_self(node, &rest[2..]));
+                }
+            }
+            return final_results;
+        }
+
+        return results;
+    }
+
+    // No valid parenthesized expression found.
+    vec![]
 }
 
 /// Queries for descendants or self matching the pattern.
@@ -417,5 +485,63 @@ mod tests {
             Some("item 1"),
             "The paragraph should contain 'item 1'"
         );
+    }
+
+    #[test]
+    fn query_parenthesized_with_predicate() {
+        // Create a document with multiple lists separated by a comment.
+        // This mimics the pattern from the actual test suite.
+        let doc = Parser::default().parse("- Foo\n- Boo\n\n//\n\n- Blech\n");
+        let vdom = doc.to_virtual_dom();
+
+        let all_uls = query_xpath(&vdom, "//ul");
+        assert_eq!(all_uls.len(), 2, "Should have 2 ul elements");
+
+        let first_ul = query_xpath(&vdom, "(//ul)[1]");
+        assert_eq!(first_ul.len(), 1, "Should find exactly 1 ul");
+
+        let second_ul = query_xpath(&vdom, "(//ul)[2]");
+        assert_eq!(second_ul.len(), 1, "Should find exactly 1 ul");
+
+        let first_ul_lis = query_xpath(&vdom, "(//ul)[1]/li");
+        assert_eq!(first_ul_lis.len(), 2, "First ul should have 2 li elements");
+
+        let second_ul_lis = query_xpath(&vdom, "(//ul)[2]/li");
+        assert_eq!(second_ul_lis.len(), 1, "Second ul should have 1 li element");
+    }
+
+    #[test]
+    fn query_parenthesized_complex() {
+        let doc = Parser::default().parse("- Foo\n- Boo\n\n.Also\n- Blech\n");
+        let vdom = doc.to_virtual_dom();
+
+        let all_uls = query_xpath(&vdom, "//ul");
+        assert_eq!(all_uls.len(), 2);
+
+        let result = query_xpath(&vdom, "(//ul)[1]/li[1]");
+        assert_eq!(result.len(), 1);
+
+        let result = query_xpath(&vdom, "(//ul)[2]/li");
+        assert_eq!(result.len(), 1);
+
+        let result = query_xpath(&vdom, "(//ul)[3]/li");
+        assert_eq!(result.len(), 0, "Out of bounds should return empty");
+    }
+
+    #[test]
+    fn query_parenthesized_complex_2() {
+        let doc = Parser::default().parse("List\n====\n\n- Foo\n- Boo\n\n//\n\n- Blech\n");
+        let vdom = doc.to_virtual_dom();
+
+        assert_eq!(query_xpath(&vdom, "//ul").len(), 2);
+
+        let first_ul_items = query_xpath(&vdom, "(//ul)[1]/li");
+        assert_eq!(first_ul_items.len(), 2);
+
+        let second_ul_items = query_xpath(&vdom, "(//ul)[2]/li");
+        assert_eq!(second_ul_items.len(), 1);
+
+        let all_items = query_xpath(&vdom, "//ul/li");
+        assert_eq!(all_items.len(), 3);
     }
 }
