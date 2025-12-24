@@ -17,6 +17,7 @@ use crate::tests::assert_dom::virtual_dom::VirtualNode;
 /// - `//tag[N]/*` - Find all children of the Nth element
 /// - `//*` or `*` - Match any element
 /// - `(//tag)[N]/child` - Apply predicate to subquery results
+/// - `//tag/preceding-sibling::*` - Find preceding siblings of matched elements
 ///
 /// # Example
 ///
@@ -75,6 +76,16 @@ fn query_parenthesized<'a>(root: &'a VirtualNode, xpath: &str) -> Vec<&'a Virtua
 
                 // Continue with the remaining path if any.
                 if !remaining.is_empty() {
+                    // Check for axis specifiers first.
+                    if let Some(axis_rest) = remaining.strip_prefix("/preceding-sibling::") {
+                        let mut final_results = Vec::new();
+                        for node in results {
+                            let siblings = find_preceding_siblings(root, node, axis_rest.trim());
+                            final_results.extend(siblings);
+                        }
+                        return final_results;
+                    }
+
                     let mut final_results = Vec::new();
                     for node in results {
                         if remaining.starts_with('/') && !remaining.starts_with("//") {
@@ -89,6 +100,16 @@ fn query_parenthesized<'a>(root: &'a VirtualNode, xpath: &str) -> Vec<&'a Virtua
                 }
             }
         } else if !rest.is_empty() {
+            // Check if rest is a preceding-sibling axis.
+            if let Some(axis_rest) = rest.strip_prefix("/preceding-sibling::") {
+                let mut final_results = Vec::new();
+                for node in results {
+                    let siblings = find_preceding_siblings(root, node, axis_rest.trim());
+                    final_results.extend(siblings);
+                }
+                return final_results;
+            }
+
             // Continue with the remaining path without a predicate.
             let mut final_results = Vec::new();
             for node in results {
@@ -116,6 +137,22 @@ fn query_descendant_or_self<'a>(node: &'a VirtualNode, pattern: &str) -> Vec<&'a
     if let Some((first, rest)) = pattern.split_once('/') {
         let first = first.trim();
         let rest = rest.trim();
+
+        // Check for axis specifiers like "preceding-sibling::"
+        if let Some(axis_rest) = rest.strip_prefix("preceding-sibling::") {
+            // Find all nodes matching first part.
+            let mut results = Vec::new();
+            collect_descendants_matching(node, first, &mut results);
+            results = apply_numeric_predicate(results, first);
+
+            // For each matched node, find its preceding siblings.
+            let mut final_results = Vec::new();
+            for matched_node in results {
+                let siblings = find_preceding_siblings(node, matched_node, axis_rest.trim());
+                final_results.extend(siblings);
+            }
+            return final_results;
+        }
 
         // Find all nodes matching first part.
         let mut results = Vec::new();
@@ -196,6 +233,53 @@ fn collect_descendants_matching<'a>(
     for child in &node.children {
         collect_descendants_matching(child, selector, results);
     }
+}
+
+/// Finds preceding siblings of a target node within the tree.
+/// This searches the entire tree starting from root to find the parent of the
+/// target, then returns all siblings that appear before the target.
+fn find_preceding_siblings<'a>(
+    root: &'a VirtualNode,
+    target: &'a VirtualNode,
+    selector: &str,
+) -> Vec<&'a VirtualNode> {
+    // Helper function to find the parent of a target node.
+    fn find_parent<'a>(
+        node: &'a VirtualNode,
+        target: *const VirtualNode,
+    ) -> Option<&'a VirtualNode> {
+        for child in &node.children {
+            if std::ptr::eq(child as *const _, target) {
+                return Some(node);
+            }
+            if let Some(parent) = find_parent(child, target) {
+                return Some(parent);
+            }
+        }
+        None
+    }
+
+    // Find the parent of the target node.
+    let target_ptr = target as *const VirtualNode;
+    let parent = match find_parent(root, target_ptr) {
+        Some(p) => p,
+        None => return vec![], // Target not found in tree.
+    };
+
+    // Collect all preceding siblings that match the selector.
+    let mut results = Vec::new();
+    for child in &parent.children {
+        // Stop when we reach the target node.
+        if std::ptr::eq(child as *const _, target_ptr) {
+            break;
+        }
+        // Add matching siblings.
+        if matches_selector(child, selector) {
+            results.push(child);
+        }
+    }
+
+    results
 }
 
 /// Applies numeric predicate filtering (e.g., [1], [2]) to a results vector.
@@ -279,14 +363,41 @@ fn matches_selector(node: &VirtualNode, selector: &str) -> bool {
 
 /// Checks if a node matches a predicate like `[@class="value"]` or
 /// `[text()="value"]`.
+/// Can handle multiple predicates like `[@class="value"][text()="text"]`.
 fn matches_predicate(node: &VirtualNode, predicate: &str) -> bool {
-    let predicate = predicate.trim();
+    let mut predicate = predicate.trim();
 
-    // Strip outer brackets.
-    let predicate = predicate
-        .strip_prefix('[')
-        .and_then(|s| s.strip_suffix(']'))
-        .unwrap_or(predicate);
+    // Handle multiple predicates by checking each one.
+    while !predicate.is_empty() {
+        // Find the next closing bracket.
+        if let Some(bracket_start) = predicate.find('[') {
+            if let Some(bracket_end) = predicate[bracket_start..].find(']') {
+                let bracket_end = bracket_start + bracket_end;
+                let single_pred = &predicate[bracket_start + 1..bracket_end];
+
+                // Check this single predicate.
+                if !matches_single_predicate(node, single_pred) {
+                    return false;
+                }
+
+                // Move to the next predicate.
+                predicate = predicate[bracket_end + 1..].trim();
+            } else {
+                // Malformed predicate.
+                return false;
+            }
+        } else {
+            // No more predicates.
+            break;
+        }
+    }
+
+    true
+}
+
+/// Checks if a node matches a single predicate.
+fn matches_single_predicate(node: &VirtualNode, predicate: &str) -> bool {
+    let predicate = predicate.trim();
 
     // Check for `text()` predicate.
     if let Some(rest) = predicate.strip_prefix("text()") {
@@ -652,5 +763,77 @@ mod tests {
 
         let result2 = query_xpath(&vdom2, "//ul/li[1]/p[text() = 'Foo\n:foo: bar']");
         assert_eq!(result2.len(), 1);
+    }
+
+    #[test]
+    fn query_preceding_sibling_axis() {
+        // Create a simple DOM structure with multiple siblings.
+        let mut root = VirtualNode::new("div").with_class("document");
+        root = root.with_child(VirtualNode::new("p").with_text("First"));
+        root = root.with_child(VirtualNode::new("p").with_text("Second"));
+        root = root.with_child(VirtualNode::new("p").with_text("Third"));
+
+        // Find preceding siblings of the third paragraph.
+        let result = query_xpath(&root, "//p[3]/preceding-sibling::p");
+        assert_eq!(result.len(), 2, "Should find 2 preceding siblings");
+        assert_eq!(result[0].text.as_deref(), Some("First"));
+        assert_eq!(result[1].text.as_deref(), Some("Second"));
+    }
+
+    #[test]
+    fn query_preceding_sibling_with_wildcard() {
+        // Create a DOM with mixed element types.
+        let mut root = VirtualNode::new("div").with_class("document");
+        root = root.with_child(VirtualNode::new("p").with_text("Para"));
+        root = root.with_child(
+            VirtualNode::new("div")
+                .with_class("title")
+                .with_text("Title"),
+        );
+        root = root.with_child(VirtualNode::new("ul"));
+
+        // Find all preceding siblings of ul.
+        let result = query_xpath(&root, "//ul/preceding-sibling::*");
+        assert_eq!(result.len(), 2, "Should find 2 preceding siblings");
+        assert_eq!(result[0].tag, "p");
+        assert_eq!(result[1].tag, "div");
+    }
+
+    #[test]
+    fn query_preceding_sibling_with_predicate() {
+        // Create a DOM with titled blocks.
+        let mut root = VirtualNode::new("div").with_class("document");
+        root = root.with_child(VirtualNode::new("div").with_class("ulist"));
+        root = root.with_child(
+            VirtualNode::new("div")
+                .with_class("title")
+                .with_text("Also"),
+        );
+        root = root.with_child(VirtualNode::new("div").with_class("ulist"));
+
+        // Find preceding sibling with class="title" and text="Also".
+        // Using parenthesized subquery to select the second ulist.
+        let result = query_xpath(
+            &root,
+            "(//div[@class=\"ulist\"])[2]/preceding-sibling::*[@class=\"title\"][text()=\"Also\"]",
+        );
+        assert_eq!(result.len(), 1, "Should find the title element");
+        assert_eq!(result[0].text.as_deref(), Some("Also"));
+    }
+
+    #[test]
+    fn query_preceding_sibling_no_matches() {
+        // Test when there are no matching preceding siblings.
+        let mut root = VirtualNode::new("div").with_class("document");
+        root = root.with_child(VirtualNode::new("p").with_text("Para"));
+        root = root.with_child(VirtualNode::new("ul"));
+
+        // The first element has no preceding siblings.
+        let result = query_xpath(&root, "//p/preceding-sibling::*");
+        assert_eq!(
+            result.len(),
+            0,
+            "First element should have no preceding siblings"
+        );
     }
 }

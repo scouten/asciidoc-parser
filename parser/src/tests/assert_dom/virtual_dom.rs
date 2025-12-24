@@ -99,13 +99,36 @@ impl ToVirtualDom for Document<'_> {
             node = node.with_id(id);
         }
 
-        // Add child blocks.
+        // Add child blocks, including block titles as separate siblings.
         for block in self.nested_blocks() {
-            node.children.push(block.to_virtual_dom());
+            add_block_with_title(&mut node, block);
         }
 
         node
     }
+}
+
+/// Adds a block to the parent node, including its title as a separate sibling
+/// element if present.
+///
+/// NOTE: Some block types (like lists) handle their titles internally, so we
+/// skip adding a separate title element for those.
+fn add_block_with_title<'a>(parent: &mut VirtualNode, block: &'a Block<'a>) {
+    // Check if this block type handles its own title internally.
+    let handles_title_internally = matches!(block, Block::List(_));
+
+    // Add title as a separate sibling element if the block doesn't handle it
+    // internally.
+    if !handles_title_internally {
+        if let Some(title) = block.title() {
+            // Add title as a separate div element with class="title".
+            let title_node = VirtualNode::new("div").with_class("title").with_text(title);
+            parent.children.push(title_node);
+        }
+    }
+
+    // Add the block itself (which will handle its own title if applicable).
+    parent.children.push(block.to_virtual_dom());
 }
 
 impl ToVirtualDom for Block<'_> {
@@ -208,6 +231,12 @@ fn list_block_to_node<'a>(list: &'a ListBlock<'a>) -> VirtualNode {
         wrapper = wrapper.with_id(id);
     }
 
+    // Add block title if present (inside the wrapper, before the list element).
+    if let Some(title) = list.title() {
+        let title_node = VirtualNode::new("div").with_class("title").with_text(title);
+        wrapper.children.push(title_node);
+    }
+
     wrapper.children.push(list_element);
     wrapper
 }
@@ -247,8 +276,9 @@ fn section_to_node<'a>(section: &'a SectionBlock<'a>) -> VirtualNode {
     // using section.level() to determine the heading level (h2-h6) and
     // section.section_title() to get the rendered title text.
 
+    // Add nested blocks, handling block titles as separate siblings.
     for child in section.nested_blocks() {
-        node.children.push(child.to_virtual_dom());
+        add_block_with_title(&mut node, child);
     }
 
     node
