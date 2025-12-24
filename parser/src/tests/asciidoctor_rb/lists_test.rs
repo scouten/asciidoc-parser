@@ -72,7 +72,6 @@ mod bulleted_lists {
         }
 
         #[test]
-        #[ignore]
         fn dash_elements_with_interspersed_line_comments_should_be_skipped_and_not_break_list() {
             let doc = Parser::default().parse("== List\n\n- Foo\n// line comment\n// another line comment\n- Boo\n// line comment\nmore text\n// another line comment\n- Blech\n");
 
@@ -92,10 +91,9 @@ mod bulleted_lists {
         }
 
         #[test]
-        #[ignore]
         fn dash_elements_separated_by_a_block_title_offset_by_a_blank_line_should_not_merge_lists()
         {
-            let doc = Parser::default().parse("List\n====\n\n- Foo\n- Boo\n\n.Also\n- Blech\n");
+            let doc = Parser::default().parse("== List\n\n- Foo\n- Boo\n\n.Also\n- Blech\n");
 
             assert_xpath(&doc, "//ul", 2);
             assert_xpath(&doc, "(//ul)[1]/li", 2);
