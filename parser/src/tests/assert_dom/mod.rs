@@ -22,6 +22,7 @@ use crate::Document;
 pub(crate) fn assert_xpath(doc: &Document, xpath: &str, expected_count: usize) {
     let vdom = doc.to_virtual_dom();
     let matches = query_xpath(&vdom, xpath);
+
     assert_eq!(
         matches.len(),
         expected_count,
@@ -96,5 +97,15 @@ mod tests {
     fn assert_xpath_with_predicate() {
         let doc = Parser::default().parse("Hello\n\nWorld");
         assert_xpath(&doc, "//p[text()=\"Hello\"]", 1);
+    }
+
+    #[test]
+    fn assert_xpath_with_single_quoted_text_and_newline() {
+        // This matches the failing test from lists_test.rs.
+        let doc = Parser::default().parse("List\n====\n\n- Foo\nwrapped content\n- Boo\n- Blech\n");
+
+        assert_xpath(&doc, "//ul", 1);
+        assert_xpath(&doc, "//ul/li[1]/*", 1);
+        assert_xpath(&doc, "//ul/li[1]/p[text() = \'Foo\\nwrapped content\']", 1);
     }
 }

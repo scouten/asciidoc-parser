@@ -240,7 +240,7 @@ fn matches_selector(node: &VirtualNode, selector: &str) -> bool {
 
     // Handle index predicates [N] by stripping them off.
     // (Caller should handle filtering by index.)
-    let (base_selector, _predicate) = if let Some(bracket_pos) = selector.find('[') {
+    let (base_selector, predicate) = if let Some(bracket_pos) = selector.find('[') {
         (&selector[..bracket_pos], Some(&selector[bracket_pos..]))
     } else {
         (selector, None)
@@ -248,7 +248,7 @@ fn matches_selector(node: &VirtualNode, selector: &str) -> bool {
 
     // Wildcard selector: matches any element.
     if base_selector == "*" {
-        if let Some(predicate) = _predicate {
+        if let Some(predicate) = predicate {
             return matches_predicate(node, predicate);
         }
         return true;
@@ -270,7 +270,7 @@ fn matches_selector(node: &VirtualNode, selector: &str) -> bool {
     }
 
     // Handle predicates if present.
-    if let Some(predicate) = _predicate {
+    if let Some(predicate) = predicate {
         return matches_predicate(node, predicate);
     }
 
@@ -291,14 +291,25 @@ fn matches_predicate(node: &VirtualNode, predicate: &str) -> bool {
     // Check for `text()` predicate.
     if let Some(rest) = predicate.strip_prefix("text()") {
         let rest = rest.trim();
-        if let Some(value) = rest
-            .strip_prefix('=')
-            .and_then(|s| s.trim().strip_prefix('"'))
-        {
-            if let Some(value) = value.strip_suffix('"') {
-                return node.text.as_deref() == Some(value);
+
+        // Handle text() = 'value' (single quotes).
+        if let Some(value_part) = rest.strip_prefix('=').map(|s| s.trim()) {
+            // Try single-quoted string first.
+            if let Some(value) = value_part.strip_prefix('\'') {
+                if let Some(value) = value.strip_suffix('\'') {
+                    let unescaped = unescape_xpath_string(value);
+                    return node.text.as_deref() == Some(&unescaped);
+                }
+            }
+            // Try double-quoted string.
+            else if let Some(value) = value_part.strip_prefix('"') {
+                if let Some(value) = value.strip_suffix('"') {
+                    let unescaped = unescape_xpath_string(value);
+                    return node.text.as_deref() == Some(&unescaped);
+                }
             }
         }
+
         return false;
     }
 
@@ -323,6 +334,41 @@ fn matches_predicate(node: &VirtualNode, predicate: &str) -> bool {
     // Numeric predicate [N]: Would need to be handled by caller with context.
     // For now, just return `true` to pass through.
     true
+}
+
+/// Unescapes XPath string literals.
+/// Handles escape sequences like `\n` (newline), `\'` (single quote), `\\`
+/// (backslash).
+fn unescape_xpath_string(s: &str) -> String {
+    let mut result = String::new();
+    let mut chars = s.chars();
+
+    while let Some(ch) = chars.next() {
+        if ch == '\\' {
+            // Handle escape sequence.
+            if let Some(next) = chars.next() {
+                match next {
+                    'n' => result.push('\n'),
+                    't' => result.push('\t'),
+                    'r' => result.push('\r'),
+                    '\\' => result.push('\\'),
+                    '\'' => result.push('\''),
+                    '"' => result.push('"'),
+                    _ => {
+                        // Unknown escape - keep as is.
+                        result.push('\\');
+                        result.push(next);
+                    }
+                }
+            } else {
+                result.push('\\');
+            }
+        } else {
+            result.push(ch);
+        }
+    }
+
+    result
 }
 
 #[cfg(test)]
@@ -543,5 +589,68 @@ mod tests {
 
         let all_items = query_xpath(&vdom, "//ul/li");
         assert_eq!(all_items.len(), 3);
+    }
+
+    #[test]
+    fn query_text_predicate_with_newlines() {
+        // Test text predicates with newlines using single quotes.
+        let doc = Parser::default().parse("- Foo\nwrapped content\n");
+        let vdom = doc.to_virtual_dom();
+
+        // The text content should be "Foo\nwrapped content" (with actual newline).
+        let result = query_xpath(&vdom, "//ul/li[1]/p[text() = 'Foo\nwrapped content']");
+        assert_eq!(
+            result.len(),
+            1,
+            "Should find paragraph with newline in text"
+        );
+
+        // Verify the actual text content.
+        let para = query_xpath(&vdom, "//ul/li[1]/p");
+        assert_eq!(para.len(), 1);
+        assert_eq!(para[0].text.as_deref(), Some("Foo\nwrapped content"));
+    }
+
+    #[test]
+    fn query_text_predicate_with_escaped_quotes() {
+        // Test escaping single quotes within single-quoted strings.
+        let doc = Parser::default().parse("Para with 'quotes'\n");
+        let vdom = doc.to_virtual_dom();
+
+        // Should match text with escaped single quote.
+        let result = query_xpath(&vdom, "//p[text() = 'Para with \\'quotes\\'']");
+        assert_eq!(result.len(), 1);
+    }
+
+    #[test]
+    fn query_text_predicate_exact_match_from_test_suite() {
+        // This exactly mirrors the test from lists_test.rs line 129.
+        let doc = Parser::default().parse("List\n====\n\n- Foo\nwrapped content\n- Boo\n- Blech\n");
+        let vdom = doc.to_virtual_dom();
+
+        // Verify basic structure.
+        assert_eq!(query_xpath(&vdom, "//ul").len(), 1);
+        assert_eq!(query_xpath(&vdom, "//ul/li[1]/*").len(), 1);
+
+        // The actual test from the suite.
+        let result = query_xpath(&vdom, "//ul/li[1]/p[text() = 'Foo\nwrapped content']");
+        assert_eq!(result.len(), 1, "Should match text with newline");
+    }
+
+    #[test]
+    fn query_text_predicate_with_special_chars() {
+        // Test with period at start (resembles block title).
+        let doc = Parser::default().parse("== List\n\n- Foo\n.wrapped content\n- Boo\n- Blech\n");
+        let vdom = doc.to_virtual_dom();
+
+        let result = query_xpath(&vdom, "//ul/li[1]/p[text() = 'Foo\n.wrapped content']");
+        assert_eq!(result.len(), 1);
+
+        // Test with colon (resembles attribute entry).
+        let doc2 = Parser::default().parse("== List\n\n- Foo\n:foo: bar\n- Boo\n- Blech\n");
+        let vdom2 = doc2.to_virtual_dom();
+
+        let result2 = query_xpath(&vdom2, "//ul/li[1]/p[text() = 'Foo\n:foo: bar']");
+        assert_eq!(result2.len(), 1);
     }
 }
