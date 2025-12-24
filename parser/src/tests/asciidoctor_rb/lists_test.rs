@@ -30,116 +30,123 @@
 // IMPORTANT: In porting this, I've disregarded compatibility mode (stated
 // limitation of `asciidoc-parser` crate) and alternate (non-HTML) back ends.
 
-#[allow(unreachable_code)]
-#[allow(unused_imports)]
-mod bulleted_lists_ulist {
+#![allow(unreachable_code)]
+#![allow(unused_imports)]
+
+mod bulleted_lists {
     use crate::{Parser, tests::prelude::*};
 
     mod simple_lists {
-        use super::*;
+        use crate::{Parser, tests::prelude::*};
 
         #[test]
         fn dash_elements_with_no_blank_lines() {
             let doc = Parser::default().parse("List\n====\n\n- Foo\n- Boo\n- Blech\n");
+
+            assert_xpath(&doc, "//ul", 1);
+            assert_xpath(&doc, "//ul/li", 3);
+        }
+
+        #[test]
+        fn indented_dash_elements_using_spaces() {
+            let doc = Parser::default().parse(" - Foo\n - Boo\n - Blech\n");
+
+            assert_xpath(&doc, "//ul", 1);
+            assert_xpath(&doc, "//ul/li", 3);
+        }
+
+        #[test]
+        fn indented_dash_elements_using_tabs() {
+            let doc = Parser::default().parse("\t-\tFoo\n\t-\tBoo\n\t-\tBlech\n");
+
+            assert_xpath(&doc, "//ul", 1);
+            assert_xpath(&doc, "//ul/li", 3);
+        }
+
+        #[test]
+        fn dash_elements_separated_by_blank_lines_should_merge_lists() {
+            let doc = Parser::default().parse("List\n====\n\n- Foo\n\n- Boo\n\n\n- Blech\n");
+
             assert_xpath(&doc, "//ul", 1);
             assert_xpath(&doc, "//ul/li", 3);
         }
 
         #[test]
         #[ignore]
-        fn indented_dash_elements_using_spaces() {
-            let _doc = Parser::default().parse(" - Foo\n - Boo\n - Blech\n");
-            todo!("assert_xpath: '//ul', output, 1");
-            todo!("assert_xpath: '//ul/li', output, 3");
-        }
-
-        #[test]
-        #[ignore]
-        fn indented_dash_elements_using_tabs() {
-            let _doc = Parser::default().parse("\t-\tFoo\n\t-\tBoo\n\t-\tBlech\n");
-            todo!("assert_xpath: '//ul', output, 1");
-            todo!("assert_xpath: '//ul/li', output, 3");
-        }
-
-        #[test]
-        #[ignore]
-        fn dash_elements_separated_by_blank_lines_should_merge_lists() {
-            let _doc = Parser::default().parse("List\n====\n\n- Foo\n\n- Boo\n\n\n- Blech\n");
-            todo!("assert_xpath: '//ul', output, 1");
-            todo!("assert_xpath: '//ul/li', output, 3");
-        }
-
-        #[test]
-        #[ignore]
         fn dash_elements_with_interspersed_line_comments_should_be_skipped_and_not_break_list() {
-            let _doc = Parser::default().parse("== List\n\n- Foo\n// line comment\n// another line comment\n- Boo\n// line comment\nmore text\n// another line comment\n- Blech\n");
-            todo!("assert_xpath: '//ul', output, 1");
-            todo!("assert_xpath: '//ul/li', output, 3");
-            todo!("assert_xpath: '(//ul/li)[2]/p[text()=\"Boo\\nmore text\"]', output, 1");
+            let doc = Parser::default().parse("== List\n\n- Foo\n// line comment\n// another line comment\n- Boo\n// line comment\nmore text\n// another line comment\n- Blech\n");
+
+            assert_xpath(&doc, "//ul", 1);
+            assert_xpath(&doc, "//ul/li", 3);
+            assert_xpath(&doc, "(//ul/li)[2]/p[text()=\"Boo\\nmore text\"]", 1);
         }
 
         #[test]
-        #[ignore]
         fn dash_elements_separated_by_a_line_comment_offset_by_blank_lines_should_not_merge_lists()
         {
-            let _doc = Parser::default().parse("List\n====\n\n- Foo\n- Boo\n\n//\n\n- Blech\n");
-            todo!("assert_xpath: '//ul', output, 2");
-            todo!("assert_xpath: '(//ul)[1]/li', output, 2");
-            todo!("assert_xpath: '(//ul)[2]/li', output, 1");
+            let doc = Parser::default().parse("List\n====\n\n- Foo\n- Boo\n\n//\n\n- Blech\n");
+
+            assert_xpath(&doc, "//ul", 2);
+            assert_xpath(&doc, "(//ul)[1]/li", 2);
+            assert_xpath(&doc, "(//ul)[2]/li", 1);
         }
 
         #[test]
         #[ignore]
         fn dash_elements_separated_by_a_block_title_offset_by_a_blank_line_should_not_merge_lists()
         {
-            let _doc = Parser::default().parse("List\n====\n\n- Foo\n- Boo\n\n.Also\n- Blech\n");
-            todo!("assert_xpath: '//ul', output, 2");
-            todo!("assert_xpath: '(//ul)[1]/li', output, 2");
-            todo!("assert_xpath: '(//ul)[2]/li', output, 1");
-            todo!(
-                "assert_xpath: '(//ul)[2]/preceding-sibling::*[@class = \"title\"][text() = \"Also\"]', output, 1"
+            let doc = Parser::default().parse("List\n====\n\n- Foo\n- Boo\n\n.Also\n- Blech\n");
+
+            assert_xpath(&doc, "//ul", 2);
+            assert_xpath(&doc, "(//ul)[1]/li", 2);
+            assert_xpath(&doc, "(//ul)[2]/li", 1);
+
+            assert_xpath(
+                &doc,
+                "(//ul)[2]/preceding-sibling::*[@class = \"title\"][text() = \"Also\"]",
+                1,
             );
         }
 
         #[test]
-        #[ignore]
         fn dash_elements_separated_by_an_attribute_entry_offset_by_a_blank_line_should_not_merge_lists()
          {
-            let _doc = Parser::default().parse("== List\n\n- Foo\n- Boo\n\n:foo: bar\n- Blech\n");
-            todo!("assert_xpath: '//ul', output, 2");
-            todo!("assert_xpath: '(//ul)[1]/li', output, 2");
-            todo!("assert_xpath: '(//ul)[2]/li', output, 1");
+            let doc = Parser::default().parse("== List\n\n- Foo\n- Boo\n\n:foo: bar\n- Blech\n");
+
+            assert_xpath(&doc, "//ul", 2);
+            assert_xpath(&doc, "(//ul)[1]/li", 2);
+            assert_xpath(&doc, "(//ul)[2]/li", 1);
         }
 
         #[test]
-        #[ignore]
         fn a_non_indented_wrapped_line_is_folded_into_text_of_list_item() {
-            let _doc =
+            let doc =
                 Parser::default().parse("List\n====\n\n- Foo\nwrapped content\n- Boo\n- Blech\n");
-            todo!("assert_xpath: '//ul', output, 1");
-            todo!("assert_xpath: '//ul/li[1]/*', output, 1");
-            todo!("assert_xpath: '//ul/li[1]/p[text() = \\'Foo\\nwrapped content\\']', output, 1");
+
+            assert_xpath(&doc, "//ul", 1);
+            assert_xpath(&doc, "//ul/li[1]/*", 1);
+            assert_xpath(&doc, "//ul/li[1]/p[text() = 'Foo\\nwrapped content']", 1);
         }
 
         #[test]
-        #[ignore]
         fn a_non_indented_wrapped_line_that_resembles_a_block_title_is_folded_into_text_of_list_item()
          {
-            let _doc =
+            let doc =
                 Parser::default().parse("== List\n\n- Foo\n.wrapped content\n- Boo\n- Blech\n");
-            todo!("assert_xpath: '//ul', output, 1");
-            todo!("assert_xpath: '//ul/li[1]/*', output, 1");
-            todo!("assert_xpath: '//ul/li[1]/p[text() = \\'Foo\\n.wrapped content\\']', output, 1");
+
+            assert_xpath(&doc, "//ul", 1);
+            assert_xpath(&doc, "//ul/li[1]/*", 1);
+            assert_xpath(&doc, "//ul/li[1]/p[text() = 'Foo\\n.wrapped content']", 1);
         }
 
         #[test]
-        #[ignore]
         fn a_non_indented_wrapped_line_that_resembles_an_attribute_entry_is_folded_into_text_of_list_item()
          {
-            let _doc = Parser::default().parse("== List\n\n- Foo\n:foo: bar\n- Boo\n- Blech\n");
-            todo!("assert_xpath: '//ul', output, 1");
-            todo!("assert_xpath: '//ul/li[1]/*', output, 1");
-            todo!("assert_xpath: '//ul/li[1]/p[text() = \\'Foo\\n:foo: bar\\']', output, 1");
+            let doc = Parser::default().parse("== List\n\n- Foo\n:foo: bar\n- Boo\n- Blech\n");
+
+            assert_xpath(&doc, "//ul", 1);
+            assert_xpath(&doc, "//ul/li[1]/*", 1);
+            assert_xpath(&doc, "//ul/li[1]/p[text() = 'Foo\\n:foo: bar']", 1);
         }
 
         #[test]
@@ -1110,8 +1117,6 @@ mod bulleted_lists_ulist {
     }
 }
 
-#[allow(unreachable_code)]
-#[allow(unused_imports)]
 mod ordered_lists_olist {
     use crate::{Parser, tests::prelude::*};
 
@@ -1353,8 +1358,6 @@ mod ordered_lists_olist {
     }
 }
 
-#[allow(unreachable_code)]
-#[allow(unused_imports)]
 mod description_lists_dlist {
     use crate::{Parser, tests::prelude::*};
 
@@ -2418,8 +2421,6 @@ mod description_lists_dlist {
     }
 }
 
-#[allow(unreachable_code)]
-#[allow(unused_imports)]
 mod description_lists_redux {
     use crate::{Parser, tests::prelude::*};
 
@@ -3253,8 +3254,6 @@ mod description_lists_redux {
     }
 }
 
-#[allow(unreachable_code)]
-#[allow(unused_imports)]
 mod callout_lists {
     use crate::Parser;
 
@@ -3554,8 +3553,6 @@ mod callout_lists {
     }
 }
 
-#[allow(unreachable_code)]
-#[allow(unused_imports)]
 mod checklists {
     use crate::Parser;
 
@@ -3606,8 +3603,6 @@ mod checklists {
     }
 }
 
-#[allow(unreachable_code)]
-#[allow(unused_imports)]
 mod lists_model {
     use crate::Parser;
 
