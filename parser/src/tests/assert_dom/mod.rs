@@ -3,7 +3,7 @@
 //! This module provides assertion functions that can be used in tests
 //! to verify the structure of parsed AsciiDoc documents.
 
-use crate::Document;
+use crate::{Document, blocks::IsBlock};
 
 /// Asserts that an XPath query matches exactly the expected number of nodes.
 ///
@@ -59,6 +59,40 @@ pub(crate) fn assert_css(doc: &Document, selector: &str, expected_count: usize) 
         expected_count,
         matches.len()
     );
+}
+
+/// Refutes that any node contains the designated text in its rendered content.
+///
+/// # Panics
+///
+/// Panics if any node's `content` (rendered content) contains the provided
+/// text.
+///
+/// # Examples
+///
+/// ```ignore
+/// let doc = Parser::default().parse("* item");
+/// refute_output_contains(&doc, "item"); // will panic
+/// refute_output_contains(&doc, "nonsense"); // will not panic
+/// ```
+#[allow(unused)]
+pub(crate) fn refute_output_contains<'src>(doc: &'src Document<'src>, text: &str) {
+    refute_block_contains(doc, text);
+}
+
+#[allow(unused)]
+fn refute_block_contains<'src, B: IsBlock<'src>>(block: &'src B, text: &str) {
+    dbg!(&block);
+    if let Some(content) = block.rendered_content() {
+        dbg!(&content);
+        if content.contains(text) {
+            panic!("Block should not have contained {text}, but did:\n\n{block:#?}");
+        }
+    }
+
+    for nested_block in block.nested_blocks() {
+        refute_block_contains(nested_block, text);
+    }
 }
 
 mod css;
@@ -128,6 +162,31 @@ mod tests {
         fn assert_css_with_class_selector() {
             let doc = Parser::default().parse("* item");
             assert_css(&doc, ".ulist", 1);
+        }
+    }
+
+    mod refute_output_contains {
+        use super::super::*;
+        use crate::Parser;
+
+        #[test]
+        fn succeeds_when_no_such_content() {
+            let doc = Parser::default().parse("* item 1\n* item 2\n* item 3");
+            refute_output_contains(&doc, "blah");
+        }
+
+        #[test]
+        #[should_panic]
+        fn panics_when_content_found_directly() {
+            let doc = Parser::default().parse("On the wolpertanger hunt");
+            refute_output_contains(&doc, "wolpertanger");
+        }
+
+        #[test]
+        #[should_panic]
+        fn panics_when_content_found_nested() {
+            let doc = Parser::default().parse("* item 1\n** item 2\n* item 3");
+            refute_output_contains(&doc, "item 2");
         }
     }
 }

@@ -153,7 +153,7 @@ mod bulleted_lists {
             let doc = Parser::default().parse("- Foo\nBar\n* Foo\n");
 
             assert_css(&doc, "ul ul", 1);
-            todo!("refute_includes: output, '* Foo'");
+            refute_output_contains(&doc, "* Foo");
         }
 
         #[test]
