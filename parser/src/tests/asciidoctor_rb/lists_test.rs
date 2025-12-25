@@ -37,7 +37,14 @@ mod bulleted_lists {
     use crate::{Parser, tests::prelude::*};
 
     mod simple_lists {
-        use crate::{Parser, tests::prelude::*};
+        use std::collections::HashMap;
+
+        use crate::{
+            Parser,
+            blocks::{ListType, SimpleBlockStyle},
+            document::RefType,
+            tests::prelude::*,
+        };
 
         #[test]
         fn dash_elements_with_no_blank_lines() {
@@ -157,68 +164,234 @@ mod bulleted_lists {
         }
 
         #[test]
-        #[ignore]
         fn a_list_item_for_a_different_list_terminates_non_indented_paragraph_for_text_of_list_item()
          {
-            let _doc = Parser::default().parse(
+            let doc = Parser::default().parse(
                 "== Example 1\n\n- Foo\nBar\n. Foo\n\n== Example 2\n\n* Item\ntext\nterm:: def\n",
             );
-            todo!("assert_css: 'ul ol', output, 1");
-            todo!("refute_includes: output, '* Foo'");
-            todo!("assert_css: 'ul dl', output, 1");
-            todo!("refute_includes: output, 'term:: def'");
+
+            assert_css(&doc, "ul ol", 1);
+            refute_output_contains(&doc, "* Foo");
+            assert_css(&doc, "ul dl", 1);
+            refute_output_contains(&doc, "term:: def");
         }
 
         #[test]
-        #[ignore]
         fn an_indented_wrapped_line_is_unindented_and_folded_into_text_of_list_item() {
-            let _doc =
-                Parser::default().parse("List\n====\n\n- Foo\n  wrapped content\n- Boo\n- Blech\n");
-            todo!("assert_xpath: '//ul', output, 1");
-            todo!("assert_xpath: '//ul/li[1]/*', output, 1");
-            todo!("assert_xpath: '//ul/li[1]/p[text() = \\'Foo\\nwrapped content\\']', output, 1");
+            let doc =
+                Parser::default().parse("== List\n\n- Foo\n  wrapped content\n- Boo\n- Blech\n");
+
+            assert_xpath(&doc, "//ul", 1);
+            assert_xpath(&doc, "//ul/li[1]/*", 1);
+            assert_xpath(&doc, "//ul/li[1]/p[text() = \'Foo\nwrapped content\']", 1);
         }
 
         #[test]
-        #[ignore]
         fn wrapped_list_item_with_hanging_indent_followed_by_non_indented_line() {
-            let _doc = Parser::default().parse("== Lists\n\n- list item 1\n  // not line comment\nsecond wrapped line\n- list item 2\n");
-            todo!("assert_css: 'ul', output, 1");
-            todo!("assert_css: 'ul li', output, 2");
-            // NOTE: for some reason, we're getting an extra line after the indented line.
-            todo!("xmlnodes_at_xpath check for 3 lines");
+            let doc = Parser::default().parse("== Lists\n\n- list item 1\n  // not line comment\nsecond wrapped line\n- list item 2\n");
+
+            assert_css(&doc, "ul", 1);
+            assert_css(&doc, "ul li", 2);
+
+            // Asciidoctor test on which this is based comes with the following comment:
+            // > NOTE: for some reason, we're getting an extra line after the indented line.
+            //
+            // Looks like we're not having that problem in the Rust port. Use this detailed
+            // comparison to ensure that remains true. todo!("xmlnodes_at_xpath
+            // check for 3 lines");
+
+            assert_eq!(
+                doc,
+                Document {
+                    header: Header {
+                        title_source: None,
+                        title: None,
+                        attributes: &[],
+                        author_line: None,
+                        revision_line: None,
+                        comments: &[],
+                        source: Span {
+                            data: "",
+                            line: 1,
+                            col: 1,
+                            offset: 0,
+                        },
+                    },
+                    blocks: &[Block::Section(SectionBlock {
+                        level: 1,
+                        section_title: Content {
+                            original: Span {
+                                data: "Lists",
+                                line: 1,
+                                col: 4,
+                                offset: 3,
+                            },
+                            rendered: "Lists",
+                        },
+                        blocks: &[Block::List(ListBlock {
+                            type_: ListType::Unordered,
+                            items: &[
+                                Block::ListItem(ListItem {
+                                    marker: ListItemMarker::Hyphen(Span {
+                                        data: "-",
+                                        line: 3,
+                                        col: 1,
+                                        offset: 10,
+                                    },),
+                                    blocks: &[Block::Simple(SimpleBlock {
+                                        content: Content {
+                                            original: Span {
+                                                data: "list item 1\n  // not line comment\nsecond wrapped line",
+                                                line: 3,
+                                                col: 3,
+                                                offset: 12,
+                                            },
+                                            rendered: "list item 1\n// not line comment\nsecond wrapped line",
+                                        },
+                                        source: Span {
+                                            data: "list item 1\n  // not line comment\nsecond wrapped line",
+                                            line: 3,
+                                            col: 3,
+                                            offset: 12,
+                                        },
+                                        style: SimpleBlockStyle::Paragraph,
+                                        title_source: None,
+                                        title: None,
+                                        anchor: None,
+                                        anchor_reftext: None,
+                                        attrlist: None,
+                                    },),],
+                                    source: Span {
+                                        data: "- list item 1\n  // not line comment\nsecond wrapped line",
+                                        line: 3,
+                                        col: 1,
+                                        offset: 10,
+                                    },
+                                    anchor: None,
+                                    anchor_reftext: None,
+                                    attrlist: None,
+                                },),
+                                Block::ListItem(ListItem {
+                                    marker: ListItemMarker::Hyphen(Span {
+                                        data: "-",
+                                        line: 6,
+                                        col: 1,
+                                        offset: 66,
+                                    },),
+                                    blocks: &[Block::Simple(SimpleBlock {
+                                        content: Content {
+                                            original: Span {
+                                                data: "list item 2",
+                                                line: 6,
+                                                col: 3,
+                                                offset: 68,
+                                            },
+                                            rendered: "list item 2",
+                                        },
+                                        source: Span {
+                                            data: "list item 2",
+                                            line: 6,
+                                            col: 3,
+                                            offset: 68,
+                                        },
+                                        style: SimpleBlockStyle::Paragraph,
+                                        title_source: None,
+                                        title: None,
+                                        anchor: None,
+                                        anchor_reftext: None,
+                                        attrlist: None,
+                                    },),],
+                                    source: Span {
+                                        data: "- list item 2",
+                                        line: 6,
+                                        col: 1,
+                                        offset: 66,
+                                    },
+                                    anchor: None,
+                                    anchor_reftext: None,
+                                    attrlist: None,
+                                },),
+                            ],
+                            source: Span {
+                                data: "- list item 1\n  // not line comment\nsecond wrapped line\n- list item 2",
+                                line: 3,
+                                col: 1,
+                                offset: 10,
+                            },
+                            title_source: None,
+                            title: None,
+                            anchor: None,
+                            anchor_reftext: None,
+                            attrlist: None,
+                        },),],
+                        source: Span {
+                            data: "== Lists\n\n- list item 1\n  // not line comment\nsecond wrapped line\n- list item 2",
+                            line: 1,
+                            col: 1,
+                            offset: 0,
+                        },
+                        title_source: None,
+                        title: None,
+                        anchor: None,
+                        anchor_reftext: None,
+                        attrlist: None,
+                        section_type: SectionType::Normal,
+                        section_id: Some("_lists",),
+                        section_number: None,
+                    },),],
+                    source: Span {
+                        data: "== Lists\n\n- list item 1\n  // not line comment\nsecond wrapped line\n- list item 2",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    warnings: &[],
+                    source_map: SourceMap(&[]),
+                    catalog: Catalog {
+                        refs: HashMap::from([(
+                            "_lists",
+                            RefEntry {
+                                id: "_lists",
+                                reftext: Some("Lists",),
+                                ref_type: RefType::Section,
+                            },
+                        ),]),
+                        reftext_to_id: HashMap::from([("Lists", "_lists",),]),
+                    },
+                }
+            );
         }
 
         #[test]
-        #[ignore]
         fn a_list_item_with_a_nested_marker_terminates_indented_paragraph_for_text_of_list_item() {
-            let _doc = Parser::default().parse("- Foo\n  Bar\n* Foo\n");
-            todo!("assert_css: 'ul ul', output, 1");
-            todo!("refute_includes: output, '* Foo'");
+            let doc = Parser::default().parse("- Foo\n  Bar\n* Foo\n");
+
+            assert_css(&doc, "ul ul", 1);
+            refute_output_contains(&doc, "* Foo");
         }
 
         #[test]
-        #[ignore]
         fn a_list_item_that_starts_with_a_sequence_of_list_markers_characters_should_not_match_a_nested_list()
          {
-            let _doc = Parser::default().parse(" * first item\n *. normal text\n");
-            todo!("assert_css: 'ul', output, 1");
-            todo!("assert_css: 'ul li', output, 1");
-            todo!("assert_xpath: '//ul/li/p[text()=\\'first item\\n*. normal text\\']', output, 1");
+            let doc = Parser::default().parse(" * first item\n *. normal text\n");
+
+            assert_css(&doc, "ul", 1);
+            assert_css(&doc, "ul li", 1);
+            assert_xpath(&doc, "//ul/li/p[text()='first item\n*. normal text\']", 1);
         }
 
         #[test]
-        #[ignore]
         fn a_list_item_for_a_different_list_terminates_indented_paragraph_for_text_of_list_item() {
-            let _doc = Parser::default().parse("== Example 1\n\n- Foo\n  Bar\n. Foo\n\n== Example 2\n\n* Item\n  text\nterm:: def\n");
-            todo!("assert_css: 'ul ol', output, 1");
-            todo!("refute_includes: output, '* Foo'");
-            todo!("assert_css: 'ul dl', output, 1");
-            todo!("refute_includes: output, 'term:: def'");
+            let doc = Parser::default().parse("== Example 1\n\n- Foo\n  Bar\n. Foo\n\n== Example 2\n\n* Item\n  text\nterm:: def\n");
+
+            assert_css(&doc, "ul ol", 1);
+            refute_output_contains(&doc, "* Foo");
+            assert_css(&doc, "ul dl", 1);
+            refute_output_contains(&doc, "term:: def");
         }
 
         #[test]
-        #[ignore]
+        #[ignore] // SKIP until we can port following-sibling selector
         fn a_literal_paragraph_offset_by_blank_lines_in_list_content_is_appended_as_a_literal_block()
          {
             let _doc =
@@ -236,7 +409,7 @@ mod bulleted_lists {
         }
 
         #[test]
-        #[ignore]
+        #[ignore] // SKIP until we can port first-of-type selector
         fn should_escape_special_characters_in_all_literal_paragraphs_attached_to_list_item() {
             let _doc = Parser::default().parse("* first item\n\n  <code>text</code>\n\n  more <code>text</code>\n\n* second item\n");
             todo!("assert_css: 'li', output, 2");
@@ -250,7 +423,7 @@ mod bulleted_lists {
         }
 
         #[test]
-        #[ignore]
+        #[ignore] // SKIP until we can port following-sibling query
         fn a_literal_paragraph_offset_by_a_blank_line_in_list_content_followed_by_line_with_continuation_is_appended_as_two_blocks()
          {
             let _doc = Parser::default()
@@ -274,7 +447,7 @@ mod bulleted_lists {
         }
 
         #[test]
-        #[ignore]
+        #[ignore] // SKIP test until we implement normalize-space 
         fn an_admonition_paragraph_attached_by_a_line_continuation_to_a_list_item_with_wrapped_text_should_produce_admonition()
          {
             let _doc = Parser::default()
@@ -292,7 +465,7 @@ mod bulleted_lists {
         }
 
         #[test]
-        #[ignore]
+        #[ignore] // SKIP test until we implement CSS class selector queries
         fn paragraph_like_blocks_attached_to_an_ancestor_list_item_by_a_list_continuation_should_produce_blocks()
          {
             let _doc = Parser::default().parse("* parent\n ** child\n\n+\nNOTE: This is a note.\n\n* another parent\n ** another child\n\n+\n'''\n");
@@ -303,7 +476,7 @@ mod bulleted_lists {
         }
 
         #[test]
-        #[ignore]
+        #[ignore] // SKIP test for now .. direct child syntax
         fn should_not_inherit_block_attributes_from_previous_block_when_block_is_attached_using_a_list_continuation()
          {
             let _doc = Parser::default().parse("* complex list item\n+\n[source,xml]\n----\n<name>value</name> <!--1-->\n----\n<1> a configuration value\n");
@@ -316,7 +489,7 @@ mod bulleted_lists {
         }
 
         #[test]
-        #[ignore]
+        #[ignore] // SKIP test for now .. direct child syntax
         fn should_continue_to_parse_blocks_attached_by_a_list_continuation_after_block_is_dropped()
         {
             let _doc = Parser::default().parse(
@@ -327,7 +500,7 @@ mod bulleted_lists {
         }
 
         #[test]
-        #[ignore]
+        #[ignore] // SKIP test for now ... needs following-sibling query
         fn appends_line_as_paragraph_if_attached_by_continuation_following_line_comment() {
             let _doc = Parser::default().parse(
                 "- list item 1\n// line comment\n+\nparagraph in list item 1\n\n- list item 2\n",
@@ -345,7 +518,7 @@ mod bulleted_lists {
         }
 
         #[test]
-        #[ignore]
+        #[ignore] // SKIP test for now ... needs following-sibling query
         fn a_literal_paragraph_with_a_line_that_appears_as_a_list_item_that_is_followed_by_a_continuation_should_create_two_blocks()
          {
             let _doc =
@@ -369,7 +542,7 @@ mod bulleted_lists {
         }
 
         #[test]
-        #[ignore]
+        #[ignore] // SKIP test for now ... needs following-sibling query
         fn consecutive_literal_paragraph_offset_by_blank_lines_in_list_content_are_appended_as_a_literal_blocks()
          {
             let _doc = Parser::default()
@@ -390,7 +563,7 @@ mod bulleted_lists {
         }
 
         #[test]
-        #[ignore]
+        #[ignore] // SKIP test for now ... needs following-sibling query
         fn a_literal_paragraph_without_a_trailing_blank_line_consumes_following_list_items() {
             let _doc =
                 Parser::default().parse("List\n====\n\n- Foo\n\n  literal\n- Boo\n- Blech\n");
@@ -407,39 +580,39 @@ mod bulleted_lists {
         }
 
         #[test]
-        #[ignore]
         fn asterisk_elements_with_no_blank_lines() {
-            let _doc = Parser::default().parse("List\n====\n\n* Foo\n* Boo\n* Blech\n");
-            todo!("assert_xpath: '//ul', output, 1");
-            todo!("assert_xpath: '//ul/li', output, 3");
+            let doc = Parser::default().parse("== List\n\n* Foo\n* Boo\n* Blech\n");
+
+            assert_xpath(&doc, "//ul", 1);
+            assert_xpath(&doc, "//ul/li", 3);
         }
 
         #[test]
-        #[ignore]
         fn indented_asterisk_elements_using_spaces() {
-            let _doc = Parser::default().parse(" * Foo\n * Boo\n * Blech\n");
-            todo!("assert_xpath: '//ul', output, 1");
-            todo!("assert_xpath: '//ul/li', output, 3");
+            let doc = Parser::default().parse(" * Foo\n * Boo\n * Blech\n");
+
+            assert_xpath(&doc, "//ul", 1);
+            assert_xpath(&doc, "//ul/li", 3);
         }
 
         #[test]
-        #[ignore]
         fn indented_unicode_bullet_elements_using_spaces() {
-            let _doc = Parser::default().parse(" • Foo\n • Boo\n • Blech\n");
-            todo!("assert_xpath: '//ul', output, 1");
-            todo!("assert_xpath: '//ul/li', output, 3");
+            let doc = Parser::default().parse(" • Foo\n • Boo\n • Blech\n");
+
+            assert_xpath(&doc, "//ul", 1);
+            assert_xpath(&doc, "//ul/li", 3);
         }
 
         #[test]
-        #[ignore]
         fn indented_asterisk_elements_using_tabs() {
-            let _doc = Parser::default().parse("\t*\tFoo\n\t*\tBoo\n\t*\tBlech\n");
-            todo!("assert_xpath: '//ul', output, 1");
-            todo!("assert_xpath: '//ul/li', output, 3");
+            let doc = Parser::default().parse("\t*\tFoo\n\t*\tBoo\n\t*\tBlech\n");
+
+            assert_xpath(&doc, "//ul", 1);
+            assert_xpath(&doc, "//ul/li", 3);
         }
 
         #[test]
-        #[ignore]
+        #[ignore] // SKIP test until we port CSS class selectors
         fn should_represent_block_style_as_style_class() {
             let _doc = Parser::default().parse("[disc]\n* a\n* b\n* c\n");
             todo!("assert_css: '.ulist.disc', output, 1");
@@ -448,68 +621,72 @@ mod bulleted_lists {
         }
 
         #[test]
-        #[ignore]
         fn asterisk_elements_separated_by_blank_lines_should_merge_lists() {
-            let _doc = Parser::default().parse("List\n====\n\n* Foo\n\n* Boo\n\n\n* Blech\n");
-            todo!("assert_xpath: '//ul', output, 1");
-            todo!("assert_xpath: '//ul/li', output, 3");
+            let doc = Parser::default().parse("== List\n\n* Foo\n\n* Boo\n\n\n* Blech\n");
+
+            assert_xpath(&doc, "//ul", 1);
+            assert_xpath(&doc, "//ul/li", 3);
         }
 
         #[test]
-        #[ignore]
         fn asterisk_elements_with_interspersed_line_comments_should_be_skipped_and_not_break_list()
         {
-            let _doc = Parser::default().parse("== List\n\n* Foo\n// line comment\n// another line comment\n* Boo\n// line comment\nmore text\n// another line comment\n* Blech\n");
-            todo!("assert_xpath: '//ul', output, 1");
-            todo!("assert_xpath: '//ul/li', output, 3");
-            todo!("assert_xpath: '(//ul/li)[2]/p[text()=\"Boo\\nmore text\"]', output, 1");
+            let doc = Parser::default().parse("== List\n\n* Foo\n// line comment\n// another line comment\n* Boo\n// line comment\nmore text\n// another line comment\n* Blech\n");
+
+            assert_xpath(&doc, "//ul", 1);
+            assert_xpath(&doc, "//ul/li", 3);
+
+            assert_xpath(&doc, "(//ul/li)[2]/p[text()=\"Boo\nmore text\"]", 1);
         }
 
         #[test]
-        #[ignore]
         fn asterisk_elements_separated_by_a_line_comment_offset_by_blank_lines_should_not_merge_lists()
          {
-            let _doc = Parser::default().parse("List\n====\n\n* Foo\n* Boo\n\n//\n\n* Blech\n");
-            todo!("assert_xpath: '//ul', output, 2");
-            todo!("assert_xpath: '(//ul)[1]/li', output, 2");
-            todo!("assert_xpath: '(//ul)[2]/li', output, 1");
+            let doc = Parser::default().parse("== List\n\n* Foo\n* Boo\n\n//\n\n* Blech\n");
+
+            assert_xpath(&doc, "//ul", 2);
+            assert_xpath(&doc, "(//ul)[1]/li", 2);
+            assert_xpath(&doc, "(//ul)[2]/li", 1);
         }
 
         #[test]
-        #[ignore]
         fn asterisk_elements_separated_by_a_block_title_offset_by_a_blank_line_should_not_merge_lists()
          {
-            let _doc = Parser::default().parse("List\n====\n\n* Foo\n* Boo\n\n.Also\n* Blech\n");
-            todo!("assert_xpath: '//ul', output, 2");
-            todo!("assert_xpath: '(//ul)[1]/li', output, 2");
-            todo!("assert_xpath: '(//ul)[2]/li', output, 1");
-            todo!(
-                "assert_xpath: '(//ul)[2]/preceding-sibling::*[@class = \"title\"][text() = \"Also\"]', output, 1"
+            let doc = Parser::default().parse("List\n====\n\n* Foo\n* Boo\n\n.Also\n* Blech\n");
+
+            assert_xpath(&doc, "//ul", 2);
+            assert_xpath(&doc, "(//ul)[1]/li", 2);
+            assert_xpath(&doc, "(//ul)[2]/li", 1);
+
+            assert_xpath(
+                &doc,
+                "(//ul)[2]/preceding-sibling::*[@class = \"title\"][text() = \"Also\"]",
+                1,
             );
         }
 
         #[test]
-        #[ignore]
         fn asterisk_elements_separated_by_an_attribute_entry_offset_by_a_blank_line_should_not_merge_lists()
          {
-            let _doc = Parser::default().parse("== List\n\n* Foo\n* Boo\n\n:foo: bar\n* Blech\n");
-            todo!("assert_xpath: '//ul', output, 2");
-            todo!("assert_xpath: '(//ul)[1]/li', output, 2");
-            todo!("assert_xpath: '(//ul)[2]/li', output, 1");
+            let doc = Parser::default().parse("== List\n\n* Foo\n* Boo\n\n:foo: bar\n* Blech\n");
+
+            assert_xpath(&doc, "//ul", 2);
+            assert_xpath(&doc, "(//ul)[1]/li", 2);
+            assert_xpath(&doc, "(//ul)[2]/li", 1);
         }
 
         #[test]
-        #[ignore]
         fn list_should_terminate_before_next_lower_section_heading() {
-            let _doc = Parser::default()
-                .parse("List\n====\n\n* first\nitem\n* second\nitem\n\n== Section\n");
-            todo!("assert_xpath: '//ul', output, 1");
-            todo!("assert_xpath: '//ul/li', output, 2");
-            todo!("assert_xpath: '//h2[text() = \"Section\"]', output, 1");
+            let doc =
+                Parser::default().parse("== List\n\n* first\nitem\n* second\nitem\n\n== Section\n");
+
+            assert_xpath(&doc, "//ul", 1);
+            assert_xpath(&doc, "//ul/li", 2);
+            assert_xpath(&doc, "//h2[text() = \"Section\"]", 1);
         }
 
         #[test]
-        #[ignore]
+        #[ignore] // SKIP test until we port block anchor syntax
         fn list_should_terminate_before_next_lower_section_heading_with_implicit_id() {
             let _doc = Parser::default()
                 .parse("List\n====\n\n* first\nitem\n* second\nitem\n\n[[sec]]\n== Section\n");
@@ -519,7 +696,7 @@ mod bulleted_lists {
         }
 
         #[test]
-        #[ignore]
+        #[ignore] // SKIP test until we do CSS immediate child selectors
         fn should_not_find_section_title_immediately_below_last_list_item() {
             let _doc = Parser::default().parse("* first\n* second\n== Not a section\n");
             todo!("assert_css: 'ul', output, 1");
@@ -530,7 +707,7 @@ mod bulleted_lists {
         }
 
         #[test]
-        #[ignore]
+        #[ignore] // SKIP until we understand how "with line separator" gets inserted
         fn should_match_trailing_line_separator_in_text_of_list_item() {
             let _doc = Parser::default().parse("* a\n* b\u{2028}\n* c");
             todo!("assert_css: 'li', output, 3");
@@ -538,7 +715,7 @@ mod bulleted_lists {
         }
 
         #[test]
-        #[ignore]
+        #[ignore] // SKIP until we understand how "with line separator" gets inserted
         fn should_match_line_separator_in_text_of_list_item() {
             let _doc = Parser::default().parse("* a\n* b\u{2028}b\n* c");
             todo!("assert_css: 'li', output, 3");
