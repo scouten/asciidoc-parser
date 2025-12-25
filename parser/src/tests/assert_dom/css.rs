@@ -40,10 +40,10 @@ fn query_descendant_or_self<'a>(node: &'a VirtualNode, pattern: &str) -> Vec<&'a
         // For each matching node, query its children with the rest of the path.
         let mut final_results = Vec::new();
         for matched_node in results {
-            // TO DO: Look at xpath.rs's equivalent function for how to handle direct-child
-            // pattern.
-            let descendants = query_descendant_or_self(matched_node, rest.trim());
-            final_results.extend(descendants);
+            for child in &matched_node.children {
+                let descendants = query_descendant_or_self(child, rest.trim());
+                final_results.extend(descendants);
+            }
         }
         final_results
     } else {

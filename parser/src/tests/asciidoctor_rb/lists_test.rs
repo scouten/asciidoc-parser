@@ -148,11 +148,11 @@ mod bulleted_lists {
         }
 
         #[test]
-        #[ignore]
         fn a_list_item_with_a_nested_marker_terminates_non_indented_paragraph_for_text_of_list_item()
          {
-            let _doc = Parser::default().parse("- Foo\nBar\n* Foo\n");
-            todo!("assert_css: 'ul ul', output, 1");
+            let doc = Parser::default().parse("- Foo\nBar\n* Foo\n");
+
+            assert_css(&doc, "ul ul", 1);
             todo!("refute_includes: output, '* Foo'");
         }
 
