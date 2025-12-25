@@ -7,8 +7,8 @@
 use crate::{
     Document,
     blocks::{
-        Block, Break, CompoundDelimitedBlock, IsBlock, ListBlock, ListItem, MediaBlock, Preamble,
-        RawDelimitedBlock, SectionBlock, SimpleBlock,
+        Block, Break, CompoundDelimitedBlock, IsBlock, ListBlock, ListItem, ListType, MediaBlock,
+        Preamble, RawDelimitedBlock, SectionBlock, SimpleBlock,
     },
 };
 
@@ -205,13 +205,10 @@ fn simple_block_to_node<'a>(block: &'a SimpleBlock<'a>) -> VirtualNode {
 }
 
 fn list_block_to_node<'a>(list: &'a ListBlock<'a>) -> VirtualNode {
-    let context = list.raw_context();
-
-    let (list_tag, base_class) = match context.as_ref() {
-        "ulist" => ("ul", "ulist"),
-        "olist" => ("ol", "olist"),
-        "dlist" => ("dl", "dlist"),
-        _ => ("ul", "ulist"), // Fallback.
+    let (list_tag, base_class) = match list.type_() {
+        ListType::Unordered => ("ul", "ulist"),
+        ListType::Ordered => ("ol", "olist"),
+        ListType::Description => ("dl", "dlist"),
     };
 
     let mut list_element = VirtualNode::new(list_tag);
