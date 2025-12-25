@@ -35,9 +35,6 @@ pub(crate) fn assert_xpath(doc: &Document, xpath: &str, expected_count: usize) {
 
 /// Asserts that a CSS selector matches exactly the expected number of nodes.
 ///
-/// Currently this is an alias for `assert_xpath` since our query engine
-/// supports both XPath and CSS-style selectors.
-///
 /// # Panics
 ///
 /// Panics if the number of matches doesn't equal `expected_count`.
