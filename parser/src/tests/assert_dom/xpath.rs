@@ -1,7 +1,7 @@
 //! XPath-like query support for Virtual DOM nodes.
 //!
 //! This module provides a minimal XPath query engine for testing purposes.
-//! It supports a subset of XPath syntax commonly used in test assertions.
+//! It supports a subset of XPath syntax used in test assertions.
 
 use crate::tests::assert_dom::virtual_dom::VirtualNode;
 
