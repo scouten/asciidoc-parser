@@ -25,6 +25,17 @@ pub trait IsBlock<'src>: Debug + Eq + PartialEq {
     /// Returns the [`ContentModel`] for this block.
     fn content_model(&self) -> ContentModel;
 
+    /// Returns the rendered content for this block, if any.
+    ///
+    /// Some blocks (especially compound blocks) do not directly contain
+    /// content. In such cases, this function will return `None`.
+    ///
+    /// This content will contain the text _after_ substitutions have been
+    /// applied.
+    fn rendered_content(&'src self) -> Option<&'src str> {
+        None
+    }
+
     /// Returns the resolved context for this block.
     ///
     /// A block’s context is also sometimes referred to as a name, such as an
