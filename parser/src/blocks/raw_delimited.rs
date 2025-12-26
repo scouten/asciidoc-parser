@@ -68,8 +68,9 @@ impl<'src> RawDelimitedBlock<'src> {
             return None;
         }
 
-        let (content_model, context, mut substitution_group) =
-            match delimiter.item.data().split_at(4).0 {
+        let (content_model, context, mut substitution_group) = {
+            let first_four: String = delimiter.item.data().chars().take(4).collect();
+            match first_four.as_str() {
                 "////" => (ContentModel::Raw, "comment", SubstitutionGroup::None),
                 "----" => (
                     ContentModel::Verbatim,
@@ -83,7 +84,8 @@ impl<'src> RawDelimitedBlock<'src> {
                 ),
                 "++++" => (ContentModel::Raw, "pass", SubstitutionGroup::Pass),
                 _ => return None,
-            };
+            }
+        };
 
         if !Self::is_valid_delimiter(&delimiter.item) {
             return None;
