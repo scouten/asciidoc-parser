@@ -724,6 +724,7 @@ mod bulleted_lists {
     }
 
     mod lists_with_inline_markup {
+        // SKIP all tests until we can refine the text() query.
         use super::*;
 
         #[test]
