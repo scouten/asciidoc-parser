@@ -811,58 +811,61 @@ mod bulleted_lists {
         use super::*;
 
         #[test]
-        #[ignore]
         fn asterisk_element_mixed_with_dash_elements_should_be_nested() {
-            let _doc = Parser::default().parse("List\n====\n\n- Foo\n* Boo\n- Blech\n");
-            todo!("assert_xpath: '//ul', output, 2");
-            todo!("assert_xpath: '//ul/li', output, 3");
-            todo!("assert_xpath: '(//ul)[1]/li', output, 2");
-            todo!("assert_xpath: '(//ul)[1]/li//ul/li', output, 1");
+            let doc = Parser::default().parse("== List\n\n- Foo\n* Boo\n- Blech\n");
+
+            assert_xpath(&doc, "//ul", 2);
+            assert_xpath(&doc, "//ul/li", 3);
+            assert_xpath(&doc, "(//ul)[1]/li", 2);
+            assert_xpath(&doc, "(//ul)[1]/li//ul/li", 1);
         }
 
         #[test]
-        #[ignore]
         fn dash_element_mixed_with_asterisks_elements_should_be_nested() {
-            let _doc = Parser::default().parse("List\n====\n\n* Foo\n- Boo\n* Blech\n");
-            todo!("assert_xpath: '//ul', output, 2");
-            todo!("assert_xpath: '//ul/li', output, 3");
-            todo!("assert_xpath: '(//ul)[1]/li', output, 2");
-            todo!("assert_xpath: '(//ul)[1]/li//ul/li', output, 1");
+            let doc = Parser::default().parse("List\n====\n\n* Foo\n- Boo\n* Blech\n");
+
+            assert_xpath(&doc, "//ul", 2);
+            assert_xpath(&doc, "//ul/li", 3);
+            assert_xpath(&doc, "(//ul)[1]/li", 2);
+            assert_xpath(&doc, "(//ul)[1]/li//ul/li", 1);
         }
 
         #[test]
-        #[ignore]
         fn lines_prefixed_with_alternating_list_markers_separated_by_blank_lines_should_be_nested()
         {
-            let _doc = Parser::default().parse("List\n====\n\n- Foo\n\n* Boo\n\n\n- Blech\n");
-            todo!("assert_xpath: '//ul', output, 2");
-            todo!("assert_xpath: '//ul/li', output, 3");
-            todo!("assert_xpath: '(//ul)[1]/li', output, 2");
-            todo!("assert_xpath: '(//ul)[1]/li//ul/li', output, 1");
+            let doc = Parser::default().parse("List\n====\n\n- Foo\n\n* Boo\n\n\n- Blech\n");
+
+            assert_xpath(&doc, "//ul", 2);
+            assert_xpath(&doc, "//ul/li", 3);
+            assert_xpath(&doc, "(//ul)[1]/li", 2);
+            assert_xpath(&doc, "(//ul)[1]/li//ul/li", 1);
         }
 
         #[test]
-        #[ignore]
         fn nested_elements_2_with_asterisks() {
-            let _doc = Parser::default().parse("List\n====\n\n* Foo\n** Boo\n* Blech\n");
-            todo!("assert_xpath: '//ul', output, 2");
-            todo!("assert_xpath: '//ul/li', output, 3");
-            todo!("assert_xpath: '(//ul)[1]/li', output, 2");
-            todo!("assert_xpath: '(//ul)[1]/li//ul/li', output, 1");
+            let doc = Parser::default().parse("List\n====\n\n* Foo\n** Boo\n* Blech\n");
+
+            assert_xpath(&doc, "//ul", 2);
+            assert_xpath(&doc, "//ul/li", 3);
+            assert_xpath(&doc, "(//ul)[1]/li", 2);
+            assert_xpath(&doc, "(//ul)[1]/li//ul/li", 1);
         }
 
         #[test]
         #[ignore]
         fn nested_elements_3_with_asterisks() {
-            let _doc = Parser::default().parse("List\n====\n\n* Foo\n** Boo\n*** Snoo\n* Blech\n");
-            todo!("assert_xpath: '//ul', output, 3");
-            todo!("assert_xpath: '(//ul)[1]/li', output, 2");
-            todo!("assert_xpath: '((//ul)[1]/li//ul)[1]/li', output, 1");
-            todo!("assert_xpath: '(((//ul)[1]/li//ul)[1]/li//ul)[1]/li', output, 1");
+            let doc = Parser::default().parse("List\n====\n\n* Foo\n** Boo\n*** Snoo\n* Blech\n");
+
+            assert_xpath(&doc, "//ul", 3);
+            assert_xpath(&doc, "(//ul)[1]/li", 2);
+
+            // START HERE: Looks like we can't handle double-parenthesized queries.
+            assert_xpath(&doc, "((//ul)[1]/li//ul)[1]/li", 1);
+            assert_xpath(&doc, "(((//ul)[1]/li//ul)[1]/li//ul)[1]/li", 1);
         }
 
         #[test]
-        #[ignore]
+        #[ignore] // SKIP until we can handle nested parentheticals
         fn nested_elements_4_with_asterisks() {
             let _doc = Parser::default()
                 .parse("List\n====\n\n* Foo\n** Boo\n*** Snoo\n**** Froo\n* Blech\n");
@@ -874,7 +877,7 @@ mod bulleted_lists {
         }
 
         #[test]
-        #[ignore]
+        #[ignore] // SKIP until we can handle nested parentheticals
         fn nested_elements_5_with_asterisks() {
             let _doc = Parser::default()
                 .parse("List\n====\n\n* Foo\n** Boo\n*** Snoo\n**** Froo\n***** Groo\n* Blech\n");
@@ -889,25 +892,25 @@ mod bulleted_lists {
         }
 
         #[test]
-        #[ignore]
         fn nested_arbitrary_depth_with_asterisks() {
-            let _doc = Parser::default().parse("* a\n** b\n*** c\n**** d\n***** e\n****** f\n******* g\n******** h\n********* i\n********** j\n*********** k\n************ l\n************* m\n************** n\n*************** o\n**************** p\n***************** q\n****************** r\n******************* s\n******************** t\n********************* u\n********************** v\n*********************** w\n************************ x\n************************* y\n************************** z\n");
-            todo!("refute_includes: output, '*'");
-            todo!("assert_css: 'li', output, 26");
+            let doc = Parser::default().parse("* a\n** b\n*** c\n**** d\n***** e\n****** f\n******* g\n******** h\n********* i\n********** j\n*********** k\n************ l\n************* m\n************** n\n*************** o\n**************** p\n***************** q\n****************** r\n******************* s\n******************** t\n********************* u\n********************** v\n*********************** w\n************************ x\n************************* y\n************************** z\n");
+
+            refute_output_contains(&doc, "*");
+            assert_css(&doc, "li", 26);
         }
 
         #[test]
-        #[ignore]
+        #[ignore] // SKIP until we handle doc.find_by
         fn level_of_unordered_list_should_match_section_level() {
             let _doc = Parser::default().parse("== Parent Section\n\n* item 1.1\n ** item 2.1\n  *** item 3.1\n ** item 2.2\n* item 1.2\n\n=== Nested Section\n\n* item 1.1\n");
             todo!("doc.find_by context: :ulist level checks");
         }
 
         #[test]
-        #[ignore]
         fn does_not_recognize_lists_with_repeating_unicode_bullets() {
-            let _doc = Parser::default().parse("•• Boo");
-            todo!("assert_xpath: '//ul', output, 0");
+            let doc = Parser::default().parse("•• Boo");
+
+            assert_xpath(&doc, "//ul", 0);
             todo!("assert_includes: output, '•'");
         }
 
