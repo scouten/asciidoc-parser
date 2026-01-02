@@ -414,16 +414,20 @@ mod bulleted_lists {
         }
 
         #[test]
-        #[ignore] // SKIP until we can port first-of-type selector
+        #[ignore] // TODO: XPath assertions fail - parser doesn't generate literal blocks correctly
         fn should_escape_special_characters_in_all_literal_paragraphs_attached_to_list_item() {
-            let _doc = Parser::default().parse("* first item\n\n  <code>text</code>\n\n  more <code>text</code>\n\n* second item\n");
-            todo!("assert_css: 'li', output, 2");
-            todo!("assert_css: 'code', output, 0");
-            todo!("assert_css: 'li:first-of-type > *', output, 3");
-            todo!("assert_css: 'li:first-of-type pre', output, 2");
-            todo!("assert_xpath: '((//li)[1]//pre)[1][text()=\"<code>text</code>\"]', output, 1");
-            todo!(
-                "assert_xpath: '((//li)[1]//pre)[2][text()=\"more <code>text</code>\"]', output, 1"
+            let doc = Parser::default().parse("* first item\n\n  <code>text</code>\n\n  more <code>text</code>\n\n* second item\n");
+
+            assert_css(&doc, "li", 2);
+            assert_css(&doc, "code", 0);
+            assert_css(&doc, "li:first-of-type > *", 3);
+            assert_css(&doc, "li:first-of-type pre", 2);
+            assert_xpath(&doc, "((//li)[1]//pre)[1][text()=\"<code>text</code>\"]", 1);
+
+            assert_xpath(
+                &doc,
+                "((//li)[1]//pre)[2][text()=\"more <code>text</code>\"]",
+                1,
             );
         }
 
