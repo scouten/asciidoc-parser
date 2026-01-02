@@ -89,6 +89,7 @@ fn simplest_section_block() {
         .unwrap();
 
     assert_eq!(mi.item.content_model(), ContentModel::Compound);
+    assert!(mi.item.rendered_content().is_none());
     assert_eq!(mi.item.raw_context().deref(), "section");
     assert_eq!(mi.item.resolved_context().deref(), "section");
     assert!(mi.item.declared_style().is_none());
@@ -155,6 +156,7 @@ fn has_child_block() {
         .unwrap();
 
     assert_eq!(mi.item.content_model(), ContentModel::Compound);
+    assert!(mi.item.rendered_content().is_none());
     assert_eq!(mi.item.raw_context().deref(), "section");
     assert_eq!(mi.item.resolved_context().deref(), "section");
     assert!(mi.item.declared_style().is_none());
@@ -285,6 +287,7 @@ fn title() {
     .unwrap();
 
     assert_eq!(mi.item.content_model(), ContentModel::Compound);
+    assert!(mi.item.rendered_content().is_none());
     assert_eq!(mi.item.raw_context().deref(), "section");
     assert_eq!(mi.item.resolved_context().deref(), "section");
     assert!(mi.item.declared_style().is_none());

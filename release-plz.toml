@@ -34,7 +34,6 @@ commit_parsers = [
 
 [workspace]
 dependencies_update = true
-features_always_increment_minor = true
 pr_labels = ["release"]
 release_always = false
 release_commits = "^(feat|fix|update|doc)[(:]"

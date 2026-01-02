@@ -92,6 +92,7 @@ fn thematic_break_triple_apostrophe() {
     );
 
     assert_eq!(mi.item.content_model(), ContentModel::Empty);
+    assert!(mi.item.rendered_content().is_none());
     assert_eq!(mi.item.raw_context().deref(), "thematic_break");
     assert!(mi.item.nested_blocks().next().is_none());
     assert!(mi.item.title_source().is_none());
@@ -148,6 +149,7 @@ fn thematic_break_triple_hyphen() {
     );
 
     assert_eq!(mi.item.content_model(), ContentModel::Empty);
+    assert!(mi.item.rendered_content().is_none());
     assert_eq!(mi.item.raw_context().deref(), "thematic_break");
 }
 
@@ -177,6 +179,7 @@ fn thematic_break_spaced_hyphen() {
     );
 
     assert_eq!(mi.item.content_model(), ContentModel::Empty);
+    assert!(mi.item.rendered_content().is_none());
     assert_eq!(mi.item.raw_context().deref(), "thematic_break");
 }
 
@@ -206,6 +209,7 @@ fn thematic_break_triple_asterisk() {
     );
 
     assert_eq!(mi.item.content_model(), ContentModel::Empty);
+    assert!(mi.item.rendered_content().is_none());
     assert_eq!(mi.item.raw_context().deref(), "thematic_break");
 }
 
@@ -235,6 +239,7 @@ fn thematic_break_spaced_asterisk() {
     );
 
     assert_eq!(mi.item.content_model(), ContentModel::Empty);
+    assert!(mi.item.rendered_content().is_none());
     assert_eq!(mi.item.raw_context().deref(), "thematic_break");
 }
 
@@ -274,6 +279,7 @@ fn page_break() {
     );
 
     assert_eq!(mi.item.content_model(), ContentModel::Empty);
+    assert!(mi.item.rendered_content().is_none());
     assert_eq!(mi.item.raw_context().deref(), "page_break");
     assert!(mi.item.nested_blocks().next().is_none());
     assert!(mi.item.title_source().is_none());

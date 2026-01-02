@@ -171,6 +171,10 @@ impl<'src> IsBlock<'src> for RawDelimitedBlock<'src> {
         self.content_model
     }
 
+    fn rendered_content(&self) -> Option<&str> {
+        Some(self.content.rendered())
+    }
+
     fn raw_context(&self) -> CowStr<'src> {
         self.context.clone()
     }
@@ -495,6 +499,7 @@ mod tests {
             );
 
             assert_eq!(mi.item.content_model(), ContentModel::Raw);
+            assert_eq!(mi.item.rendered_content().unwrap(), "");
             assert_eq!(mi.item.raw_context().as_ref(), "comment");
             assert_eq!(mi.item.resolved_context().as_ref(), "comment");
             assert!(mi.item.declared_style().is_none());
@@ -552,6 +557,7 @@ mod tests {
             );
 
             assert_eq!(mi.item.content_model(), ContentModel::Raw);
+            assert_eq!(mi.item.rendered_content().unwrap(), "line1  \nline2");
             assert_eq!(mi.item.raw_context().as_ref(), "comment");
             assert_eq!(mi.item.resolved_context().as_ref(), "comment");
             assert!(mi.item.declared_style().is_none());

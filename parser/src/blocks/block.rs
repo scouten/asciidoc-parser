@@ -471,6 +471,19 @@ impl<'src> IsBlock<'src> for Block<'src> {
         }
     }
 
+    fn rendered_content(&'src self) -> Option<&'src str> {
+        match self {
+            Self::Simple(b) => b.rendered_content(),
+            Self::Media(b) => b.rendered_content(),
+            Self::Section(b) => b.rendered_content(),
+            Self::RawDelimited(b) => b.rendered_content(),
+            Self::CompoundDelimited(b) => b.rendered_content(),
+            Self::Preamble(b) => b.rendered_content(),
+            Self::Break(b) => b.rendered_content(),
+            Self::DocumentAttribute(b) => b.rendered_content(),
+        }
+    }
+
     fn raw_context(&self) -> CowStr<'src> {
         match self {
             Self::Simple(b) => b.raw_context(),

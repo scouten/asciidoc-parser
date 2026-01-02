@@ -211,6 +211,7 @@ mod tests {
         );
 
         assert_eq!(preamble.content_model(), ContentModel::Compound);
+        assert!(preamble.rendered_content().is_none());
         assert_eq!(preamble.raw_context().as_ref(), "preamble");
         assert_eq!(preamble.resolved_context().as_ref(), "preamble");
         assert!(preamble.declared_style().is_none());
