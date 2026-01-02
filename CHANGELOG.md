@@ -5,6 +5,21 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.14.1](https://github.com/scouten/asciidoc-parser/compare/v0.14.0...v0.14.1)
+_02 January 2026_
+
+### Added
+
+* Add new method `IsBlock::rendered_content` ([#459](https://github.com/scouten/asciidoc-parser/pull/459))
+
+### Other
+
+* Add comment about why the end of this page is non-normative
+* Fix SDD white space
+* Fix extra SDD quotation
+* Fix SDD citation
+* Update SDD to match spec updates
+
 ## [0.14.0](https://github.com/scouten/asciidoc-parser/compare/v0.13.1...v0.14.0)
 _08 December 2025_
 
