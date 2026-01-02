@@ -75,12 +75,10 @@ pub(crate) fn assert_css(doc: &Document, selector: &str, expected_count: usize) 
 /// refute_output_contains(&doc, "item"); // will panic
 /// refute_output_contains(&doc, "nonsense"); // will not panic
 /// ```
-#[allow(unused)]
 pub(crate) fn refute_output_contains<'src>(doc: &'src Document<'src>, text: &str) {
     refute_block_contains(doc, text);
 }
 
-#[allow(unused)]
 fn refute_block_contains<'src, B: IsBlock<'src>>(block: &'src B, text: &str) {
     dbg!(&block);
     if let Some(content) = block.rendered_content() {
