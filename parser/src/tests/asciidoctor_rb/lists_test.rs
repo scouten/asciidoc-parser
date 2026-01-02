@@ -809,14 +809,14 @@ mod bulleted_lists {
         }
 
         #[test]
-        #[ignore]
         fn attribute_substitutions() {
-            let _doc = Parser::default()
+            let doc = Parser::default()
                 .parse("List\n====\n:foo: bar\n\n- side a {vbar} side b\n- Take me to a {foo}.\n");
-            todo!("assert_xpath: '//ul', output, 1");
-            todo!("assert_xpath: '//ul/li', output, 2");
-            todo!("assert_xpath: '(//ul/li)[1]//p[text() = \"side a | side b\"]', output, 1");
-            todo!("assert_xpath: '(//ul/li)[2]//p[text() = \"Take me to a bar.\"]', output, 1");
+
+            assert_xpath(&doc, "//ul", 1);
+            assert_xpath(&doc, "//ul/li", 2);
+            assert_xpath(&doc, "(//ul/li)[1]//p[text() = \"side a | side b\"]", 1);
+            assert_xpath(&doc, "(//ul/li)[2]//p[text() = \"Take me to a bar.\"]", 1);
         }
 
         #[test]
