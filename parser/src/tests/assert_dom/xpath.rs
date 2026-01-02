@@ -264,22 +264,60 @@ fn query_from_root<'a>(node: &'a VirtualNode, pattern: &str) -> Vec<&'a VirtualN
 
         // Check if rest is an axis specifier.
         if let Some(axis_rest) = rest.strip_prefix("following-sibling::") {
+            // Parse the axis_rest to see if there's a continuation after the axis.
+            let (axis_selector, continuation) = if let Some(slash_pos) = axis_rest.find('/') {
+                (&axis_rest[..slash_pos], Some(&axis_rest[slash_pos..]))
+            } else {
+                (axis_rest.trim(), None)
+            };
+
             let mut final_results = Vec::new();
             for child in &node.children {
                 if matches_selector(child, first) {
-                    let siblings = find_following_siblings(node, child, axis_rest.trim());
-                    final_results.extend(siblings);
+                    let siblings = find_following_siblings(node, child, axis_selector);
+
+                    // If there's a continuation, query each sibling.
+                    if let Some(cont) = continuation {
+                        for sibling in siblings {
+                            if cont.starts_with("//") {
+                                final_results.extend(query_descendant_or_self(sibling, &cont[2..]));
+                            } else if cont.starts_with('/') {
+                                final_results.extend(query_from_root(sibling, &cont[1..]));
+                            }
+                        }
+                    } else {
+                        final_results.extend(siblings);
+                    }
                 }
             }
             return final_results;
         }
 
         if let Some(axis_rest) = rest.strip_prefix("preceding-sibling::") {
+            // Parse the axis_rest to see if there's a continuation after the axis.
+            let (axis_selector, continuation) = if let Some(slash_pos) = axis_rest.find('/') {
+                (&axis_rest[..slash_pos], Some(&axis_rest[slash_pos..]))
+            } else {
+                (axis_rest.trim(), None)
+            };
+
             let mut final_results = Vec::new();
             for child in &node.children {
                 if matches_selector(child, first) {
-                    let siblings = find_preceding_siblings(node, child, axis_rest.trim());
-                    final_results.extend(siblings);
+                    let siblings = find_preceding_siblings(node, child, axis_selector);
+
+                    // If there's a continuation, query each sibling.
+                    if let Some(cont) = continuation {
+                        for sibling in siblings {
+                            if cont.starts_with("//") {
+                                final_results.extend(query_descendant_or_self(sibling, &cont[2..]));
+                            } else if cont.starts_with('/') {
+                                final_results.extend(query_from_root(sibling, &cont[1..]));
+                            }
+                        }
+                    } else {
+                        final_results.extend(siblings);
+                    }
                 }
             }
             return final_results;
