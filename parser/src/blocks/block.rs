@@ -476,6 +476,8 @@ impl<'src> IsBlock<'src> for Block<'src> {
             Self::Simple(b) => b.rendered_content(),
             Self::Media(b) => b.rendered_content(),
             Self::Section(b) => b.rendered_content(),
+            Self::List(b) => b.rendered_content(),
+            Self::ListItem(b) => b.rendered_content(),
             Self::RawDelimited(b) => b.rendered_content(),
             Self::CompoundDelimited(b) => b.rendered_content(),
             Self::Preamble(b) => b.rendered_content(),
