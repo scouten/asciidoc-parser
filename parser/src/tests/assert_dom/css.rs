@@ -153,27 +153,51 @@ fn matches_selector_with_context(
         (selector_without_pseudo, None)
     };
 
+    // Split tag from class selectors for patterns like `ul.disc` or
+    // `div.ulist.disc`. After this split:
+    // - `tag_part` will be the tag name (or empty if selector starts with `.`)
+    // - `class_selectors` will be the class portion (e.g., `.disc` or
+    //   `.ulist.disc`)
+    let (tag_part, class_selectors) = if let Some(dot_pos) = base_selector.find('.') {
+        (&base_selector[..dot_pos], Some(&base_selector[dot_pos..]))
+    } else {
+        (base_selector, None)
+    };
+
     // Wildcard selector: matches any element.
-    if base_selector == "*" {
+    if tag_part == "*" {
         if let Some(predicate) = predicate {
-            return matches_predicate(node, predicate);
+            if !matches_predicate(node, predicate) {
+                return false;
+            }
         }
-        return true;
+        // Fall through to check class selectors if present.
+    } else {
+        // CSS-style ID selector: `#id`
+        if let Some(id) = tag_part.strip_prefix('#') {
+            if node.id.as_deref() != Some(id) {
+                return false;
+            }
+        } else if !tag_part.is_empty() {
+            // Tag name must match.
+            if node.tag != tag_part {
+                return false;
+            }
+        }
     }
 
-    // CSS-style class selector: `.classname`
-    if let Some(class_name) = base_selector.strip_prefix('.') {
-        return node.classes.iter().any(|c| c == class_name);
-    }
+    // Check class selectors if present.
+    if let Some(classes) = class_selectors {
+        // Handle multiple class selectors like `.disc` or `.ulist.disc`.
+        let class_names: Vec<&str> = classes[1..].split('.').filter(|s| !s.is_empty()).collect();
 
-    // CSS-style ID selector: `#id`
-    if let Some(id) = base_selector.strip_prefix('#') {
-        return node.id.as_deref() == Some(id);
-    }
-
-    // Tag name match.
-    if !base_selector.is_empty() && node.tag != base_selector {
-        return false;
+        // All specified classes must be present.
+        if !class_names
+            .iter()
+            .all(|class_name| node.classes.iter().any(|c| c == class_name))
+        {
+            return false;
+        }
     }
 
     // Handle predicates if present.
