@@ -622,6 +622,7 @@ mod tests {
         );
 
         assert_eq!(block.content_model(), ContentModel::Empty);
+        assert!(block.rendered_content().is_none());
         assert_eq!(block.raw_context().deref(), "attribute");
         assert!(block.nested_blocks().next().is_none());
         assert!(block.title_source().is_none());

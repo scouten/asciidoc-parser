@@ -91,6 +91,7 @@ fn single_line() {
     );
 
     assert_eq!(mi.item.content_model(), ContentModel::Simple);
+    assert_eq!(mi.item.rendered_content(), Some("abc"));
     assert_eq!(mi.item.raw_context().deref(), "paragraph");
     assert_eq!(mi.item.resolved_context().deref(), "paragraph");
     assert!(mi.item.declared_style().is_none());
@@ -512,6 +513,10 @@ fn with_block_anchor_only() {
     );
 
     assert_eq!(mi.item.content_model(), ContentModel::Simple);
+    assert_eq!(
+        mi.item.rendered_content(),
+        Some("This paragraph gets a lot of attention.")
+    );
     assert_eq!(mi.item.raw_context().deref(), "paragraph");
     assert_eq!(mi.item.resolved_context().deref(), "paragraph");
     assert!(mi.item.declared_style().is_none());
@@ -609,6 +614,10 @@ fn with_block_anchor_trailing_comma() {
     );
 
     assert_eq!(mi.item.content_model(), ContentModel::Simple);
+    assert_eq!(
+        mi.item.rendered_content(),
+        Some("[[notice,]]\nThis paragraph gets a lot of attention.")
+    );
     assert_eq!(mi.item.raw_context().deref(), "paragraph");
     assert_eq!(mi.item.resolved_context().deref(), "paragraph");
     assert!(mi.item.declared_style().is_none());
@@ -693,6 +702,10 @@ fn with_block_anchor_and_reftext() {
     );
 
     assert_eq!(mi.item.content_model(), ContentModel::Simple);
+    assert_eq!(
+        mi.item.rendered_content(),
+        Some("This paragraph gets a lot of attention.")
+    );
     assert_eq!(mi.item.raw_context().deref(), "paragraph");
     assert_eq!(mi.item.resolved_context().deref(), "paragraph");
     assert!(mi.item.declared_style().is_none());
@@ -799,6 +812,10 @@ fn err_empty_block_anchor() {
     );
 
     assert_eq!(mi.item.content_model(), ContentModel::Simple);
+    assert_eq!(
+        mi.item.rendered_content(),
+        Some("[[]]\nThis paragraph gets a lot of attention.")
+    );
     assert_eq!(mi.item.raw_context().deref(), "paragraph");
     assert_eq!(mi.item.resolved_context().deref(), "paragraph");
     assert!(mi.item.declared_style().is_none());
@@ -886,6 +903,10 @@ fn err_invalid_block_anchor() {
     );
 
     assert_eq!(mi.item.content_model(), ContentModel::Simple);
+    assert_eq!(
+        mi.item.rendered_content(),
+        Some("[[3 blind mice]]\nThis paragraph gets a lot of attention.")
+    );
     assert_eq!(mi.item.raw_context().deref(), "paragraph");
     assert_eq!(mi.item.resolved_context().deref(), "paragraph");
     assert!(mi.item.declared_style().is_none());
@@ -973,6 +994,10 @@ fn unterminated_block_anchor() {
     );
 
     assert_eq!(mi.item.content_model(), ContentModel::Simple);
+    assert_eq!(
+        mi.item.rendered_content(),
+        Some("This paragraph gets a lot of attention.")
+    );
     assert_eq!(mi.item.raw_context().deref(), "paragraph");
     assert_eq!(mi.item.resolved_context().deref(), "paragraph");
     assert_eq!(mi.item.declared_style().unwrap(), "[notice");

@@ -235,6 +235,10 @@ impl<'src> IsBlock<'src> for SimpleBlock<'src> {
         ContentModel::Simple
     }
 
+    fn rendered_content(&self) -> Option<&str> {
+        Some(self.content.rendered())
+    }
+
     fn raw_context(&self) -> CowStr<'src> {
         "paragraph".into()
     }
@@ -341,6 +345,7 @@ mod tests {
         );
 
         assert_eq!(mi.item.content_model(), ContentModel::Simple);
+        assert_eq!(mi.item.rendered_content().unwrap(), "abc");
         assert_eq!(mi.item.raw_context().deref(), "paragraph");
         assert_eq!(mi.item.resolved_context().deref(), "paragraph");
         assert!(mi.item.declared_style().is_none());
@@ -407,6 +412,8 @@ mod tests {
                 offset: 7
             }
         );
+
+        assert_eq!(mi.item.rendered_content().unwrap(), "abc\ndef");
     }
 
     #[test]
@@ -510,6 +517,11 @@ mod tests {
                 col: 1,
                 offset: 28
             }
+        );
+
+        assert_eq!(
+            mi.item.rendered_content().unwrap(),
+            "a<b>c <strong>bold</strong>"
         );
     }
 }
