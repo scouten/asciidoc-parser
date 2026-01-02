@@ -97,6 +97,13 @@ fn query_parenthesized<'a>(root: &'a VirtualNode, xpath: &str) -> Vec<&'a Virtua
 
                 // Continue with the remaining path if any.
                 if !remaining.is_empty() {
+                    // Check if remaining starts with another predicate (e.g., [text()="value"])
+                    if remaining.starts_with('[') {
+                        // Apply the additional predicate(s) to the current results
+                        results.retain(|node| matches_predicate(node, remaining));
+                        return results;
+                    }
+
                     // Check for axis specifiers first.
                     if let Some(axis_rest) = remaining.strip_prefix("/preceding-sibling::") {
                         let mut final_results = Vec::new();
