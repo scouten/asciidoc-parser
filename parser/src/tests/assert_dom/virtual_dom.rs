@@ -244,12 +244,22 @@ fn list_block_to_node<'a>(list: &'a ListBlock<'a>) -> VirtualNode {
 
     let mut list_element = VirtualNode::new(list_tag);
 
+    // Add style class to the list element if present.
+    if let Some(style) = list.declared_style() {
+        list_element = list_element.with_class(style);
+    }
+
     for item in list.nested_blocks() {
         list_element.children.push(item.to_virtual_dom());
     }
 
     // Wrap the list in a div container (matching Asciidoctor's HTML structure).
     let mut wrapper = VirtualNode::new("div").with_class(base_class);
+
+    // Add style class to the wrapper if present.
+    if let Some(style) = list.declared_style() {
+        wrapper = wrapper.with_class(style);
+    }
 
     for role in list.roles() {
         wrapper = wrapper.with_class(role);
