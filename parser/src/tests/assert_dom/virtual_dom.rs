@@ -147,6 +147,11 @@ impl ToVirtualDom for Block<'_> {
     fn to_virtual_dom(&self) -> VirtualNode {
         match self {
             Block::Simple(simple) => {
+                // Comment blocks should not be rendered.
+                if simple.declared_style() == Some("comment") {
+                    return VirtualNode::new("comment");
+                }
+
                 let mut node = simple_block_to_node(simple);
 
                 // Extract text content for paragraphs.
