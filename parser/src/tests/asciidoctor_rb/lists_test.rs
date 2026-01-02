@@ -820,14 +820,14 @@ mod bulleted_lists {
         }
 
         #[test]
-        #[ignore]
         fn leading_dot_is_treated_as_text_not_block_title() {
-            let _doc = Parser::default().parse("* .first\n* .second\n* .third\n");
-            todo!("assert_xpath: '//ul', output, 1");
-            todo!("assert_xpath: '//ul/li', output, 3");
-            todo!("assert_xpath: '(//ul/li)[1]//p[text() = \'.first\']', output, 1");
-            todo!("assert_xpath: '(//ul/li)[2]//p[text() = \'.second\']', output, 1");
-            todo!("assert_xpath: '(//ul/li)[3]//p[text() = \'.third\']', output, 1");
+            let doc = Parser::default().parse("* .first\n* .second\n* .third\n");
+
+            assert_xpath(&doc, "//ul", 1);
+            assert_xpath(&doc, "//ul/li", 3);
+            assert_xpath(&doc, "(//ul/li)[1]//p[text() = \".first\"]", 1);
+            assert_xpath(&doc, "(//ul/li)[2]//p[text() = \".second\"]", 1);
+            assert_xpath(&doc, "(//ul/li)[3]//p[text() = \".third\"]", 1);
         }
 
         #[test]
