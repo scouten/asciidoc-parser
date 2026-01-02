@@ -12,6 +12,18 @@ use crate::{
     },
 };
 
+/// Decodes common HTML entities to their character equivalents.
+///
+/// This simulates what a browser would do when parsing HTML and accessing
+/// text content via JavaScript's `textContent` or XPath's `text()`.
+fn decode_html_entities(s: &str) -> String {
+    s.replace("&lt;", "<")
+        .replace("&gt;", ">")
+        .replace("&amp;", "&")
+        .replace("&quot;", "\"")
+        .replace("&apos;", "'")
+}
+
 /// A virtual DOM node representing an HTML-like element.
 ///
 /// This structure is built from a parsed `Document` and maps AsciiDoc blocks
@@ -66,8 +78,10 @@ impl VirtualNode {
     }
 
     /// Sets the text content of this node.
+    ///
+    /// Decodes HTML entities to match what a browser's text content would show.
     pub fn with_text(mut self, text: impl Into<String>) -> Self {
-        self.text = Some(text.into());
+        self.text = Some(decode_html_entities(&text.into()));
         self
     }
 
