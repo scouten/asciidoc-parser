@@ -431,26 +431,38 @@ mod bulleted_lists {
         }
 
         #[test]
-        #[ignore] // SKIP until we can port following-sibling query
         fn a_literal_paragraph_offset_by_a_blank_line_in_list_content_followed_by_line_with_continuation_is_appended_as_two_blocks()
          {
-            let _doc = Parser::default()
-                .parse("List\n====\n\n- Foo\n\n  literal\n+\npara\n\n- Boo\n- Blech\n");
-            todo!("assert_xpath: '//ul', output, 1");
-            todo!("assert_xpath: '//ul/li', output, 3");
-            todo!("assert_xpath: '(//ul/li)[1]/p[text() = \"Foo\"]', output, 1");
-            todo!("assert_xpath: '(//ul/li)[1]/*[@class=\"literalblock\"]', output, 1");
-            todo!(
-                "assert_xpath: '(//ul/li)[1]/p/following-sibling::*[@class=\"literalblock\"]', output, 1"
+            let doc = Parser::default()
+                .parse("== List\n\n- Foo\n\n  literal\n+\npara\n\n- Boo\n- Blech\n");
+
+            assert_xpath(&doc, "//ul", 1);
+            assert_xpath(&doc, "//ul/li", 3);
+            assert_xpath(&doc, "(//ul/li)[1]/p[text() = \"Foo\"]", 1);
+            assert_xpath(&doc, "(//ul/li)[1]/*[@class=\"literalblock\"]", 1);
+
+            assert_xpath(
+                &doc,
+                "(//ul/li)[1]/p/following-sibling::*[@class=\"literalblock\"]",
+                1,
             );
-            todo!(
-                "assert_xpath: '((//ul/li)[1]/*[@class=\"literalblock\"])[1]//pre[text() = \"literal\"]', output, 1"
+
+            assert_xpath(
+                &doc,
+                "((//ul/li)[1]/*[@class=\"literalblock\"])[1]//pre[text() = \"literal\"]",
+                1,
             );
-            todo!(
-                "assert_xpath: '(//ul/li)[1]/*[@class=\"literalblock\"]/following-sibling::*[@class=\"paragraph\"]', output, 1"
+
+            assert_xpath(
+                &doc,
+                "(//ul/li)[1]/*[@class=\"literalblock\"]/following-sibling::*[@class=\"paragraph\"]",
+                1,
             );
-            todo!(
-                "assert_xpath: '(//ul/li)[1]/*[@class=\"literalblock\"]/following-sibling::*[@class=\"paragraph\"]/p[text()=\"para\"]', output, 1"
+
+            assert_xpath(
+                &doc,
+                "(//ul/li)[1]/*[@class=\"literalblock\"]/following-sibling::*[@class=\"paragraph\"]/p[text()=\"para\"]",
+                1,
             );
         }
 
