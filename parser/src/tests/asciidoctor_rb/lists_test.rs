@@ -594,23 +594,32 @@ mod bulleted_lists {
         }
 
         #[test]
-        #[ignore] // SKIP test for now ... needs following-sibling query
         fn consecutive_literal_paragraph_offset_by_blank_lines_in_list_content_are_appended_as_a_literal_blocks()
          {
-            let _doc = Parser::default()
+            let doc = Parser::default()
                 .parse("List\n====\n\n- Foo\n\n  literal\n\n  more\n  literal\n\n- Boo\n- Blech\n");
-            todo!("assert_xpath: '//ul', output, 1");
-            todo!("assert_xpath: '//ul/li', output, 3");
-            todo!("assert_xpath: '(//ul/li)[1]/p[text() = \"Foo\"]', output, 1");
-            todo!("assert_xpath: '(//ul/li)[1]/*[@class=\"literalblock\"]', output, 2");
-            todo!(
-                "assert_xpath: '(//ul/li)[1]/p/following-sibling::*[@class=\"literalblock\"]', output, 2"
+
+            assert_xpath(&doc, "//ul", 1);
+            assert_xpath(&doc, "//ul/li", 3);
+            assert_xpath(&doc, "(//ul/li)[1]/p[text() = \"Foo\"]", 1);
+            assert_xpath(&doc, "(//ul/li)[1]/*[@class=\"literalblock\"]", 2);
+
+            assert_xpath(
+                &doc,
+                "(//ul/li)[1]/p/following-sibling::*[@class=\"literalblock\"]",
+                2,
             );
-            todo!(
-                "assert_xpath: '((//ul/li)[1]/*[@class=\"literalblock\"])[1]//pre[text()=\"literal\"]', output, 1"
+
+            assert_xpath(
+                &doc,
+                "((//ul/li)[1]/*[@class=\"literalblock\"])[1]//pre[text()=\"literal\"]",
+                1,
             );
-            todo!(
-                "assert_xpath: '((//ul/li)[1]/*[@class=\\'literalblock\\'])[2]//pre[text()=\\'more\\nliteral\\']', output, 1"
+
+            assert_xpath(
+                &doc,
+                "((//ul/li)[1]/*[@class=\"literalblock\"])[2]//pre[text()=\"more\nliteral\"]",
+                1,
             );
         }
 
