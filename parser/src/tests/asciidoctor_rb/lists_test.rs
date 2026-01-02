@@ -678,11 +678,11 @@ mod bulleted_lists {
         }
 
         #[test]
-        #[ignore] // SKIP test until we port CSS class selectors
         fn should_represent_block_style_as_style_class() {
-            let _doc = Parser::default().parse("[disc]\n* a\n* b\n* c\n");
-            todo!("assert_css: '.ulist.disc', output, 1");
-            todo!("assert_css: '.ulist.disc ul.disc', output, 1");
+            let doc = Parser::default().parse("[disc]\n* a\n* b\n* c\n");
+
+            assert_css(&doc, ".ulist.disc", 1);
+            assert_css(&doc, ".ulist.disc ul.disc", 1);
             // NOTE: Ruby test loops over %w(disc square circle), testing each.
         }
 
