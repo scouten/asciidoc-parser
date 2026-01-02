@@ -509,14 +509,17 @@ mod bulleted_lists {
         }
 
         #[test]
-        #[ignore] // SKIP test for now .. direct child syntax
         fn should_continue_to_parse_blocks_attached_by_a_list_continuation_after_block_is_dropped()
         {
-            let _doc = Parser::default().parse(
+            let doc = Parser::default().parse(
                 "* item\n+\nparagraph\n+\n[comment]\ncomment\n+\n====\nexample\n====\n'''\n",
             );
-            todo!("assert_css: 'ul > li > .paragraph', output, 1");
-            todo!("assert_css: 'ul > li > .exampleblock', output, 1");
+
+            let vdom = doc.to_virtual_dom();
+            dbg!(&vdom);
+
+            assert_css(&doc, "ul > li > .paragraph", 1);
+            assert_css(&doc, "ul > li > .exampleblock", 1);
         }
 
         #[test]
