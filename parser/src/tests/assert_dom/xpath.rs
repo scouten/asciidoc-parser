@@ -18,6 +18,7 @@ use crate::tests::assert_dom::virtual_dom::VirtualNode;
 /// - `//*` or `*` - Match any element
 /// - `(//tag)[N]/child` - Apply predicate to subquery results
 /// - `//tag/preceding-sibling::*` - Find preceding siblings of matched elements
+/// - `//tag/following-sibling::*` - Find following siblings of matched elements
 ///
 /// # Example
 ///
@@ -49,10 +50,30 @@ pub(crate) fn query_xpath<'a>(root: &'a VirtualNode, xpath: &str) -> Vec<&'a Vir
     query_descendant_or_self(root, xpath)
 }
 
+/// Finds the matching closing parenthesis for an opening paren at position 0.
+/// Returns the index of the matching ')' or None if not found.
+fn find_matching_paren(s: &str) -> Option<usize> {
+    let mut depth = 0;
+    for (i, ch) in s.chars().enumerate() {
+        match ch {
+            '(' => depth += 1,
+            ')' => {
+                depth -= 1;
+                if depth == 0 {
+                    return Some(i);
+                }
+            }
+            _ => {}
+        }
+    }
+    None
+}
+
 /// Handles parenthesized subqueries like `(//ul)[1]/li`.
 fn query_parenthesized<'a>(root: &'a VirtualNode, xpath: &str) -> Vec<&'a VirtualNode> {
-    // Find the matching closing parenthesis.
-    if let Some(close_paren) = xpath.find(')') {
+    // Find the matching closing parenthesis (handling nested parens).
+    let close_paren = find_matching_paren(xpath);
+    if let Some(close_paren) = close_paren {
         let subquery = &xpath[1..close_paren]; // Extract content between parentheses.
         let rest = &xpath[close_paren + 1..].trim_start(); // Everything after ).
 
@@ -86,6 +107,15 @@ fn query_parenthesized<'a>(root: &'a VirtualNode, xpath: &str) -> Vec<&'a Virtua
                         return final_results;
                     }
 
+                    if let Some(axis_rest) = remaining.strip_prefix("/following-sibling::") {
+                        let mut final_results = Vec::new();
+                        for node in results {
+                            let siblings = find_following_siblings(root, node, axis_rest.trim());
+                            final_results.extend(siblings);
+                        }
+                        return final_results;
+                    }
+
                     let mut final_results = Vec::new();
                     for node in results {
                         if remaining.starts_with('/') && !remaining.starts_with("//") {
@@ -105,6 +135,16 @@ fn query_parenthesized<'a>(root: &'a VirtualNode, xpath: &str) -> Vec<&'a Virtua
                 let mut final_results = Vec::new();
                 for node in results {
                     let siblings = find_preceding_siblings(root, node, axis_rest.trim());
+                    final_results.extend(siblings);
+                }
+                return final_results;
+            }
+
+            // Check if rest is a following-sibling axis.
+            if let Some(axis_rest) = rest.strip_prefix("/following-sibling::") {
+                let mut final_results = Vec::new();
+                for node in results {
+                    let siblings = find_following_siblings(root, node, axis_rest.trim());
                     final_results.extend(siblings);
                 }
                 return final_results;
@@ -138,7 +178,8 @@ fn query_descendant_or_self<'a>(node: &'a VirtualNode, pattern: &str) -> Vec<&'a
         let first = first.trim();
         let rest = rest.trim();
 
-        // Check for axis specifiers like "preceding-sibling::"
+        // Check for axis specifiers like "preceding-sibling::" or
+        // "following-sibling::".
         if let Some(axis_rest) = rest.strip_prefix("preceding-sibling::") {
             // Find all nodes matching first part.
             let mut results = Vec::new();
@@ -149,6 +190,21 @@ fn query_descendant_or_self<'a>(node: &'a VirtualNode, pattern: &str) -> Vec<&'a
             let mut final_results = Vec::new();
             for matched_node in results {
                 let siblings = find_preceding_siblings(node, matched_node, axis_rest.trim());
+                final_results.extend(siblings);
+            }
+            return final_results;
+        }
+
+        if let Some(axis_rest) = rest.strip_prefix("following-sibling::") {
+            // Find all nodes matching first part.
+            let mut results = Vec::new();
+            collect_descendants_matching(node, first, &mut results);
+            results = apply_numeric_predicate(results, first);
+
+            // For each matched node, find its following siblings.
+            let mut final_results = Vec::new();
+            for matched_node in results {
+                let siblings = find_following_siblings(node, matched_node, axis_rest.trim());
                 final_results.extend(siblings);
             }
             return final_results;
@@ -186,12 +242,47 @@ fn query_descendant_or_self<'a>(node: &'a VirtualNode, pattern: &str) -> Vec<&'a
 
 /// Queries from root using direct child selectors.
 fn query_from_root<'a>(node: &'a VirtualNode, pattern: &str) -> Vec<&'a VirtualNode> {
+    // Check for axis specifiers first.
+    if let Some(axis_rest) = pattern.strip_prefix("following-sibling::") {
+        return find_following_siblings(node, node, axis_rest.trim());
+    }
+
+    if let Some(axis_rest) = pattern.strip_prefix("preceding-sibling::") {
+        return find_preceding_siblings(node, node, axis_rest.trim());
+    }
+
     if let Some((first, rest)) = pattern.split_once('/') {
+        let first = first.trim();
+        let rest = rest.trim();
+
+        // Check if rest is an axis specifier.
+        if let Some(axis_rest) = rest.strip_prefix("following-sibling::") {
+            let mut final_results = Vec::new();
+            for child in &node.children {
+                if matches_selector(child, first) {
+                    let siblings = find_following_siblings(node, child, axis_rest.trim());
+                    final_results.extend(siblings);
+                }
+            }
+            return final_results;
+        }
+
+        if let Some(axis_rest) = rest.strip_prefix("preceding-sibling::") {
+            let mut final_results = Vec::new();
+            for child in &node.children {
+                if matches_selector(child, first) {
+                    let siblings = find_preceding_siblings(node, child, axis_rest.trim());
+                    final_results.extend(siblings);
+                }
+            }
+            return final_results;
+        }
+
         let mut results = Vec::new();
 
         for child in &node.children {
-            if matches_selector(child, first.trim()) {
-                if rest.trim().is_empty() {
+            if matches_selector(child, first) {
+                if rest.is_empty() {
                     results.push(child);
                 } else if rest.starts_with('/') {
                     // Continue with descendant-or-self
@@ -201,7 +292,7 @@ fn query_from_root<'a>(node: &'a VirtualNode, pattern: &str) -> Vec<&'a VirtualN
                     ));
                 } else {
                     // Continue with direct children.
-                    results.extend(query_from_root(child, rest.trim()));
+                    results.extend(query_from_root(child, rest));
                 }
             }
         }
@@ -304,6 +395,54 @@ fn apply_numeric_predicate<'a>(
                     return vec![];
                 }
             }
+        }
+    }
+
+    results
+}
+
+/// Finds following siblings of a target node within the tree.
+/// This searches the entire tree starting from root to find the parent of the
+/// target, then returns all siblings that appear after the target.
+fn find_following_siblings<'a>(
+    root: &'a VirtualNode,
+    target: &'a VirtualNode,
+    selector: &str,
+) -> Vec<&'a VirtualNode> {
+    // Helper function to find the parent of a target node.
+    fn find_parent<'a>(
+        node: &'a VirtualNode,
+        target: *const VirtualNode,
+    ) -> Option<&'a VirtualNode> {
+        for child in &node.children {
+            if std::ptr::eq(child as *const _, target) {
+                return Some(node);
+            }
+            if let Some(parent) = find_parent(child, target) {
+                return Some(parent);
+            }
+        }
+        None
+    }
+
+    // Find the parent of the target node.
+    let target_ptr = target as *const VirtualNode;
+    let parent = match find_parent(root, target_ptr) {
+        Some(p) => p,
+        None => return vec![], // Target not found in tree.
+    };
+
+    // Collect all following siblings that match the selector.
+    let mut results = Vec::new();
+    let mut found_target = false;
+    for child in &parent.children {
+        // Start collecting after we've found the target node.
+        if found_target {
+            if matches_selector(child, selector) {
+                results.push(child);
+            }
+        } else if std::ptr::eq(child as *const _, target_ptr) {
+            found_target = true;
         }
     }
 
@@ -834,6 +973,77 @@ mod tests {
             result.len(),
             0,
             "First element should have no preceding siblings"
+        );
+    }
+
+    #[test]
+    fn query_following_sibling_axis() {
+        // Create a simple DOM structure with multiple siblings.
+        let mut root = VirtualNode::new("div").with_class("document");
+        root = root.with_child(VirtualNode::new("p").with_text("First"));
+        root = root.with_child(VirtualNode::new("p").with_text("Second"));
+        root = root.with_child(VirtualNode::new("p").with_text("Third"));
+
+        // Find following siblings of the first paragraph.
+        let result = query_xpath(&root, "//p[1]/following-sibling::p");
+        assert_eq!(result.len(), 2, "Should find 2 following siblings");
+        assert_eq!(result[0].text.as_deref(), Some("Second"));
+        assert_eq!(result[1].text.as_deref(), Some("Third"));
+    }
+
+    #[test]
+    fn query_following_sibling_with_wildcard() {
+        // Create a DOM with mixed element types.
+        let mut root = VirtualNode::new("div").with_class("document");
+        root = root.with_child(VirtualNode::new("p").with_text("Para"));
+        root = root.with_child(
+            VirtualNode::new("div")
+                .with_class("title")
+                .with_text("Title"),
+        );
+        root = root.with_child(VirtualNode::new("ul"));
+
+        // Find all following siblings of p.
+        let result = query_xpath(&root, "//p/following-sibling::*");
+        assert_eq!(result.len(), 2, "Should find 2 following siblings");
+        assert_eq!(result[0].tag, "div");
+        assert_eq!(result[1].tag, "ul");
+    }
+
+    #[test]
+    fn query_following_sibling_with_predicate() {
+        // Create a DOM with titled blocks.
+        let mut root = VirtualNode::new("div").with_class("document");
+        root = root.with_child(VirtualNode::new("p").with_text("Para"));
+        root = root.with_child(
+            VirtualNode::new("div")
+                .with_class("literalblock")
+                .with_text("Literal"),
+        );
+        root = root.with_child(VirtualNode::new("p").with_text("Another"));
+
+        // Find following sibling with class="literalblock".
+        let result = query_xpath(
+            &root,
+            "//p[1]/following-sibling::*[@class=\"literalblock\"]",
+        );
+        assert_eq!(result.len(), 1, "Should find the literalblock element");
+        assert_eq!(result[0].text.as_deref(), Some("Literal"));
+    }
+
+    #[test]
+    fn query_following_sibling_no_matches() {
+        // Test when there are no matching following siblings.
+        let mut root = VirtualNode::new("div").with_class("document");
+        root = root.with_child(VirtualNode::new("p").with_text("Para"));
+        root = root.with_child(VirtualNode::new("ul"));
+
+        // The last element has no following siblings.
+        let result = query_xpath(&root, "//ul/following-sibling::*");
+        assert_eq!(
+            result.len(),
+            0,
+            "Last element should have no following siblings"
         );
     }
 }
