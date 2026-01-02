@@ -794,11 +794,10 @@ mod bulleted_lists {
     }
 
     mod lists_with_inline_markup {
-        // SKIP all tests until we can refine the text() query.
         use super::*;
 
         #[test]
-        #[ignore]
+        #[ignore] // SKIP this test: need support for intra-text rendering
         fn quoted_text() {
             let _doc = Parser::default()
                 .parse("List\n====\n\n- I am *strong*.\n- I am _stressed_.\n- I am `flexible`.\n");
