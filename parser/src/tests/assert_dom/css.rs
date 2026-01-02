@@ -10,6 +10,8 @@ use crate::tests::assert_dom::virtual_dom::VirtualNode;
 /// Supports the following patterns:
 /// - `tag` - Find all elements with the given tag anywhere in the tree
 /// - `tag child` - Find child elements as direct children of tag elements
+/// - `tag > child` - Find direct children only
+/// - `tag:first-of-type` - Find first occurrence of tag among siblings
 ///
 /// # Example
 ///
@@ -22,12 +24,32 @@ use crate::tests::assert_dom::virtual_dom::VirtualNode;
 pub(crate) fn query_css<'a>(root: &'a VirtualNode, selector: &str) -> Vec<&'a VirtualNode> {
     let selector = selector.trim();
 
-    // So far, only descendant-or-self pattern is supported: tag
     query_descendant_or_self(root, selector)
 }
 
 /// Queries for descendants or self matching the pattern.
 fn query_descendant_or_self<'a>(node: &'a VirtualNode, pattern: &str) -> Vec<&'a VirtualNode> {
+    // Handle direct child combinator: "tag > child".
+    if let Some((first, rest)) = pattern.split_once('>') {
+        let first = first.trim();
+        let rest = rest.trim();
+
+        // Find all nodes matching first part.
+        let mut results = Vec::new();
+        collect_descendants_matching(node, first, &mut results);
+
+        // For each matching node, query only its direct children with the rest.
+        let mut final_results = Vec::new();
+        for matched_node in results {
+            for child in &matched_node.children {
+                if matches_selector_with_context(child, rest, Some(matched_node)) {
+                    final_results.push(child);
+                }
+            }
+        }
+        return final_results;
+    }
+
     // Split on first ' ' to handle paths like "ul li".
     if let Some((first, rest)) = pattern.split_once(' ') {
         let first = first.trim();
@@ -61,16 +83,27 @@ fn collect_descendants_matching<'a>(
     selector: &str,
     results: &mut Vec<&'a VirtualNode>,
 ) {
-    if matches_selector(node, selector) {
+    collect_descendants_matching_with_parent(node, selector, None, results);
+}
+
+/// Recursively collects all descendants (including self) that match the
+/// selector, with parent context for pseudo-selectors.
+fn collect_descendants_matching_with_parent<'a>(
+    node: &'a VirtualNode,
+    selector: &str,
+    parent: Option<&'a VirtualNode>,
+    results: &mut Vec<&'a VirtualNode>,
+) {
+    if matches_selector_with_context(node, selector, parent) {
         results.push(node);
     }
 
     for child in &node.children {
-        collect_descendants_matching(child, selector, results);
+        collect_descendants_matching_with_parent(child, selector, Some(node), results);
     }
 }
 
-/// Checks if a node matches the given selector.
+/// Checks if a node matches the given selector with parent context.
 ///
 /// Supports:
 /// - Tag name: `div`, `ul`, `li`
@@ -79,15 +112,30 @@ fn collect_descendants_matching<'a>(
 /// - ID selector: `[@id="foo"]` or `#foo`
 /// - Text content: `[text()="value"]`
 /// - Index: `[1]`, `[2]`, etc. (handled by `apply_numeric_predicate`)
-fn matches_selector(node: &VirtualNode, selector: &str) -> bool {
+/// - Pseudo-selectors: `:first-of-type`
+fn matches_selector_with_context(
+    node: &VirtualNode,
+    selector: &str,
+    parent: Option<&VirtualNode>,
+) -> bool {
     let selector = selector.trim();
+
+    // Handle pseudo-selectors like :first-of-type.
+    let (selector_without_pseudo, pseudo_selector) = if let Some(colon_pos) = selector.find(':') {
+        (&selector[..colon_pos], Some(&selector[colon_pos + 1..]))
+    } else {
+        (selector, None)
+    };
 
     // Handle index predicates [N] by stripping them off.
     // (Caller should handle filtering by index.)
-    let (base_selector, predicate) = if let Some(bracket_pos) = selector.find('[') {
-        (&selector[..bracket_pos], Some(&selector[bracket_pos..]))
+    let (base_selector, predicate) = if let Some(bracket_pos) = selector_without_pseudo.find('[') {
+        (
+            &selector_without_pseudo[..bracket_pos],
+            Some(&selector_without_pseudo[bracket_pos..]),
+        )
     } else {
-        (selector, None)
+        (selector_without_pseudo, None)
     };
 
     // Wildcard selector: matches any element.
@@ -115,10 +163,42 @@ fn matches_selector(node: &VirtualNode, selector: &str) -> bool {
 
     // Handle predicates if present.
     if let Some(predicate) = predicate {
-        return matches_predicate(node, predicate);
+        if !matches_predicate(node, predicate) {
+            return false;
+        }
+    }
+
+    // Handle pseudo-selectors if present.
+    if let Some(pseudo) = pseudo_selector {
+        if !matches_pseudo_selector(node, pseudo, parent) {
+            return false;
+        }
     }
 
     true
+}
+
+/// Checks if a node matches a pseudo-selector.
+fn matches_pseudo_selector(node: &VirtualNode, pseudo: &str, parent: Option<&VirtualNode>) -> bool {
+    let pseudo = pseudo.trim();
+
+    match pseudo {
+        "first-of-type" => {
+            // Check if this is the first child with the same tag among its siblings.
+            if let Some(parent) = parent {
+                // Find the first child with the same tag.
+                for child in &parent.children {
+                    if child.tag == node.tag {
+                        // This is the first occurrence.
+                        return std::ptr::eq(child as *const _, node as *const _);
+                    }
+                }
+            }
+            // If no parent or no matching siblings, consider it first-of-type.
+            true
+        }
+        _ => false, // Unknown pseudo-selector.
+    }
 }
 
 /// Checks if a node matches a predicate like `[@class="value"]` or
@@ -271,5 +351,41 @@ mod tests {
         // Find `li` as children of `ul`.
         let ul_lis = query_css(&vdom, "ul li");
         assert_eq!(ul_lis.len(), 3);
+    }
+
+    #[test]
+    fn query_first_of_type() {
+        let doc = Parser::default().parse("* item 1\n* item 2\n* item 3");
+        let vdom = doc.to_virtual_dom();
+
+        // Find first li element.
+        let first_li = query_css(&vdom, "li:first-of-type");
+        assert_eq!(first_li.len(), 1);
+
+        // Verify it's the correct element by checking its content.
+        assert_eq!(first_li[0].children.len(), 1); // Should have one child (p tag).
+        assert_eq!(first_li[0].children[0].tag, "p");
+        assert_eq!(first_li[0].children[0].text.as_deref(), Some("item 1"));
+    }
+
+    #[test]
+    fn query_direct_children() {
+        let doc = Parser::default().parse("* item 1\n\n  para\n* item 2");
+        let vdom = doc.to_virtual_dom();
+
+        // Find direct children of first li using > combinator.
+        let children = query_css(&vdom, "li:first-of-type > *");
+        assert!(children.len() >= 1); // Should have at least the initial paragraph.
+    }
+
+    #[test]
+    fn query_first_of_type_with_direct_child() {
+        let doc = Parser::default().parse("* item 1\n\n  para\n* item 2");
+        let vdom = doc.to_virtual_dom();
+
+        // Combine :first-of-type with > combinator to find paragraphs that are
+        // direct children of the first li.
+        let paras = query_css(&vdom, "li:first-of-type > p");
+        assert!(paras.len() >= 1);
     }
 }
