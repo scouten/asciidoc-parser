@@ -61,6 +61,37 @@ pub(crate) fn assert_css(doc: &Document, selector: &str, expected_count: usize) 
     );
 }
 
+/// Asserts that at least one node contains the designated text in its rendered
+/// content.
+///
+/// # Panics
+///
+/// Panics if no node's `content` (rendered content) contains the provided
+/// text.
+///
+/// # Examples
+///
+/// ```ignore
+/// let doc = Parser::default().parse("* item");
+/// assert_output_contains(&doc, "item"); // will not panic
+/// assert_output_contains(&doc, "nonsense"); // will panic
+/// ```
+pub(crate) fn assert_output_contains<'src>(doc: &'src Document<'src>, text: &str) {
+    if !check_block_contains(doc, text) {
+        panic!("Document should have contained {text}, but did not:\n\n{doc:#?}");
+    }
+}
+
+fn check_block_contains<'src, B: IsBlock<'src>>(block: &'src B, text: &str) -> bool {
+    if let Some(content) = block.rendered_content() {
+        if content.contains(text) {
+            return true;
+        }
+    }
+
+    block.nested_blocks().any(|b| check_block_contains(b, text))
+}
+
 /// Refutes that any node contains the designated text in its rendered content.
 ///
 /// # Panics
@@ -80,7 +111,6 @@ pub(crate) fn refute_output_contains<'src>(doc: &'src Document<'src>, text: &str
 }
 
 fn refute_block_contains<'src, B: IsBlock<'src>>(block: &'src B, text: &str) {
-    dbg!(&block);
     if let Some(content) = block.rendered_content() {
         dbg!(&content);
         if content.contains(text) {
