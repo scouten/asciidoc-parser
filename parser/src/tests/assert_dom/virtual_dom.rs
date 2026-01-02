@@ -119,12 +119,10 @@ fn add_block_with_title<'a>(parent: &mut VirtualNode, block: &'a Block<'a>) {
 
     // Add title as a separate sibling element if the block doesn't handle it
     // internally.
-    if !handles_title_internally {
-        if let Some(title) = block.title() {
-            // Add title as a separate div element with class="title".
-            let title_node = VirtualNode::new("div").with_class("title").with_text(title);
-            parent.children.push(title_node);
-        }
+    if !handles_title_internally && let Some(title) = block.title() {
+        // Add title as a separate div element with class="title".
+        let title_node = VirtualNode::new("div").with_class("title").with_text(title);
+        parent.children.push(title_node);
     }
 
     // Add the block itself (which will handle its own title if applicable).
@@ -141,7 +139,7 @@ impl ToVirtualDom for Block<'_> {
                 if node.tag == "p" {
                     node.text = Some(simple.content().rendered().to_string());
                 } else if simple.style() == SimpleBlockStyle::Literal
-                    || simple.declared_style().map(|s| s.as_ref()) == Some("literal")
+                    || simple.declared_style() == Some("literal")
                 {
                     // For literal blocks, add a <pre> element containing the content.
                     let pre_node =
@@ -184,22 +182,21 @@ fn simple_block_to_node<'a>(block: &'a SimpleBlock<'a>) -> VirtualNode {
     let block_style = block.style();
 
     // Determine tag and classes based on both declared style and block style.
-    let (tag, wrapper_classes) = if block_style == SimpleBlockStyle::Literal
-        || declared_style.map(|s| s.as_ref()) == Some("literal")
-    {
-        ("div", vec!["literalblock"])
-    } else {
-        match declared_style.map(|s| s.as_ref()) {
-            Some("paragraph") | None => ("p", vec![]),
-            Some("verse") => ("div", vec!["verseblock"]),
-            Some("quote") => ("div", vec!["quoteblock"]),
-            Some("sidebar") => ("div", vec!["sidebarblock"]),
-            Some("example") => ("div", vec!["exampleblock"]),
-            Some("open") => ("div", vec!["openblock"]),
-            Some("pass") => ("div", vec!["passblock"]),
-            _ => ("p", vec![]),
-        }
-    };
+    let (tag, wrapper_classes) =
+        if block_style == SimpleBlockStyle::Literal || declared_style == Some("literal") {
+            ("div", vec!["literalblock"])
+        } else {
+            match declared_style {
+                Some("paragraph") | None => ("p", vec![]),
+                Some("verse") => ("div", vec!["verseblock"]),
+                Some("quote") => ("div", vec!["quoteblock"]),
+                Some("sidebar") => ("div", vec!["sidebarblock"]),
+                Some("example") => ("div", vec!["exampleblock"]),
+                Some("open") => ("div", vec!["openblock"]),
+                Some("pass") => ("div", vec!["passblock"]),
+                _ => ("p", vec![]),
+            }
+        };
 
     let mut node = VirtualNode::new(tag);
 

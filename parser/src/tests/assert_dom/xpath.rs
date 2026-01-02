@@ -121,9 +121,9 @@ fn query_parenthesized<'a>(root: &'a VirtualNode, xpath: &str) -> Vec<&'a Virtua
                         if remaining.starts_with('/') && !remaining.starts_with("//") {
                             // Direct child path.
                             final_results.extend(query_from_root(node, &remaining[1..]));
-                        } else if remaining.starts_with("//") {
+                        } else if let Some(stripped) = remaining.strip_prefix("//") {
                             // Descendant path.
-                            final_results.extend(query_descendant_or_self(node, &remaining[2..]));
+                            final_results.extend(query_descendant_or_self(node, stripped));
                         }
                     }
                     return final_results;
@@ -156,9 +156,9 @@ fn query_parenthesized<'a>(root: &'a VirtualNode, xpath: &str) -> Vec<&'a Virtua
                 if rest.starts_with('/') && !rest.starts_with("//") {
                     // Direct child path.
                     final_results.extend(query_from_root(node, &rest[1..]));
-                } else if rest.starts_with("//") {
+                } else if let Some(stripped) = rest.strip_prefix("//") {
                     // Descendant path.
-                    final_results.extend(query_descendant_or_self(node, &rest[2..]));
+                    final_results.extend(query_descendant_or_self(node, stripped));
                 }
             }
             return final_results;
@@ -335,10 +335,7 @@ fn find_preceding_siblings<'a>(
     selector: &str,
 ) -> Vec<&'a VirtualNode> {
     // Helper function to find the parent of a target node.
-    fn find_parent<'a>(
-        node: &'a VirtualNode,
-        target: *const VirtualNode,
-    ) -> Option<&'a VirtualNode> {
+    fn find_parent(node: &VirtualNode, target: *const VirtualNode) -> Option<&VirtualNode> {
         for child in &node.children {
             if std::ptr::eq(child as *const _, target) {
                 return Some(node);
@@ -381,19 +378,18 @@ fn apply_numeric_predicate<'a>(
     selector: &str,
 ) -> Vec<&'a VirtualNode> {
     // Extract numeric predicate [N] from selector.
-    if let Some(bracket_pos) = selector.find('[') {
-        if let Some(predicate) = selector[bracket_pos..]
+    if let Some(bracket_pos) = selector.find('[')
+        && let Some(predicate) = selector[bracket_pos..]
             .strip_prefix('[')
             .and_then(|s| s.strip_suffix(']'))
-        {
-            // Check if it's a numeric predicate.
-            if let Ok(index) = predicate.trim().parse::<usize>() {
-                // XPath uses 1-based indexing.
-                if index > 0 && index <= results.len() {
-                    return vec![results[index - 1]];
-                } else {
-                    return vec![];
-                }
+    {
+        // Check if it's a numeric predicate.
+        if let Ok(index) = predicate.trim().parse::<usize>() {
+            // XPath uses 1-based indexing.
+            if index > 0 && index <= results.len() {
+                return vec![results[index - 1]];
+            } else {
+                return vec![];
             }
         }
     }
@@ -410,10 +406,7 @@ fn find_following_siblings<'a>(
     selector: &str,
 ) -> Vec<&'a VirtualNode> {
     // Helper function to find the parent of a target node.
-    fn find_parent<'a>(
-        node: &'a VirtualNode,
-        target: *const VirtualNode,
-    ) -> Option<&'a VirtualNode> {
+    fn find_parent(node: &VirtualNode, target: *const VirtualNode) -> Option<&VirtualNode> {
         for child in &node.children {
             if std::ptr::eq(child as *const _, target) {
                 return Some(node);
@@ -552,11 +545,11 @@ fn matches_single_predicate(node: &VirtualNode, predicate: &str) -> bool {
                 }
             }
             // Try double-quoted string.
-            else if let Some(value) = value_part.strip_prefix('"') {
-                if let Some(value) = value.strip_suffix('"') {
-                    let unescaped = unescape_xpath_string(value);
-                    return node.text.as_deref() == Some(&unescaped);
-                }
+            else if let Some(value) = value_part.strip_prefix('"')
+                && let Some(value) = value.strip_suffix('"')
+            {
+                let unescaped = unescape_xpath_string(value);
+                return node.text.as_deref() == Some(&unescaped);
             }
         }
 
@@ -564,20 +557,20 @@ fn matches_single_predicate(node: &VirtualNode, predicate: &str) -> bool {
     }
 
     // Check for attribute predicates `[@attr="value"]`.
-    if let Some(attr_part) = predicate.strip_prefix('@') {
-        if let Some((attr_name, value_part)) = attr_part.split_once('=') {
-            let attr_name = attr_name.trim();
-            let value = value_part
-                .trim()
-                .strip_prefix('"')
-                .and_then(|s| s.strip_suffix('"'))
-                .unwrap_or(value_part.trim());
+    if let Some(attr_part) = predicate.strip_prefix('@')
+        && let Some((attr_name, value_part)) = attr_part.split_once('=')
+    {
+        let attr_name = attr_name.trim();
+        let value = value_part
+            .trim()
+            .strip_prefix('"')
+            .and_then(|s| s.strip_suffix('"'))
+            .unwrap_or(value_part.trim());
 
-            match attr_name {
-                "class" => return node.classes.iter().any(|c| c == value),
-                "id" => return node.id.as_deref() == Some(value),
-                _ => return false,
-            }
+        match attr_name {
+            "class" => return node.classes.iter().any(|c| c == value),
+            "id" => return node.id.as_deref() == Some(value),
+            _ => return false,
         }
     }
 
@@ -739,7 +732,7 @@ mod tests {
         let vdom = doc.to_virtual_dom();
 
         let all_elements = query_xpath(&vdom, "//*");
-        assert!(all_elements.len() > 0);
+        assert!(!all_elements.is_empty());
 
         let first_li_children = query_xpath(&vdom, "//ul/li[1]/*");
         assert_eq!(first_li_children.len(), 1);

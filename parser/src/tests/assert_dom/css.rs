@@ -162,17 +162,17 @@ fn matches_selector_with_context(
     }
 
     // Handle predicates if present.
-    if let Some(predicate) = predicate {
-        if !matches_predicate(node, predicate) {
-            return false;
-        }
+    if let Some(predicate) = predicate
+        && !matches_predicate(node, predicate)
+    {
+        return false;
     }
 
     // Handle pseudo-selectors if present.
-    if let Some(pseudo) = pseudo_selector {
-        if !matches_pseudo_selector(node, pseudo, parent) {
-            return false;
-        }
+    if let Some(pseudo) = pseudo_selector
+        && !matches_pseudo_selector(node, pseudo, parent)
+    {
+        return false;
     }
 
     true
@@ -253,11 +253,11 @@ fn matches_single_predicate(node: &VirtualNode, predicate: &str) -> bool {
                 }
             }
             // Try double-quoted string.
-            else if let Some(value) = value_part.strip_prefix('"') {
-                if let Some(value) = value.strip_suffix('"') {
-                    let unescaped = unescape_css_string(value);
-                    return node.text.as_deref() == Some(&unescaped);
-                }
+            else if let Some(value) = value_part.strip_prefix('"')
+                && let Some(value) = value.strip_suffix('"')
+            {
+                let unescaped = unescape_css_string(value);
+                return node.text.as_deref() == Some(&unescaped);
             }
         }
 
@@ -265,20 +265,20 @@ fn matches_single_predicate(node: &VirtualNode, predicate: &str) -> bool {
     }
 
     // Check for attribute predicates `[@attr="value"]`.
-    if let Some(attr_part) = predicate.strip_prefix('@') {
-        if let Some((attr_name, value_part)) = attr_part.split_once('=') {
-            let attr_name = attr_name.trim();
-            let value = value_part
-                .trim()
-                .strip_prefix('"')
-                .and_then(|s| s.strip_suffix('"'))
-                .unwrap_or(value_part.trim());
+    if let Some(attr_part) = predicate.strip_prefix('@')
+        && let Some((attr_name, value_part)) = attr_part.split_once('=')
+    {
+        let attr_name = attr_name.trim();
+        let value = value_part
+            .trim()
+            .strip_prefix('"')
+            .and_then(|s| s.strip_suffix('"'))
+            .unwrap_or(value_part.trim());
 
-            match attr_name {
-                "class" => return node.classes.iter().any(|c| c == value),
-                "id" => return node.id.as_deref() == Some(value),
-                _ => return false,
-            }
+        match attr_name {
+            "class" => return node.classes.iter().any(|c| c == value),
+            "id" => return node.id.as_deref() == Some(value),
+            _ => return false,
         }
     }
 
@@ -375,7 +375,7 @@ mod tests {
 
         // Find direct children of first li using > combinator.
         let children = query_css(&vdom, "li:first-of-type > *");
-        assert!(children.len() >= 1); // Should have at least the initial paragraph.
+        assert!(!children.is_empty()); // Should have at least the initial paragraph.
     }
 
     #[test]
@@ -386,6 +386,6 @@ mod tests {
         // Combine :first-of-type with > combinator to find paragraphs that are
         // direct children of the first li.
         let paras = query_css(&vdom, "li:first-of-type > p");
-        assert!(paras.len() >= 1);
+        assert!(!paras.is_empty());
     }
 }
