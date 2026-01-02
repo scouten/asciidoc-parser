@@ -97,10 +97,10 @@ mod css;
 use css::*;
 
 mod virtual_dom;
-use virtual_dom::ToVirtualDom;
+pub(crate) use virtual_dom::ToVirtualDom;
 
 mod xpath;
-use xpath::*;
+pub(crate) use xpath::query_xpath;
 
 #[cfg(test)]
 mod tests {

@@ -276,8 +276,28 @@ fn list_item_to_node<'a>(item: &'a ListItem<'a>) -> VirtualNode {
         node = node.with_id(id);
     }
 
-    for child in item.nested_blocks() {
-        node.children.push(child.to_virtual_dom());
+    let nested = item.nested_blocks().collect::<Vec<_>>();
+    let has_multiple_blocks = nested.len() > 1;
+
+    for (index, child) in nested.iter().enumerate() {
+        let child_vdom = child.to_virtual_dom();
+
+        // Wrap paragraphs in div.paragraph when they appear after other blocks in the
+        // list item. This matches Asciidoctor's HTML output for list
+        // continuations. The first paragraph block is never wrapped, only
+        // subsequent ones.
+        if has_multiple_blocks
+            && index > 0
+            && child_vdom.tag == "p"
+            && child_vdom.classes.is_empty()
+        {
+            let wrapper = VirtualNode::new("div")
+                .with_class("paragraph")
+                .with_child(child_vdom);
+            node.children.push(wrapper);
+        } else {
+            node.children.push(child_vdom);
+        }
     }
 
     node
