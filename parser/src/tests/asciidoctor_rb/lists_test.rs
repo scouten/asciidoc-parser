@@ -414,7 +414,6 @@ mod bulleted_lists {
         }
 
         #[test]
-        #[ignore] // TODO: XPath assertions fail - parser doesn't generate literal blocks correctly
         fn should_escape_special_characters_in_all_literal_paragraphs_attached_to_list_item() {
             let doc = Parser::default().parse("* first item\n\n  <code>text</code>\n\n  more <code>text</code>\n\n* second item\n");
 
