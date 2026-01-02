@@ -253,9 +253,20 @@ fn parse_lines<'src>(
     let filtered_lines = filtered_lines.join("\n");
     let mut content: Content<'src> = Content::from_filtered(source, filtered_lines);
 
-    SubstitutionGroup::Normal
-        .override_via_attrlist(attrlist.as_ref())
-        .apply(&mut content, parser, attrlist.as_ref());
+    let sub_group = match style {
+        // Only apply Verbatim substitutions to literal blocks detected by indentation.
+        // Listing and Source styles declared via attribute list still use Normal subs.
+        SimpleBlockStyle::Literal => SubstitutionGroup::Verbatim,
+        SimpleBlockStyle::Listing | SimpleBlockStyle::Source | SimpleBlockStyle::Paragraph => {
+            SubstitutionGroup::Normal
+        }
+    };
+
+    sub_group.override_via_attrlist(attrlist.as_ref()).apply(
+        &mut content,
+        parser,
+        attrlist.as_ref(),
+    );
 
     Some(MatchedItem {
         item: (content, style),
