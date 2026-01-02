@@ -279,10 +279,10 @@ fn query_from_root<'a>(node: &'a VirtualNode, pattern: &str) -> Vec<&'a VirtualN
                     // If there's a continuation, query each sibling.
                     if let Some(cont) = continuation {
                         for sibling in siblings {
-                            if cont.starts_with("//") {
-                                final_results.extend(query_descendant_or_self(sibling, &cont[2..]));
-                            } else if cont.starts_with('/') {
-                                final_results.extend(query_from_root(sibling, &cont[1..]));
+                            if let Some(stripped) = cont.strip_prefix("//") {
+                                final_results.extend(query_descendant_or_self(sibling, stripped));
+                            } else if let Some(stripped) = cont.strip_prefix('/') {
+                                final_results.extend(query_from_root(sibling, stripped));
                             }
                         }
                     } else {
@@ -309,10 +309,10 @@ fn query_from_root<'a>(node: &'a VirtualNode, pattern: &str) -> Vec<&'a VirtualN
                     // If there's a continuation, query each sibling.
                     if let Some(cont) = continuation {
                         for sibling in siblings {
-                            if cont.starts_with("//") {
-                                final_results.extend(query_descendant_or_self(sibling, &cont[2..]));
-                            } else if cont.starts_with('/') {
-                                final_results.extend(query_from_root(sibling, &cont[1..]));
+                            if let Some(stripped) = cont.strip_prefix("//") {
+                                final_results.extend(query_descendant_or_self(sibling, stripped));
+                            } else if let Some(stripped) = cont.strip_prefix('/') {
+                                final_results.extend(query_from_root(sibling, stripped));
                             }
                         }
                     } else {
