@@ -762,14 +762,18 @@ mod bulleted_lists {
         }
 
         #[test]
-        #[ignore] // SKIP test until we do CSS immediate child selectors
         fn should_not_find_section_title_immediately_below_last_list_item() {
-            let _doc = Parser::default().parse("* first\n* second\n== Not a section\n");
-            todo!("assert_css: 'ul', output, 1");
-            todo!("assert_css: 'ul > li', output, 2");
-            todo!("assert_css: 'h2', output, 0");
-            todo!("assert_includes: output, '== Not a section'");
-            todo!("assert_xpath: '(//li)[2]/p[text() = \"second\\n== Not a section\"]', output, 1");
+            let doc = Parser::default().parse("* first\n* second\n== Not a section\n");
+
+            assert_css(&doc, "ul", 1);
+            assert_css(&doc, "ul > li", 2);
+            assert_css(&doc, "h2", 0);
+            assert_output_contains(&doc, "== Not a section");
+            assert_xpath(
+                &doc,
+                "(//li)[2]/p[text() = \"second\\n== Not a section\"]",
+                1,
+            );
         }
 
         #[test]
