@@ -8,7 +8,7 @@ use crate::{
     Document,
     blocks::{
         Block, Break, CompoundDelimitedBlock, IsBlock, ListBlock, ListItem, ListType, MediaBlock,
-        Preamble, RawDelimitedBlock, SectionBlock, SimpleBlock,
+        Preamble, RawDelimitedBlock, SectionBlock, SimpleBlock, SimpleBlockStyle,
     },
 };
 
@@ -136,9 +136,17 @@ impl ToVirtualDom for Block<'_> {
         match self {
             Block::Simple(simple) => {
                 let mut node = simple_block_to_node(simple);
+
                 // Extract text content for paragraphs.
                 if node.tag == "p" {
                     node.text = Some(simple.content().rendered().to_string());
+                } else if simple.style() == SimpleBlockStyle::Literal
+                    || simple.declared_style().map(|s| s.as_ref()) == Some("literal")
+                {
+                    // For literal blocks, add a <pre> element containing the content.
+                    let pre_node =
+                        VirtualNode::new("pre").with_text(simple.content().rendered().to_string());
+                    node = node.with_child(pre_node);
                 }
                 node
             }
@@ -172,18 +180,25 @@ impl ToVirtualDom for Block<'_> {
 }
 
 fn simple_block_to_node<'a>(block: &'a SimpleBlock<'a>) -> VirtualNode {
-    let style = block.declared_style();
+    let declared_style = block.declared_style();
+    let block_style = block.style();
 
-    let (tag, wrapper_classes) = match style.map(|s| s.as_ref()) {
-        Some("paragraph") | None => ("p", vec![]),
-        Some("literal") => ("div", vec!["literalblock"]),
-        Some("verse") => ("div", vec!["verseblock"]),
-        Some("quote") => ("div", vec!["quoteblock"]),
-        Some("sidebar") => ("div", vec!["sidebarblock"]),
-        Some("example") => ("div", vec!["exampleblock"]),
-        Some("open") => ("div", vec!["openblock"]),
-        Some("pass") => ("div", vec!["passblock"]),
-        _ => ("div", vec![]),
+    // Determine tag and classes based on both declared style and block style.
+    let (tag, wrapper_classes) = if block_style == SimpleBlockStyle::Literal
+        || declared_style.map(|s| s.as_ref()) == Some("literal")
+    {
+        ("div", vec!["literalblock"])
+    } else {
+        match declared_style.map(|s| s.as_ref()) {
+            Some("paragraph") | None => ("p", vec![]),
+            Some("verse") => ("div", vec!["verseblock"]),
+            Some("quote") => ("div", vec!["quoteblock"]),
+            Some("sidebar") => ("div", vec!["sidebarblock"]),
+            Some("example") => ("div", vec!["exampleblock"]),
+            Some("open") => ("div", vec!["openblock"]),
+            Some("pass") => ("div", vec!["passblock"]),
+            _ => ("p", vec![]),
+        }
     };
 
     let mut node = VirtualNode::new(tag);
