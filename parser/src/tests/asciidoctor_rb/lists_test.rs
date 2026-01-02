@@ -523,44 +523,67 @@ mod bulleted_lists {
         }
 
         #[test]
-        #[ignore] // SKIP test for now ... needs following-sibling query
         fn appends_line_as_paragraph_if_attached_by_continuation_following_line_comment() {
-            let _doc = Parser::default().parse(
+            let doc = Parser::default().parse(
                 "- list item 1\n// line comment\n+\nparagraph in list item 1\n\n- list item 2\n",
             );
-            todo!("assert_css: 'ul', output, 1");
-            todo!("assert_css: 'ul li', output, 2");
-            todo!("assert_xpath: '(//ul/li)[1]/p[text()=\"list item 1\"]', output, 1");
-            todo!(
-                "assert_xpath: '(//ul/li)[1]/p/following-sibling::*[@class=\"paragraph\"]', output, 1"
+
+            assert_css(&doc, "ul", 1);
+            assert_css(&doc, "ul li", 2);
+
+            assert_xpath(&doc, "(//ul/li)[1]/p[text()=\"list item 1\"]", 1);
+
+            assert_xpath(
+                &doc,
+                "(//ul/li)[1]/p/following-sibling::*[@class=\"paragraph\"]",
+                1,
             );
-            todo!(
-                "assert_xpath: '(//ul/li)[1]/p/following-sibling::*[@class=\"paragraph\"]/p[text()=\"paragraph in list item 1\"]', output, 1"
+
+            assert_xpath(
+                &doc,
+                "(//ul/li)[1]/p/following-sibling::*[@class=\"paragraph\"]/p[text()=\"paragraph in list item 1\"]",
+                1,
             );
-            todo!("assert_xpath: '(//ul/li)[2]/p[text()=\"list item 2\"]', output, 1");
+
+            assert_xpath(&doc, "(//ul/li)[2]/p[text()=\"list item 2\"]", 1);
         }
 
         #[test]
-        #[ignore] // SKIP test for now ... needs following-sibling query
         fn a_literal_paragraph_with_a_line_that_appears_as_a_list_item_that_is_followed_by_a_continuation_should_create_two_blocks()
          {
-            let _doc =
+            let doc =
                 Parser::default().parse("* Foo\n+\n  literal\n. still literal\n+\npara\n\n* Bar\n");
-            todo!("assert_xpath: '//ul', output, 1");
-            todo!("assert_xpath: '//ul/li', output, 2");
-            todo!("assert_xpath: '(//ul/li)[1]/p[text() = \"Foo\"]', output, 1");
-            todo!("assert_xpath: '(//ul/li)[1]/*[@class=\"literalblock\"]', output, 1");
-            todo!(
-                "assert_xpath: '(//ul/li)[1]/p/following-sibling::*[@class=\"literalblock\"]', output, 1"
+
+            let vdom = doc.to_virtual_dom();
+            dbg!(&vdom);
+
+            assert_xpath(&doc, "//ul", 1);
+            assert_xpath(&doc, "//ul/li", 2);
+            assert_xpath(&doc, "(//ul/li)[1]/p[text() = \"Foo\"]", 1);
+            assert_xpath(&doc, "(//ul/li)[1]/*[@class=\"literalblock\"]", 1);
+
+            assert_xpath(
+                &doc,
+                "(//ul/li)[1]/p/following-sibling::*[@class=\"literalblock\"]",
+                1,
             );
-            todo!(
-                "assert_xpath: '((//ul/li)[1]/*[@class=\"literalblock\"])[1]//pre[text() = \"  literal\\n. still literal\"]', output, 1"
+
+            assert_xpath(
+                &doc,
+                "((//ul/li)[1]/*[@class=\"literalblock\"])[1]//pre[text() = \"literal\n. still literal\"]",
+                1,
             );
-            todo!(
-                "assert_xpath: '(//ul/li)[1]/*[@class=\"literalblock\"]/following-sibling::*[@class=\"paragraph\"]', output, 1"
+
+            assert_xpath(
+                &doc,
+                "(//ul/li)[1]/*[@class=\"literalblock\"]/following-sibling::*[@class=\"paragraph\"]",
+                1,
             );
-            todo!(
-                "assert_xpath: '(//ul/li)[1]/*[@class=\"literalblock\"]/following-sibling::*[@class=\"paragraph\"]/p[text()=\"para\"]', output, 1"
+
+            assert_xpath(
+                &doc,
+                "(//ul/li)[1]/*[@class=\"literalblock\"]/following-sibling::*[@class=\"paragraph\"]/p[text()=\"para\"]",
+                1,
             );
         }
 
