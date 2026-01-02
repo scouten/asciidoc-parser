@@ -38,12 +38,27 @@ fn query_descendant_or_self<'a>(node: &'a VirtualNode, pattern: &str) -> Vec<&'a
         let mut results = Vec::new();
         collect_descendants_matching(node, first, &mut results);
 
-        // For each matching node, query only its direct children with the rest.
+        // For each matching node, look at only its direct children and check if they
+        // match the rest of the selector (which may itself contain combinators).
         let mut final_results = Vec::new();
         for matched_node in results {
-            for child in &matched_node.children {
-                if matches_selector_with_context(child, rest, Some(matched_node)) {
-                    final_results.push(child);
+            // Process `rest` which may be:
+            // - A simple selector like `.paragraph` (matches direct children with that
+            //   class).
+            // - A complex selector like `li > .paragraph` (need to recursively process).
+            if rest.contains('>') || rest.contains(' ') {
+                // Complex selector with more combinators - recursively process starting
+                // from direct children only.
+                for child in &matched_node.children {
+                    let child_matches = query_descendant_or_self(child, rest);
+                    final_results.extend(child_matches);
+                }
+            } else {
+                // Simple selector - just check direct children.
+                for child in &matched_node.children {
+                    if matches_selector_with_context(child, rest, Some(matched_node)) {
+                        final_results.push(child);
+                    }
                 }
             }
         }
