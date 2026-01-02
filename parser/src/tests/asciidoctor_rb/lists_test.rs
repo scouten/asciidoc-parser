@@ -624,19 +624,24 @@ mod bulleted_lists {
         }
 
         #[test]
-        #[ignore] // SKIP test for now ... needs following-sibling query
         fn a_literal_paragraph_without_a_trailing_blank_line_consumes_following_list_items() {
-            let _doc =
-                Parser::default().parse("List\n====\n\n- Foo\n\n  literal\n- Boo\n- Blech\n");
-            todo!("assert_xpath: '//ul', output, 1");
-            todo!("assert_xpath: '//ul/li', output, 1");
-            todo!("assert_xpath: '(//ul/li)[1]/p[text() = \"Foo\"]', output, 1");
-            todo!("assert_xpath: '(//ul/li)[1]/*[@class=\"literalblock\"]', output, 1");
-            todo!(
-                "assert_xpath: '(//ul/li)[1]/p/following-sibling::*[@class=\"literalblock\"]', output, 1"
+            let doc = Parser::default().parse("List\n====\n\n- Foo\n\n  literal\n- Boo\n- Blech\n");
+
+            assert_xpath(&doc, "//ul", 1);
+            assert_xpath(&doc, "//ul/li", 1);
+            assert_xpath(&doc, "(//ul/li)[1]/p[text() = \"Foo\"]", 1);
+            assert_xpath(&doc, "(//ul/li)[1]/*[@class=\"literalblock\"]", 1);
+
+            assert_xpath(
+                &doc,
+                "(//ul/li)[1]/p/following-sibling::*[@class=\"literalblock\"]",
+                1,
             );
-            todo!(
-                "assert_xpath: '((//ul/li)[1]/*[@class=\\'literalblock\\'])[1]//pre[text() = \\'  literal\\n- Boo\\n- Blech\\']', output, 1"
+
+            assert_xpath(
+                &doc,
+                "((//ul/li)[1]/*[@class=\"literalblock\"])[1]//pre[text() = \"literal\\n- Boo\\n- Blech\"]",
+                1,
             );
         }
 
