@@ -467,7 +467,9 @@ mod bulleted_lists {
         }
 
         #[test]
-        #[ignore] // SKIP test until we implement admonitions and normalize-space 
+        #[ignore]
+        // TODO (https://github.com/scouten/asciidoc-parser/issues/456):
+        // Enable this test when admonitions are implemented.
         fn an_admonition_paragraph_attached_by_a_line_continuation_to_a_list_item_with_wrapped_text_should_produce_admonition()
          {
             let _doc = Parser::default()
@@ -485,7 +487,9 @@ mod bulleted_lists {
         }
 
         #[test]
-        #[ignore] // SKIP test until we implement admonitions and CSS class selector queries
+        #[ignore]
+        // TODO (https://github.com/scouten/asciidoc-parser/issues/456):
+        // Enable this test when admonitions are implemented.
         fn paragraph_like_blocks_attached_to_an_ancestor_list_item_by_a_list_continuation_should_produce_blocks()
          {
             let _doc = Parser::default().parse("* parent\n ** child\n\n+\nNOTE: This is a note.\n\n* another parent\n ** another child\n\n+\n'''\n");
@@ -496,7 +500,9 @@ mod bulleted_lists {
         }
 
         #[test]
-        #[ignore] // SKIP test for now .. direct child syntax and callout lists
+        #[ignore]
+        // TODO (https://github.com/scouten/asciidoc-parser/issues/311):
+        // Enable this test when callouts are implemented.
         fn should_not_inherit_block_attributes_from_previous_block_when_block_is_attached_using_a_list_continuation()
          {
             let _doc = Parser::default().parse("* complex list item\n+\n[source,xml]\n----\n<name>value</name> <!--1-->\n----\n<1> a configuration value\n");
