@@ -19,6 +19,9 @@ pub enum ListItemMarker<'src> {
     /// Ordered list (dots).
     Dots(Span<'src>),
 
+    /// Letter followed by dot (alpha list).
+    AlphaListCapital(Span<'src>),
+
     /// A term to be defined.
     DefinedTerm {
         /// The name of the term being defined.
@@ -33,6 +36,10 @@ pub enum ListItemMarker<'src> {
 }
 
 impl<'src> ListItemMarker<'src> {
+    pub(crate) fn starts_with_marker(source: Span<'src>) -> bool {
+        LIST_ITEM_MARKER.is_match(source.data())
+    }
+
     pub(crate) fn parse(source: Span<'src>) -> Option<MatchedItem<'src, Self>> {
         let source = source.discard_whitespace();
 
@@ -40,6 +47,8 @@ impl<'src> ListItemMarker<'src> {
             let marker = source.slice(0..captures[1].len());
             let marker_str = marker.data();
             let after = source.slice_from(captures[1].len()..).discard_whitespace();
+
+            let first_char = captures[1].chars().next();
 
             let item = if marker_str == "-" {
                 Self::Hyphen(marker)
@@ -49,8 +58,12 @@ impl<'src> ListItemMarker<'src> {
                 Self::Bullet(marker)
             } else if marker_str.starts_with('.') {
                 Self::Dots(marker)
+            } else if let Some(first_char) = first_char
+                && first_char.is_ascii_uppercase()
+            {
+                Self::AlphaListCapital(marker)
             } else {
-                todo!("Not handled yet");
+                todo!("Not handled yet: {}", &captures[1]);
             };
 
             Some(MatchedItem { item, after })
@@ -103,6 +116,11 @@ impl<'src> ListItemMarker<'src> {
                 _ => false,
             },
 
+            Self::AlphaListCapital(_self_span) => match other {
+                Self::AlphaListCapital(_other_span) => true,
+                _ => false,
+            },
+
             Self::DefinedTerm {
                 term: _,
                 marker: self_marker,
@@ -126,6 +144,7 @@ impl<'src> HasSpan<'src> for ListItemMarker<'src> {
             Self::Asterisks(x) => *x,
             Self::Bullet(x) => *x,
             Self::Dots(x) => *x,
+            Self::AlphaListCapital(x) => *x,
 
             Self::DefinedTerm {
                 term: _,
@@ -143,6 +162,11 @@ impl std::fmt::Debug for ListItemMarker<'_> {
             Self::Asterisks(x) => f.debug_tuple("ListItemMarker::Asterisks").field(x).finish(),
             Self::Bullet(x) => f.debug_tuple("ListItemMarker::Bullet").field(x).finish(),
             Self::Dots(x) => f.debug_tuple("ListItemMarker::Dots").field(x).finish(),
+
+            Self::AlphaListCapital(x) => f
+                .debug_tuple("ListItemMarker::AlphaListCapital")
+                .field(x)
+                .finish(),
 
             Self::DefinedTerm {
                 term,

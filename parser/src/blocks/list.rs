@@ -113,6 +113,7 @@ impl<'src> ListBlock<'src> {
             ListItemMarker::Hyphen(_) => ListType::Unordered,
             ListItemMarker::Bullet(_) => ListType::Unordered,
             ListItemMarker::Dots(_) => ListType::Ordered,
+            ListItemMarker::AlphaListCapital(_) => ListType::Ordered,
 
             ListItemMarker::DefinedTerm {
                 term: _,

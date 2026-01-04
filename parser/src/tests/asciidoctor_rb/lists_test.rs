@@ -831,13 +831,13 @@ mod bulleted_lists {
         }
 
         #[test]
-        #[ignore]
         fn word_ending_sentence_on_continuing_line_not_treated_as_a_list_item() {
-            let _doc = Parser::default().parse(
+            let doc = Parser::default().parse(
                 "A. This is the story about\n   AsciiDoc. It begins here.\nB. And it ends here.\n",
             );
-            todo!("assert_xpath: '//ol', output, 1");
-            todo!("assert_xpath: '//ol/li', output, 2");
+
+            assert_xpath(&doc, "//ol", 1);
+            assert_xpath(&doc, "//ol/li", 2);
         }
 
         #[test]

@@ -4,8 +4,9 @@ use crate::{
     HasSpan, Parser, Span,
     attributes::Attrlist,
     blocks::{
-        Break, CompoundDelimitedBlock, ContentModel, IsBlock, ListBlock, ListItem, MediaBlock,
-        Preamble, RawDelimitedBlock, SectionBlock, SimpleBlock, metadata::BlockMetadata,
+        Break, CompoundDelimitedBlock, ContentModel, IsBlock, ListBlock, ListItem, ListItemMarker,
+        MediaBlock, Preamble, RawDelimitedBlock, SectionBlock, SimpleBlock,
+        metadata::BlockMetadata,
     },
     content::SubstitutionGroup,
     document::{Attribute, RefType},
@@ -143,6 +144,7 @@ impl<'src> Block<'src> {
                 '.' | '#' | '=' | '/' | '-' | '+' | '*' | '_' | '[' | ':' | '\'' | '<' | '•'
             )
             && !first_line.contains("::")
+            && !ListItemMarker::starts_with_marker(first_line)
             && let Some(MatchedItem {
                 item: simple_block,
                 after,
@@ -333,13 +335,7 @@ impl<'src> Block<'src> {
                 };
             }
 
-            let first_line = line.item.discard_whitespace();
-            if (first_line.starts_with('-')
-                || first_line.starts_with('.')
-                || first_line.starts_with('*')
-                || first_line.starts_with('•'))
-                && let Some(mi_list) = ListBlock::parse(&metadata, parser, &mut warnings)
-            {
+            if let Some(mi_list) = ListBlock::parse(&metadata, parser, &mut warnings) {
                 if is_for_list_item {
                     return MatchAndWarnings {
                         item: None,
