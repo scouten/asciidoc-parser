@@ -1069,14 +1069,14 @@ mod bulleted_lists {
         }
 
         #[test]
-        #[ignore]
         fn lines_with_alternating_markers_of_unordered_and_ordered_list_types_separated_by_blank_lines_should_be_nested()
          {
-            let _doc = Parser::default().parse("List\n====\n\n* Foo\n\n. Boo\n\n\n* Blech\n");
-            todo!("assert_xpath: '//ul', output, 1");
-            todo!("assert_xpath: '//ol', output, 1");
-            todo!("assert_xpath: '(//ul)[1]/li', output, 2");
-            todo!("assert_xpath: '((//ul)[1]/li//ol)[1]/li', output, 1");
+            let doc = Parser::default().parse("== List\n\n* Foo\n\n. Boo\n\n\n* Blech\n");
+
+            assert_xpath(&doc, "//ul", 1);
+            assert_xpath(&doc, "//ol", 1);
+            assert_xpath(&doc, "(//ul)[1]/li", 2);
+            assert_xpath(&doc, "((//ul)[1]/li//ol)[1]/li", 1);
         }
 
         #[test]
