@@ -7,9 +7,8 @@
 use crate::{
     Document,
     blocks::{
-        Block, Break, CompoundDelimitedBlock, IsBlock, ListBlock, ListItem, ListItemMarker,
-        ListType, MediaBlock, Preamble, RawDelimitedBlock, SectionBlock, SimpleBlock,
-        SimpleBlockStyle,
+        Block, Break, CompoundDelimitedBlock, IsBlock, ListBlock, ListItem, ListType,
+        MediaBlock, Preamble, RawDelimitedBlock, SectionBlock, SimpleBlock, SimpleBlockStyle,
     },
 };
 
@@ -155,10 +154,8 @@ impl ToVirtualDom for Block<'_> {
 
                 let mut node = simple_block_to_node(simple);
 
-                // Extract text content for paragraphs.
-                if node.tag == "p" {
-                    node.text = Some(simple.content().rendered().to_string());
-                } else if simple.style() == SimpleBlockStyle::Literal
+                // For literal blocks, add a <pre> element containing the content.
+                if simple.style() == SimpleBlockStyle::Literal
                     || simple.declared_style() == Some("literal")
                 {
                     // For literal blocks, add a <pre> element containing the content.
@@ -232,7 +229,11 @@ fn simple_block_to_node<'a>(block: &'a SimpleBlock<'a>) -> VirtualNode {
         node = node.with_id(id);
     }
 
-    // TODO: Extract text content from title and body.
+    // Extract text content for paragraphs (only for <p> tags).
+    if tag == "p" {
+        node.text = Some(block.content().rendered().to_string());
+    }
+
     node
 }
 
@@ -245,6 +246,12 @@ fn list_block_to_node<'a>(list: &'a ListBlock<'a>) -> VirtualNode {
 
     let mut list_element = VirtualNode::new(list_tag);
 
+    // For ordered lists, add "arabic" class to the list element.
+    // (This matches Asciidoctor's default numbering style.)
+    if list.type_() == ListType::Ordered {
+        list_element = list_element.with_class("arabic");
+    }
+
     // Add style class to the list element if present.
     if let Some(style) = list.declared_style() {
         list_element = list_element.with_class(style);
@@ -256,6 +263,11 @@ fn list_block_to_node<'a>(list: &'a ListBlock<'a>) -> VirtualNode {
 
     // Wrap the list in a div container (matching Asciidoctor's HTML structure).
     let mut wrapper = VirtualNode::new("div").with_class(base_class);
+
+    // For ordered lists, add "arabic" class to the wrapper as well.
+    if list.type_() == ListType::Ordered {
+        wrapper = wrapper.with_class("arabic");
+    }
 
     // Add style class to the wrapper if present.
     if let Some(style) = list.declared_style() {
@@ -283,11 +295,6 @@ fn list_block_to_node<'a>(list: &'a ListBlock<'a>) -> VirtualNode {
 fn list_item_to_node<'a>(item: &'a ListItem<'a>) -> VirtualNode {
     // TODO: Determine if this is a description list item.
     let mut node = VirtualNode::new("li");
-
-    // Add "arabic" CSS class if the list marker is Dots.
-    if matches!(item.list_item_marker(), ListItemMarker::Dots(_)) {
-        node = node.with_class("arabic");
-    }
 
     for role in item.roles() {
         node = node.with_class(role);
@@ -517,15 +524,18 @@ mod tests {
         let wrapper = &vdom.children[0];
         assert_eq!(wrapper.tag, "div");
         assert!(wrapper.classes.contains(&"olist".to_string()));
+        // Wrapper should also have "arabic" class for ordered lists.
+        assert!(wrapper.classes.contains(&"arabic".to_string()));
         assert_eq!(wrapper.children.len(), 1);
 
         let ol = &wrapper.children[0];
         assert_eq!(ol.tag, "ol");
+        // The <ol> element should also have "arabic" class.
+        assert!(ol.classes.contains(&"arabic".to_string()));
         assert_eq!(ol.children.len(), 3);
 
         for li in &ol.children {
             assert_eq!(li.tag, "li");
-            assert!(li.classes.contains(&"arabic".to_string()));
         }
     }
 }
