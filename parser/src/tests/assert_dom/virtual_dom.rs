@@ -7,8 +7,9 @@
 use crate::{
     Document,
     blocks::{
-        Block, Break, CompoundDelimitedBlock, IsBlock, ListBlock, ListItem, ListType, MediaBlock,
-        Preamble, RawDelimitedBlock, SectionBlock, SimpleBlock, SimpleBlockStyle,
+        Block, Break, CompoundDelimitedBlock, IsBlock, ListBlock, ListItem, ListItemMarker,
+        ListType, MediaBlock, Preamble, RawDelimitedBlock, SectionBlock, SimpleBlock,
+        SimpleBlockStyle,
     },
 };
 
@@ -283,6 +284,11 @@ fn list_item_to_node<'a>(item: &'a ListItem<'a>) -> VirtualNode {
     // TODO: Determine if this is a description list item.
     let mut node = VirtualNode::new("li");
 
+    // Add "arabic" CSS class if the list marker is Dots.
+    if matches!(item.list_item_marker(), ListItemMarker::Dots(_)) {
+        node = node.with_class("arabic");
+    }
+
     for role in item.roles() {
         node = node.with_class(role);
     }
@@ -499,5 +505,27 @@ mod tests {
         assert_eq!(section.children.len(), 2);
         assert_eq!(section.children[0].tag, "h2");
         assert_eq!(section.children[1].tag, "p");
+    }
+
+    #[test]
+    fn ordered_list_has_arabic_class() {
+        let doc = Parser::default().parse(". item 1\n. item 2\n. item 3");
+        let vdom = doc.to_virtual_dom();
+
+        assert_eq!(vdom.children.len(), 1);
+
+        let wrapper = &vdom.children[0];
+        assert_eq!(wrapper.tag, "div");
+        assert!(wrapper.classes.contains(&"olist".to_string()));
+        assert_eq!(wrapper.children.len(), 1);
+
+        let ol = &wrapper.children[0];
+        assert_eq!(ol.tag, "ol");
+        assert_eq!(ol.children.len(), 3);
+
+        for li in &ol.children {
+            assert_eq!(li.tag, "li");
+            assert!(li.classes.contains(&"arabic".to_string()));
+        }
     }
 }
