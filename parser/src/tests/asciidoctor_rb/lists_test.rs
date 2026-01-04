@@ -886,6 +886,7 @@ mod bulleted_lists {
 
     mod nested_lists {
         use super::*;
+        use crate::blocks::IsBlock;
 
         #[test]
         fn asterisk_element_mixed_with_dash_elements_should_be_nested() {
@@ -989,75 +990,85 @@ mod bulleted_lists {
         }
 
         #[test]
-        #[ignore]
         fn nested_ordered_elements_2() {
-            let _doc = Parser::default().parse("List\n====\n\n. Foo\n.. Boo\n. Blech\n");
-            todo!("assert_xpath: '//ol', output, 2");
-            todo!("assert_xpath: '//ol/li', output, 3");
-            todo!("assert_xpath: '(//ol)[1]/li', output, 2");
-            todo!("assert_xpath: '(//ol)[1]/li//ol/li', output, 1");
+            let doc = Parser::default().parse("List\n====\n\n. Foo\n.. Boo\n. Blech\n");
+
+            assert_xpath(&doc, "//ol", 2);
+            assert_xpath(&doc, "//ol/li", 3);
+            assert_xpath(&doc, "(//ol)[1]/li", 2);
+            assert_xpath(&doc, "(//ol)[1]/li//ol/li", 1);
         }
 
         #[test]
-        #[ignore]
         fn nested_ordered_elements_3() {
-            let _doc = Parser::default().parse("List\n====\n\n. Foo\n.. Boo\n... Snoo\n. Blech\n");
-            todo!("assert_xpath: '//ol', output, 3");
-            todo!("assert_xpath: '(//ol)[1]/li', output, 2");
-            todo!("assert_xpath: '((//ol)[1]/li//ol)[1]/li', output, 1");
-            todo!("assert_xpath: '(((//ol)[1]/li//ol)[1]/li//ol)[1]/li', output, 1");
+            let doc = Parser::default().parse("List\n====\n\n. Foo\n.. Boo\n... Snoo\n. Blech\n");
+
+            assert_xpath(&doc, "//ol", 3);
+            assert_xpath(&doc, "(//ol)[1]/li", 2);
+            assert_xpath(&doc, "((//ol)[1]/li//ol)[1]/li", 1);
+            assert_xpath(&doc, "(((//ol)[1]/li//ol)[1]/li//ol)[1]/li", 1);
         }
 
         #[test]
-        #[ignore]
         fn nested_arbitrary_depth_with_dot_marker() {
-            let _doc = Parser::default().parse(". a\n.. b\n... c\n.... d\n..... e\n...... f\n....... g\n........ h\n......... i\n.......... j\n........... k\n............ l\n............. m\n.............. n\n............... o\n................ p\n................. q\n.................. r\n................... s\n.................... t\n..................... u\n...................... v\n....................... w\n........................ x\n......................... y\n.......................... z\n");
-            todo!("refute_includes: output, '.'");
-            todo!("assert_css: 'li', output, 26");
+            let doc = Parser::default().parse(". a\n.. b\n... c\n.... d\n..... e\n...... f\n....... g\n........ h\n......... i\n.......... j\n........... k\n............ l\n............. m\n.............. n\n............... o\n................ p\n................. q\n.................. r\n................... s\n.................... t\n..................... u\n...................... v\n....................... w\n........................ x\n......................... y\n.......................... z\n");
+
+            refute_output_contains(&doc, ".");
+            assert_css(&doc, "li", 26);
         }
 
-        #[test]
-        #[ignore]
-        fn level_of_ordered_list_should_match_section_level() {
-            let _doc = Parser::default().parse("== Parent Section\n\n. item 1.1\n .. item 2.1\n  ... item 3.1\n .. item 2.2\n. item 1.2\n\n=== Nested Section\n\n. item 1.1\n");
-            todo!("doc.find_by context: :olist level checks");
-        }
+        // NOTE: Skipped test named "level of ordered list should match section level"
+        // because we don't store level for parsed items except in the section data
+        // structure.
 
         #[test]
-        #[ignore]
         fn nested_unordered_inside_ordered_elements() {
-            let _doc = Parser::default().parse("List\n====\n\n. Foo\n* Boo\n. Blech\n");
-            todo!("assert_xpath: '//ol', output, 1");
-            todo!("assert_xpath: '//ul', output, 1");
-            todo!("assert_xpath: '(//ol)[1]/li', output, 2");
-            todo!("assert_xpath: '((//ol)[1]/li//ul)[1]/li', output, 1");
+            let doc = Parser::default().parse("List\n====\n\n. Foo\n* Boo\n. Blech\n");
+
+            assert_xpath(&doc, "//ol", 1);
+            assert_xpath(&doc, "//ul", 1);
+            assert_xpath(&doc, "(//ol)[1]/li", 2);
+            assert_xpath(&doc, "((//ol)[1]/li//ul)[1]/li", 1);
         }
 
         #[test]
-        #[ignore]
         fn nested_ordered_inside_unordered_elements() {
-            let _doc = Parser::default().parse("List\n====\n\n* Foo\n. Boo\n* Blech\n");
-            todo!("assert_xpath: '//ul', output, 1");
-            todo!("assert_xpath: '//ol', output, 1");
-            todo!("assert_xpath: '(//ul)[1]/li', output, 2");
-            todo!("assert_xpath: '((//ul)[1]/li//ol)[1]/li', output, 1");
+            let doc = Parser::default().parse("List\n====\n\n* Foo\n. Boo\n* Blech\n");
+
+            assert_xpath(&doc, "//ul", 1);
+            assert_xpath(&doc, "//ol", 1);
+            assert_xpath(&doc, "(//ul)[1]/li", 2);
+            assert_xpath(&doc, "((//ul)[1]/li//ol)[1]/li", 1);
         }
 
         #[test]
-        #[ignore]
         fn three_levels_of_alternating_unordered_and_ordered_elements() {
-            let _doc = Parser::default()
+            let doc = Parser::default()
                 .parse("== Lists\n\n* bullet 1\n. numbered 1.1\n** bullet 1.1.1\n* bullet 2\n");
-            todo!("assert_css: '.ulist', output, 2");
-            todo!("assert_css: '.olist', output, 1");
-            todo!("assert_css: '.ulist > ul > li > p', output, 3");
-            todo!("assert_css: '.ulist > ul > li > p + .olist', output, 1");
-            todo!("assert_css: '.ulist > ul > li > p + .olist > ol > li > p', output, 1");
-            todo!("assert_css: '.ulist > ul > li > p + .olist > ol > li > p + .ulist', output, 1");
-            todo!(
-                "assert_css: '.ulist > ul > li > p + .olist > ol > li > p + .ulist > ul > li > p', output, 1"
+
+            let vdom = doc.to_virtual_dom();
+            dbg!(&vdom);
+
+            assert_css(&doc, ".ulist", 2);
+            assert_css(&doc, ".olist", 1);
+            assert_css(&doc, ".ulist > ul > li > p", 3);
+            assert_css(&doc, ".ulist > ul > li > p + .olist", 1);
+
+            assert_css(&doc, ".ulist > ul > li > p + .olist > ol > li > p", 1);
+
+            assert_css(
+                &doc,
+                ".ulist > ul > li > p + .olist > ol > li > p + .ulist",
+                1,
             );
-            todo!("assert_css: '.ulist > ul > li + li > p', output, 1");
+
+            assert_css(
+                &doc,
+                ".ulist > ul > li > p + .olist > ol > li > p + .ulist > ul > li > p",
+                1,
+            );
+
+            assert_css(&doc, ".ulist > ul > li + li > p", 1);
         }
 
         #[test]
