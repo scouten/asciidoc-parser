@@ -613,7 +613,14 @@ fn matches_single_predicate(node: &VirtualNode, predicate: &str) -> bool {
             .unwrap_or(value_part.trim());
 
         match attr_name {
-            "class" => return node.classes.iter().any(|c| c == value),
+            "class" => {
+                // Split the value by whitespace to handle multiple classes.
+                // The node must have ALL classes specified in the value.
+                let required_classes: Vec<&str> = value.split_whitespace().collect();
+                return required_classes
+                    .iter()
+                    .all(|required| node.classes.iter().any(|c| c == *required));
+            }
             "id" => return node.id.as_deref() == Some(value),
             _ => return false,
         }
