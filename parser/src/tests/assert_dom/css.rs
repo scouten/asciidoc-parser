@@ -35,32 +35,18 @@ fn query_descendant_or_self<'a>(node: &'a VirtualNode, pattern: &str) -> Vec<&'a
         let rest = rest.trim();
 
         // Find all nodes matching first part.
+        // NOTE: We still search all descendants for the first part, because the
+        // initial query can match elements anywhere in the tree. The `>` only
+        // constrains the relationship between matched elements and what follows.
         let mut results = Vec::new();
         collect_descendants_matching(node, first, &mut results);
 
-        // For each matching node, look at only its direct children and check if they
-        // match the rest of the selector (which may itself contain combinators).
+        // For each matching node, use the direct-child-only query helper to process
+        // rest.
         let mut final_results = Vec::new();
         for matched_node in results {
-            // Process `rest` which may be:
-            // - A simple selector like `.paragraph` (matches direct children with that
-            //   class).
-            // - A complex selector like `li > .paragraph` (need to recursively process).
-            if rest.contains('>') || rest.contains(' ') {
-                // Complex selector with more combinators - recursively process starting
-                // from direct children only.
-                for child in &matched_node.children {
-                    let child_matches = query_descendant_or_self(child, rest);
-                    final_results.extend(child_matches);
-                }
-            } else {
-                // Simple selector - just check direct children.
-                for child in &matched_node.children {
-                    if matches_selector_with_context(child, rest, Some(matched_node)) {
-                        final_results.push(child);
-                    }
-                }
-            }
+            let children_matches = query_with_direct_child_constraint(matched_node, rest);
+            final_results.extend(children_matches);
         }
         return final_results;
     }
@@ -115,6 +101,101 @@ fn collect_descendants_matching_with_parent<'a>(
 
     for child in &node.children {
         collect_descendants_matching_with_parent(child, selector, Some(node), results);
+    }
+}
+
+/// Helper to query with `>` and `+` combinator chains, only looking at direct
+/// children/siblings.
+fn query_with_direct_child_constraint<'a>(
+    node: &'a VirtualNode,
+    pattern: &str,
+) -> Vec<&'a VirtualNode> {
+    // Find which combinator appears first to process them in order.
+    let plus_pos = pattern.find('+');
+    let gt_pos = pattern.find('>');
+
+    // Process `>` first if it appears before `+`.
+    if let Some(gt) = gt_pos {
+        if plus_pos.is_none() || gt < plus_pos.unwrap() {
+            // `>` comes first or there's no `+`.
+            let (first, rest) = pattern.split_at(gt);
+            let first = first.trim();
+            let rest = rest[1..].trim(); // Skip the `>` character.
+
+            let mut results = Vec::new();
+            for child in &node.children {
+                if matches_selector_with_context(child, first, Some(node)) {
+                    // This child matches, recursively process rest with this child.
+                    let further_matches = query_with_direct_child_constraint(child, rest);
+                    results.extend(further_matches);
+                }
+            }
+            return results;
+        }
+    }
+
+    // Process `+` if it appears first or there's no `>`.
+    if let Some((first, rest)) = pattern.split_once('+') {
+        let first = first.trim();
+        let rest = rest.trim();
+
+        let mut results = Vec::new();
+        for child in &node.children {
+            if matches_selector_with_context(child, first, Some(node)) {
+                // Find next sibling.
+                let child_index = node
+                    .children
+                    .iter()
+                    .position(|c| std::ptr::eq(c as *const _, child as *const _));
+
+                if let Some(idx) = child_index {
+                    if let Some(next_sibling) = node.children.get(idx + 1) {
+                        // Check if next sibling matches rest.
+                        // If rest has combinators, we need to continue processing from
+                        // next_sibling.
+                        if rest.contains('>') || rest.contains('+') {
+                            // Parse the first part of rest to check against next_sibling.
+                            let (next_part, remaining) = if let Some(pos) = rest.find('>') {
+                                (rest[..pos].trim(), Some(rest[pos + 1..].trim()))
+                            } else if let Some(pos) = rest.find('+') {
+                                (rest[..pos].trim(), Some(rest[pos + 1..].trim()))
+                            } else {
+                                (rest, None)
+                            };
+
+                            // Check if next_sibling matches next_part.
+                            if matches_selector_with_context(next_sibling, next_part, Some(node)) {
+                                if let Some(remaining) = remaining {
+                                    // Continue processing from next_sibling with remaining
+                                    // selector.
+                                    let further =
+                                        query_with_direct_child_constraint(next_sibling, remaining);
+                                    results.extend(further);
+                                } else {
+                                    // No more selector parts, next_sibling is a match.
+                                    results.push(next_sibling);
+                                }
+                            }
+                        } else {
+                            // Simple selector - just check next sibling directly.
+                            if matches_selector_with_context(next_sibling, rest, Some(node)) {
+                                results.push(next_sibling);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        results
+    } else {
+        // No more `>` combinators - just match direct children.
+        let mut results = Vec::new();
+        for child in &node.children {
+            if matches_selector_with_context(child, pattern, Some(node)) {
+                results.push(child);
+            }
+        }
+        results
     }
 }
 
@@ -426,5 +507,29 @@ mod tests {
         // direct children of the first li.
         let paras = query_css(&vdom, "li:first-of-type > p");
         assert!(!paras.is_empty());
+    }
+
+    #[test]
+    fn query_plus_with_direct_child() {
+        let doc = Parser::default().parse("* bullet 1\n. numbered 1.1");
+        let vdom = doc.to_virtual_dom();
+
+        // Test: li > p + .olist
+        let matches = query_css(&vdom, "li > p + .olist");
+        assert_eq!(
+            matches.len(),
+            1,
+            "Should find 1 .olist that is adjacent sibling of p inside li"
+        );
+    }
+
+    #[test]
+    fn query_full_ulist_selector() {
+        let doc = Parser::default().parse("* bullet 1\n. numbered 1.1");
+        let vdom = doc.to_virtual_dom();
+
+        // Test: .ulist > ul > li > p + .olist
+        let matches = query_css(&vdom, ".ulist > ul > li > p + .olist");
+        assert_eq!(matches.len(), 1, "Should find 1 .olist with full selector");
     }
 }

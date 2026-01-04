@@ -1046,9 +1046,6 @@ mod bulleted_lists {
             let doc = Parser::default()
                 .parse("== Lists\n\n* bullet 1\n. numbered 1.1\n** bullet 1.1.1\n* bullet 2\n");
 
-            let vdom = doc.to_virtual_dom();
-            dbg!(&vdom);
-
             assert_css(&doc, ".ulist", 2);
             assert_css(&doc, ".olist", 1);
             assert_css(&doc, ".ulist > ul > li > p", 3);
