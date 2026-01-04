@@ -842,6 +842,8 @@ mod bulleted_lists {
 
         #[test]
         #[ignore]
+        // TODO (https://github.com/scouten/asciidoc-parser/issues/461):
+        // Enable this test when xref replacement refactoring is complete.
         fn should_discover_anchor_at_start_of_unordered_list_item_text_and_register_it_as_a_reference()
          {
             let _doc = Parser::default().parse("The highest peak in the Front Range is <<grays-peak>>, which tops <<mount-evans>> by just a few feet.\n\n* [[mount-evans,Mount Evans]]At 14,271 feet, Mount Evans is the highest summit of the Chicago Peaks in the Front Range of the Rocky Mountains.\n* [[grays-peak,Grays Peak]]\nGrays Peak rises to 14,278 feet, making it the highest summit in the Front Range of the Rocky Mountains.\n* Longs Peak is a 14,259-foot high, prominent mountain summit in the northern Front Range of the Rocky Mountains.\n* Pikes Peak is the highest summit of the southern Front Range of the Rocky Mountains at 14,115 feet.\n");
@@ -856,6 +858,8 @@ mod bulleted_lists {
 
         #[test]
         #[ignore]
+        // TODO (https://github.com/scouten/asciidoc-parser/issues/461):
+        // Enable this test when xref replacement refactoring is complete.
         fn should_discover_anchor_at_start_of_ordered_list_item_text_and_register_it_as_a_reference()
          {
             let _doc = Parser::default().parse("This is a cross-reference to <<step-2>>.\nThis is a cross-reference to <<step-4>>.\n\n. Ordered list, item 1, without anchor\n. [[step-2,Step 2]]Ordered list, item 2, with anchor\n. Ordered list, item 3, without anchor\n. [[step-4,Step 4]]Ordered list, item 4, with anchor\n");
@@ -866,6 +870,10 @@ mod bulleted_lists {
 
         #[test]
         #[ignore]
+        // TODO (https://github.com/scouten/asciidoc-parser/issues/461):
+        // Enable this test when xref replacement refactoring is complete.
+        // TODO (https://github.com/scouten/asciidoc-parser/issues/311):
+        // Enable this test when callouts are implemented.
         fn should_discover_anchor_at_start_of_callout_list_item_text_and_register_it_as_a_reference()
          {
             let _doc = Parser::default().parse("This is a cross-reference to <<url-mapping>>.\n\n[source,ruby]\n----\nrequire 'sinatra' <1>\n\nget '/hi' do <2> <3>\n  \"Hello World!\"\nend\n----\n<1> Library import\n<2> [[url-mapping,url mapping]]URL mapping\n<3> Response block\n");
