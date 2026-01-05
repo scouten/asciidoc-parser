@@ -178,6 +178,75 @@ fn query_parenthesized<'a>(root: &'a VirtualNode, xpath: &str) -> Vec<&'a Virtua
     vec![]
 }
 
+/// Parses a selector to extract base selector, predicates, and any continuation
+/// path.
+///
+/// For example, `*[@class="foo"]//p[text()="bar"]` returns:
+/// - base_selector: `*`
+/// - predicate_part: Some(`[@class="foo"]`)
+/// - continuation: Some(`//p[text()="bar"]`)
+fn parse_selector_with_predicates(pattern: &str) -> (&str, Option<&str>, Option<&str>) {
+    let mut base_end = 0;
+    let mut predicate_start: Option<usize> = None;
+    let mut predicate_end: Option<usize> = None;
+    let mut bracket_depth = 0;
+    let mut in_string = false;
+    let mut string_delim = '\0';
+
+    for (i, ch) in pattern.chars().enumerate() {
+        match ch {
+            '[' if !in_string => {
+                if bracket_depth == 0 {
+                    if predicate_start.is_none() {
+                        predicate_start = Some(i);
+                        base_end = i;
+                    }
+                }
+                bracket_depth += 1;
+            }
+            ']' if !in_string => {
+                bracket_depth -= 1;
+                if bracket_depth == 0 {
+                    predicate_end = Some(i + 1);
+                }
+            }
+            '"' | '\'' if bracket_depth > 0 => {
+                if !in_string {
+                    in_string = true;
+                    string_delim = ch;
+                } else if ch == string_delim {
+                    in_string = false;
+                }
+            }
+            '/' if bracket_depth == 0 && !in_string => {
+                // Found a path separator outside of predicates.
+                // Everything from here is a continuation.
+                let base = if base_end > 0 {
+                    &pattern[..base_end]
+                } else {
+                    &pattern[..i]
+                };
+                let pred = if let (Some(start), Some(end)) = (predicate_start, predicate_end) {
+                    Some(&pattern[start..end])
+                } else {
+                    None
+                };
+                return (base, pred, Some(&pattern[i..]));
+            }
+            _ => {}
+        }
+    }
+
+    // No continuation found.
+    if let (Some(start), Some(end)) = (predicate_start, predicate_end) {
+        (&pattern[..base_end], Some(&pattern[start..end]), None)
+    } else if base_end > 0 {
+        (&pattern[..base_end], None, None)
+    } else {
+        (pattern, None, None)
+    }
+}
+
 /// Queries for descendants or self matching the pattern.
 fn query_descendant_or_self<'a>(node: &'a VirtualNode, pattern: &str) -> Vec<&'a VirtualNode> {
     // Split on first '/' to handle paths like "ul/li".
@@ -193,11 +262,33 @@ fn query_descendant_or_self<'a>(node: &'a VirtualNode, pattern: &str) -> Vec<&'a
             collect_descendants_matching(node, first, &mut results);
             results = apply_numeric_predicate(results, first);
 
+            // Parse axis_rest to separate the sibling selector from any continuation.
+            let (axis_selector, axis_predicate, continuation) =
+                parse_selector_with_predicates(axis_rest);
+            let axis_selector_with_pred = if let Some(pred) = axis_predicate {
+                format!("{}{}", axis_selector, pred)
+            } else {
+                axis_selector.to_string()
+            };
+
             // For each matched node, find its preceding siblings.
             let mut final_results = Vec::new();
             for matched_node in results {
-                let siblings = find_preceding_siblings(node, matched_node, axis_rest.trim());
-                final_results.extend(siblings);
+                let siblings =
+                    find_preceding_siblings(node, matched_node, &axis_selector_with_pred);
+
+                // If there's a continuation, query each sibling.
+                if let Some(cont) = continuation {
+                    for sibling in siblings {
+                        if let Some(stripped) = cont.strip_prefix("//") {
+                            final_results.extend(query_descendant_or_self(sibling, stripped));
+                        } else if let Some(stripped) = cont.strip_prefix('/') {
+                            final_results.extend(query_from_root(sibling, stripped));
+                        }
+                    }
+                } else {
+                    final_results.extend(siblings);
+                }
             }
             return final_results;
         }
@@ -208,11 +299,33 @@ fn query_descendant_or_self<'a>(node: &'a VirtualNode, pattern: &str) -> Vec<&'a
             collect_descendants_matching(node, first, &mut results);
             results = apply_numeric_predicate(results, first);
 
+            // Parse axis_rest to separate the sibling selector from any continuation.
+            let (axis_selector, axis_predicate, continuation) =
+                parse_selector_with_predicates(axis_rest);
+            let axis_selector_with_pred = if let Some(pred) = axis_predicate {
+                format!("{}{}", axis_selector, pred)
+            } else {
+                axis_selector.to_string()
+            };
+
             // For each matched node, find its following siblings.
             let mut final_results = Vec::new();
             for matched_node in results {
-                let siblings = find_following_siblings(node, matched_node, axis_rest.trim());
-                final_results.extend(siblings);
+                let siblings =
+                    find_following_siblings(node, matched_node, &axis_selector_with_pred);
+
+                // If there's a continuation, query each sibling.
+                if let Some(cont) = continuation {
+                    for sibling in siblings {
+                        if let Some(stripped) = cont.strip_prefix("//") {
+                            final_results.extend(query_descendant_or_self(sibling, stripped));
+                        } else if let Some(stripped) = cont.strip_prefix('/') {
+                            final_results.extend(query_from_root(sibling, stripped));
+                        }
+                    }
+                } else {
+                    final_results.extend(siblings);
+                }
             }
             return final_results;
         }
@@ -240,10 +353,36 @@ fn query_descendant_or_self<'a>(node: &'a VirtualNode, pattern: &str) -> Vec<&'a
         }
         final_results
     } else {
-        // Simple tag match: Find all descendants (or self) matching this selector.
+        // Simple tag match or tag with predicate.
+        // Extract base selector and predicate parts.
+        let pattern = pattern.trim();
+
+        // Parse predicates carefully to stop at // or / that appears outside brackets.
+        let (base_selector, predicate_part, continuation) = parse_selector_with_predicates(pattern);
+
         let mut results = Vec::new();
-        collect_descendants_matching(node, pattern.trim(), &mut results);
-        apply_numeric_predicate(results, pattern.trim())
+        collect_descendants_matching(node, base_selector, &mut results);
+
+        // If there are predicates, filter results by predicates.
+        if let Some(pred) = predicate_part {
+            results.retain(|n| matches_predicate(n, pred));
+        }
+
+        // If there's a continuation path (e.g., //p[text()="numbered"]),
+        // query descendants of each result.
+        if let Some(cont) = continuation {
+            let mut final_results = Vec::new();
+            for matched_node in results {
+                if cont.starts_with("//") {
+                    final_results.extend(query_descendant_or_self(matched_node, &cont[2..]));
+                } else if cont.starts_with('/') {
+                    final_results.extend(query_from_root(matched_node, &cont[1..]));
+                }
+            }
+            return apply_numeric_predicate(final_results, pattern);
+        }
+
+        apply_numeric_predicate(results, pattern)
     }
 }
 
