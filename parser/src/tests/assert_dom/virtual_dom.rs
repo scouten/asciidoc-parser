@@ -399,6 +399,12 @@ fn raw_delimited_to_node<'a>(raw: &'a RawDelimitedBlock<'a>) -> VirtualNode {
         node = node.with_id(id);
     }
 
+    // Add block title if present.
+    if let Some(title) = raw.title() {
+        let title_node = VirtualNode::new("div").with_class("title").with_text(title);
+        node.children.push(title_node);
+    }
+
     if tag != "comment" {
         let pre = VirtualNode::new("pre");
         node.children.push(pre);
