@@ -7,8 +7,9 @@
 use crate::{
     Document,
     blocks::{
-        Block, Break, CompoundDelimitedBlock, IsBlock, ListBlock, ListItem, ListType, MediaBlock,
-        Preamble, RawDelimitedBlock, SectionBlock, SimpleBlock, SimpleBlockStyle,
+        Block, Break, CompoundDelimitedBlock, IsBlock, ListBlock, ListItem, ListItemMarker,
+        ListType, MediaBlock, Preamble, RawDelimitedBlock, SectionBlock, SimpleBlock,
+        SimpleBlockStyle,
     },
 };
 
@@ -258,7 +259,55 @@ fn list_block_to_node<'a>(list: &'a ListBlock<'a>) -> VirtualNode {
     }
 
     for item in list.nested_blocks() {
-        list_element.children.push(item.to_virtual_dom());
+        // For description lists, we need to create two peer nodes: dt and dd.
+        if list.type_() == ListType::Description {
+            if let Block::ListItem(list_item) = item {
+                // Create dt node for the term.
+                if let ListItemMarker::DefinedTerm { term, .. } = list_item.list_item_marker() {
+                    let mut dt_node = VirtualNode::new("dt");
+
+                    for role in list_item.roles() {
+                        dt_node = dt_node.with_class(role);
+                    }
+
+                    if let Some(id) = list_item.id() {
+                        dt_node = dt_node.with_id(id);
+                    }
+
+                    // Set the term text.
+                    dt_node = dt_node.with_text(term.rendered().to_string());
+                    list_element.children.push(dt_node);
+
+                    // Create dd node for the definition.
+                    let mut dd_node = VirtualNode::new("dd");
+
+                    let nested = list_item.nested_blocks().collect::<Vec<_>>();
+                    let has_multiple_blocks = nested.len() > 1;
+
+                    for (index, child) in nested.iter().enumerate() {
+                        let child_vdom = child.to_virtual_dom();
+
+                        // Wrap paragraphs in div.paragraph when they appear after other blocks.
+                        if has_multiple_blocks
+                            && index > 0
+                            && child_vdom.tag == "p"
+                            && child_vdom.classes.is_empty()
+                        {
+                            let wrapper = VirtualNode::new("div")
+                                .with_class("paragraph")
+                                .with_child(child_vdom);
+                            dd_node.children.push(wrapper);
+                        } else {
+                            dd_node.children.push(child_vdom);
+                        }
+                    }
+
+                    list_element.children.push(dd_node);
+                }
+            }
+        } else {
+            list_element.children.push(item.to_virtual_dom());
+        }
     }
 
     // Wrap the list in a div container (matching Asciidoctor's HTML structure).
@@ -293,7 +342,6 @@ fn list_block_to_node<'a>(list: &'a ListBlock<'a>) -> VirtualNode {
 }
 
 fn list_item_to_node<'a>(item: &'a ListItem<'a>) -> VirtualNode {
-    // TODO: Determine if this is a description list item.
     let mut node = VirtualNode::new("li");
 
     for role in item.roles() {
@@ -543,5 +591,45 @@ mod tests {
         for li in &ol.children {
             assert_eq!(li.tag, "li");
         }
+    }
+
+    #[test]
+    fn description_list_uses_dt_and_dd_tags() {
+        let doc = Parser::default().parse("term1:: definition1\nterm2:: definition2");
+        let vdom = doc.to_virtual_dom();
+
+        assert_eq!(vdom.children.len(), 1);
+
+        let wrapper = &vdom.children[0];
+        assert_eq!(wrapper.tag, "div");
+        assert!(wrapper.classes.contains(&"dlist".to_string()));
+        assert_eq!(wrapper.children.len(), 1);
+
+        let dl = &wrapper.children[0];
+        assert_eq!(dl.tag, "dl");
+        // Should have 4 children: dt, dd, dt, dd.
+        assert_eq!(dl.children.len(), 4);
+
+        // Check first term/definition pair.
+        assert_eq!(dl.children[0].tag, "dt");
+        assert_eq!(dl.children[0].text.as_deref(), Some("term1"));
+        assert_eq!(dl.children[1].tag, "dd");
+        assert_eq!(dl.children[1].children.len(), 1);
+        assert_eq!(dl.children[1].children[0].tag, "p");
+        assert_eq!(
+            dl.children[1].children[0].text.as_deref(),
+            Some("definition1")
+        );
+
+        // Check second term/definition pair.
+        assert_eq!(dl.children[2].tag, "dt");
+        assert_eq!(dl.children[2].text.as_deref(), Some("term2"));
+        assert_eq!(dl.children[3].tag, "dd");
+        assert_eq!(dl.children[3].children.len(), 1);
+        assert_eq!(dl.children[3].children[0].tag, "p");
+        assert_eq!(
+            dl.children[3].children[0].text.as_deref(),
+            Some("definition2")
+        );
     }
 }
