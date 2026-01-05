@@ -1080,26 +1080,38 @@ mod bulleted_lists {
         }
 
         #[test]
-        #[ignore]
         fn list_item_with_literal_content_should_not_consume_nested_list_of_different_type() {
-            let _doc = Parser::default()
-                .parse("List\n====\n\n- bullet\n\n  literal\n  but not\n  hungry\n\n. numbered\n");
-            todo!("assert_xpath: '//ul', output, 1");
-            todo!("assert_xpath: '//li', output, 2");
-            todo!("assert_xpath: '//ul//ol', output, 1");
-            todo!("assert_xpath: '//ul/li/p', output, 1");
-            todo!("assert_xpath: '//ul/li/p[text()=\"bullet\"]', output, 1");
-            todo!(
-                "assert_xpath: '//ul/li/p/following-sibling::*[@class=\"literalblock\"]', output, 1"
+            let doc = Parser::default()
+                .parse("== List\n\n- bullet\n\n  literal\n  but not\n  hungry\n\n. numbered\n");
+
+            assert_xpath(&doc, "//ul", 1);
+            assert_xpath(&doc, "//li", 2);
+            assert_xpath(&doc, "//ul//ol", 1);
+            assert_xpath(&doc, "//ul/li/p", 1);
+            assert_xpath(&doc, "//ul/li/p[text()=\"bullet\"]", 1);
+
+            assert_xpath(
+                &doc,
+                "//ul/li/p/following-sibling::*[@class=\"literalblock\"]",
+                1,
             );
-            todo!(
-                "assert_xpath: '//ul/li/p/following-sibling::*[@class=\"literalblock\"]//pre[text()=\"literal\\nbut not\\nhungry\"]', output, 1"
+
+            assert_xpath(
+                &doc,
+                "//ul/li/p/following-sibling::*[@class=\"literalblock\"]//pre[text()=\"literal\\nbut not\\nhungry\"]",
+                1,
             );
-            todo!(
-                "assert_xpath: '//*[@class=\"literalblock\"]/following-sibling::*[@class=\"olist arabic\"]', output, 1"
+
+            assert_xpath(
+                &doc,
+                "//*[@class=\"literalblock\"]/following-sibling::*[@class=\"olist arabic\"]",
+                1,
             );
-            todo!(
-                "assert_xpath: '//*[@class=\"literalblock\"]/following-sibling::*[@class=\"olist arabic\"]//p[text()=\"numbered\"]', output, 1"
+
+            assert_xpath(
+                &doc,
+                "//*[@class=\"literalblock\"]/following-sibling::*[@class=\"olist arabic\"]//p[text()=\"numbered\"]",
+                1,
             );
         }
 
