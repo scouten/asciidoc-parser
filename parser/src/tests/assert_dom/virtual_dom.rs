@@ -7,8 +7,8 @@
 use crate::{
     Document,
     blocks::{
-        Block, Break, CompoundDelimitedBlock, IsBlock, ListBlock, ListItem, ListType,
-        MediaBlock, Preamble, RawDelimitedBlock, SectionBlock, SimpleBlock, SimpleBlockStyle,
+        Block, Break, CompoundDelimitedBlock, IsBlock, ListBlock, ListItem, ListType, MediaBlock,
+        Preamble, RawDelimitedBlock, SectionBlock, SimpleBlock, SimpleBlockStyle,
     },
 };
 
