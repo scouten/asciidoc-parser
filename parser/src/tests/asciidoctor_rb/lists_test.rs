@@ -1116,15 +1116,21 @@ mod bulleted_lists {
         }
 
         #[test]
-        #[ignore]
         fn nested_list_item_does_not_eat_the_title_of_the_following_detached_block() {
-            let _doc = Parser::default().parse("List\n====\n\n- bullet\n  * nested bullet 1\n  * nested bullet 2\n\n.Title\n....\nliteral\n....\n");
-            todo!("assert_xpath: '//*[@class=\"ulist\"]/ul', output, 2");
-            todo!(
-                "assert_xpath: '(//*[@class=\"ulist\"])[1]/following-sibling::*[@class=\"literalblock\"]', output, 1"
+            let doc = Parser::default().parse("List\n====\n\n- bullet\n  * nested bullet 1\n  * nested bullet 2\n\n.Title\n....\nliteral\n....\n");
+
+            assert_xpath(&doc, "//*[@class=\"ulist\"]/ul", 2);
+
+            assert_xpath(
+                &doc,
+                "(//*[@class=\"ulist\"])[1]/following-sibling::*[@class=\"literalblock\"]",
+                1,
             );
-            todo!(
-                "assert_xpath: '(//*[@class=\"ulist\"])[1]/following-sibling::*[@class=\"literalblock\"]/*[@class=\"title\"]', output, 1"
+
+            assert_xpath(
+                &doc,
+                "(//*[@class=\"ulist\"])[1]/following-sibling::*[@class=\"literalblock\"]/*[@class=\"title\"]",
+                1,
             );
         }
 
