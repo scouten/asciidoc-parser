@@ -193,23 +193,23 @@ fn parse_selector_with_predicates(pattern: &str) -> (&str, Option<&str>, Option<
     let mut in_string = false;
     let mut string_delim = '\0';
 
-    for (i, ch) in pattern.chars().enumerate() {
+    for (i, ch) in pattern.char_indices() {
         match ch {
             '[' if !in_string => {
-                if bracket_depth == 0 {
-                    if predicate_start.is_none() {
-                        predicate_start = Some(i);
-                        base_end = i;
-                    }
+                if bracket_depth == 0 && predicate_start.is_none() {
+                    predicate_start = Some(i);
+                    base_end = i;
                 }
                 bracket_depth += 1;
             }
+
             ']' if !in_string => {
                 bracket_depth -= 1;
                 if bracket_depth == 0 {
                     predicate_end = Some(i + 1);
                 }
             }
+
             '"' | '\'' if bracket_depth > 0 => {
                 if !in_string {
                     in_string = true;
@@ -218,6 +218,7 @@ fn parse_selector_with_predicates(pattern: &str) -> (&str, Option<&str>, Option<
                     in_string = false;
                 }
             }
+
             '/' if bracket_depth == 0 && !in_string => {
                 // Found a path separator outside of predicates.
                 // Everything from here is a continuation.
@@ -226,6 +227,7 @@ fn parse_selector_with_predicates(pattern: &str) -> (&str, Option<&str>, Option<
                 } else {
                     &pattern[..i]
                 };
+
                 let pred = if let (Some(start), Some(end)) = (predicate_start, predicate_end) {
                     Some(&pattern[start..end])
                 } else {
@@ -373,10 +375,10 @@ fn query_descendant_or_self<'a>(node: &'a VirtualNode, pattern: &str) -> Vec<&'a
         if let Some(cont) = continuation {
             let mut final_results = Vec::new();
             for matched_node in results {
-                if cont.starts_with("//") {
-                    final_results.extend(query_descendant_or_self(matched_node, &cont[2..]));
-                } else if cont.starts_with('/') {
-                    final_results.extend(query_from_root(matched_node, &cont[1..]));
+                if let Some(stripped) = cont.strip_prefix("//") {
+                    final_results.extend(query_descendant_or_self(matched_node, stripped));
+                } else if let Some(stripped) = cont.strip_prefix('/') {
+                    final_results.extend(query_from_root(matched_node, stripped));
                 }
             }
             return apply_numeric_predicate(final_results, pattern);

@@ -83,10 +83,10 @@ pub(crate) fn assert_output_contains<'src>(doc: &'src Document<'src>, text: &str
 }
 
 fn check_block_contains<'src, B: IsBlock<'src>>(block: &'src B, text: &str) -> bool {
-    if let Some(content) = block.rendered_content() {
-        if content.contains(text) {
-            return true;
-        }
+    if let Some(content) = block.rendered_content()
+        && content.contains(text)
+    {
+        return true;
     }
 
     block.nested_blocks().any(|b| check_block_contains(b, text))

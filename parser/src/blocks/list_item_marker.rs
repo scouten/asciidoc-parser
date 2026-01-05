@@ -116,10 +116,9 @@ impl<'src> ListItemMarker<'src> {
                 _ => false,
             },
 
-            Self::AlphaListCapital(_self_span) => match other {
-                Self::AlphaListCapital(_other_span) => true,
-                _ => false,
-            },
+            Self::AlphaListCapital(_self_span) => {
+                matches!(other, Self::AlphaListCapital(_other_span))
+            }
 
             Self::DefinedTerm {
                 term: _,

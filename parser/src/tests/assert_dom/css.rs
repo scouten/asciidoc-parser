@@ -115,23 +115,23 @@ fn query_with_direct_child_constraint<'a>(
     let gt_pos = pattern.find('>');
 
     // Process `>` first if it appears before `+`.
-    if let Some(gt) = gt_pos {
-        if plus_pos.is_none() || gt < plus_pos.unwrap() {
-            // `>` comes first or there's no `+`.
-            let (first, rest) = pattern.split_at(gt);
-            let first = first.trim();
-            let rest = rest[1..].trim(); // Skip the `>` character.
+    if let Some(gt) = gt_pos
+        && (plus_pos.is_none() || gt < plus_pos.unwrap())
+    {
+        // `>` comes first or there's no `+`.
+        let (first, rest) = pattern.split_at(gt);
+        let first = first.trim();
+        let rest = rest[1..].trim(); // Skip the `>` character.
 
-            let mut results = Vec::new();
-            for child in &node.children {
-                if matches_selector_with_context(child, first, Some(node)) {
-                    // This child matches, recursively process rest with this child.
-                    let further_matches = query_with_direct_child_constraint(child, rest);
-                    results.extend(further_matches);
-                }
+        let mut results = Vec::new();
+        for child in &node.children {
+            if matches_selector_with_context(child, first, Some(node)) {
+                // This child matches, recursively process rest with this child.
+                let further_matches = query_with_direct_child_constraint(child, rest);
+                results.extend(further_matches);
             }
-            return results;
         }
+        return results;
     }
 
     // Process `+` if it appears first or there's no `>`.
@@ -148,39 +148,39 @@ fn query_with_direct_child_constraint<'a>(
                     .iter()
                     .position(|c| std::ptr::eq(c as *const _, child as *const _));
 
-                if let Some(idx) = child_index {
-                    if let Some(next_sibling) = node.children.get(idx + 1) {
-                        // Check if next sibling matches rest.
-                        // If rest has combinators, we need to continue processing from
-                        // next_sibling.
-                        if rest.contains('>') || rest.contains('+') {
-                            // Parse the first part of rest to check against next_sibling.
-                            let (next_part, remaining) = if let Some(pos) = rest.find('>') {
-                                (rest[..pos].trim(), Some(rest[pos + 1..].trim()))
-                            } else if let Some(pos) = rest.find('+') {
-                                (rest[..pos].trim(), Some(rest[pos + 1..].trim()))
-                            } else {
-                                (rest, None)
-                            };
-
-                            // Check if next_sibling matches next_part.
-                            if matches_selector_with_context(next_sibling, next_part, Some(node)) {
-                                if let Some(remaining) = remaining {
-                                    // Continue processing from next_sibling with remaining
-                                    // selector.
-                                    let further =
-                                        query_with_direct_child_constraint(next_sibling, remaining);
-                                    results.extend(further);
-                                } else {
-                                    // No more selector parts, next_sibling is a match.
-                                    results.push(next_sibling);
-                                }
-                            }
+                if let Some(idx) = child_index
+                    && let Some(next_sibling) = node.children.get(idx + 1)
+                {
+                    // Check if next sibling matches rest.
+                    // If rest has combinators, we need to continue processing from
+                    // next_sibling.
+                    if rest.contains('>') || rest.contains('+') {
+                        // Parse the first part of rest to check against next_sibling.
+                        let (next_part, remaining) = if let Some(pos) = rest.find('>') {
+                            (rest[..pos].trim(), Some(rest[pos + 1..].trim()))
+                        } else if let Some(pos) = rest.find('+') {
+                            (rest[..pos].trim(), Some(rest[pos + 1..].trim()))
                         } else {
-                            // Simple selector - just check next sibling directly.
-                            if matches_selector_with_context(next_sibling, rest, Some(node)) {
+                            (rest, None)
+                        };
+
+                        // Check if next_sibling matches next_part.
+                        if matches_selector_with_context(next_sibling, next_part, Some(node)) {
+                            if let Some(remaining) = remaining {
+                                // Continue processing from next_sibling with remaining
+                                // selector.
+                                let further =
+                                    query_with_direct_child_constraint(next_sibling, remaining);
+                                results.extend(further);
+                            } else {
+                                // No more selector parts, next_sibling is a match.
                                 results.push(next_sibling);
                             }
+                        }
+                    } else {
+                        // Simple selector - just check next sibling directly.
+                        if matches_selector_with_context(next_sibling, rest, Some(node)) {
+                            results.push(next_sibling);
                         }
                     }
                 }
@@ -247,10 +247,10 @@ fn matches_selector_with_context(
 
     // Wildcard selector: matches any element.
     if tag_part == "*" {
-        if let Some(predicate) = predicate {
-            if !matches_predicate(node, predicate) {
-                return false;
-            }
+        if let Some(predicate) = predicate
+            && !matches_predicate(node, predicate)
+        {
+            return false;
         }
         // Fall through to check class selectors if present.
     } else {
