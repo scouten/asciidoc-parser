@@ -1135,15 +1135,15 @@ mod bulleted_lists {
         }
 
         #[test]
-        #[ignore]
         fn lines_with_alternating_markers_of_bulleted_and_description_list_types_separated_by_blank_lines_should_be_nested()
          {
-            let _doc = Parser::default().parse("List\n====\n\n* Foo\n\nterm1:: def1\n\n* Blech\n");
-            todo!("assert_xpath: '//ul', output, 1");
-            todo!("assert_xpath: '//dl', output, 1");
-            todo!("assert_xpath: '//ul[1]/li', output, 2");
-            todo!("assert_xpath: '//ul[1]/li//dl[1]/dt', output, 1");
-            todo!("assert_xpath: '//ul[1]/li//dl[1]/dd', output, 1");
+            let doc = Parser::default().parse("== List\n\n* Foo\n\nterm1:: def1\n\n* Blech\n");
+
+            assert_xpath(&doc, "//ul", 1);
+            assert_xpath(&doc, "//dl", 1);
+            assert_xpath(&doc, "//ul[1]/li", 2);
+            assert_xpath(&doc, "//ul[1]/li//dl[1]/dt", 1);
+            assert_xpath(&doc, "//ul[1]/li//dl[1]/dd", 1);
         }
 
         #[test]
