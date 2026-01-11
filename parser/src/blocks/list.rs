@@ -126,7 +126,8 @@ impl<'src> ListBlock<'src> {
             item: Self {
                 type_,
                 items,
-                source: source
+                source: metadata
+                    .source
                     .trim_remainder(next_item_source)
                     .trim_trailing_line_end()
                     .trim_trailing_whitespace(),
@@ -450,5 +451,189 @@ mod tests {
     fn list_type_impl_debug() {
         assert_eq!(format!("{:#?}", ListType::Unordered), "ListType::Unordered");
         assert_eq!(format!("{:#?}", ListType::Ordered), "ListType::Ordered");
+    }
+
+    #[test]
+    fn attrlist_doesnt_exit() {
+        let list = list_parse("* Foo\n[loweralpha]\n. Boo\n* Blech").unwrap();
+
+        assert_eq!(
+            list.item,
+            ListBlock {
+                type_: ListType::Unordered,
+                items: &[
+                    Block::ListItem(ListItem {
+                        marker: ListItemMarker::Asterisks(Span {
+                            data: "*",
+                            line: 1,
+                            col: 1,
+                            offset: 0,
+                        },),
+                        blocks: &[
+                            Block::Simple(SimpleBlock {
+                                content: Content {
+                                    original: Span {
+                                        data: "Foo",
+                                        line: 1,
+                                        col: 3,
+                                        offset: 2,
+                                    },
+                                    rendered: "Foo",
+                                },
+                                source: Span {
+                                    data: "Foo",
+                                    line: 1,
+                                    col: 3,
+                                    offset: 2,
+                                },
+                                style: SimpleBlockStyle::Paragraph,
+                                title_source: None,
+                                title: None,
+                                anchor: None,
+                                anchor_reftext: None,
+                                attrlist: None,
+                            },),
+                            Block::List(ListBlock {
+                                type_: ListType::Ordered,
+                                items: &[Block::ListItem(ListItem {
+                                    marker: ListItemMarker::Dots(Span {
+                                        data: ".",
+                                        line: 3,
+                                        col: 1,
+                                        offset: 19,
+                                    },),
+                                    blocks: &[Block::Simple(SimpleBlock {
+                                        content: Content {
+                                            original: Span {
+                                                data: "Boo",
+                                                line: 3,
+                                                col: 3,
+                                                offset: 21,
+                                            },
+                                            rendered: "Boo",
+                                        },
+                                        source: Span {
+                                            data: "Boo",
+                                            line: 3,
+                                            col: 3,
+                                            offset: 21,
+                                        },
+                                        style: SimpleBlockStyle::Paragraph,
+                                        title_source: None,
+                                        title: None,
+                                        anchor: None,
+                                        anchor_reftext: None,
+                                        attrlist: None,
+                                    },),],
+                                    source: Span {
+                                        data: ". Boo",
+                                        line: 3,
+                                        col: 1,
+                                        offset: 19,
+                                    },
+                                    anchor: None,
+                                    anchor_reftext: None,
+                                    attrlist: None,
+                                },),],
+                                source: Span {
+                                    data: "[loweralpha]\n. Boo",
+                                    line: 2,
+                                    col: 1,
+                                    offset: 6,
+                                },
+                                title_source: None,
+                                title: None,
+                                anchor: None,
+                                anchor_reftext: None,
+                                attrlist: Some(Attrlist {
+                                    attributes: &[ElementAttribute {
+                                        name: None,
+                                        value: "loweralpha",
+                                        shorthand_items: &["loweralpha"],
+                                    },],
+                                    anchor: None,
+                                    source: Span {
+                                        data: "loweralpha",
+                                        line: 2,
+                                        col: 2,
+                                        offset: 7,
+                                    },
+                                },),
+                            },),
+                        ],
+                        source: Span {
+                            data: "* Foo\n[loweralpha]\n. Boo",
+                            line: 1,
+                            col: 1,
+                            offset: 0,
+                        },
+                        anchor: None,
+                        anchor_reftext: None,
+                        attrlist: None,
+                    },),
+                    Block::ListItem(ListItem {
+                        marker: ListItemMarker::Asterisks(Span {
+                            data: "*",
+                            line: 4,
+                            col: 1,
+                            offset: 25,
+                        },),
+                        blocks: &[Block::Simple(SimpleBlock {
+                            content: Content {
+                                original: Span {
+                                    data: "Blech",
+                                    line: 4,
+                                    col: 3,
+                                    offset: 27,
+                                },
+                                rendered: "Blech",
+                            },
+                            source: Span {
+                                data: "Blech",
+                                line: 4,
+                                col: 3,
+                                offset: 27,
+                            },
+                            style: SimpleBlockStyle::Paragraph,
+                            title_source: None,
+                            title: None,
+                            anchor: None,
+                            anchor_reftext: None,
+                            attrlist: None,
+                        },),],
+                        source: Span {
+                            data: "* Blech",
+                            line: 4,
+                            col: 1,
+                            offset: 25,
+                        },
+                        anchor: None,
+                        anchor_reftext: None,
+                        attrlist: None,
+                    },),
+                ],
+                source: Span {
+                    data: "* Foo\n[loweralpha]\n. Boo\n* Blech",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                title_source: None,
+                title: None,
+                anchor: None,
+                anchor_reftext: None,
+                attrlist: None,
+            }
+        );
+
+        assert_eq!(
+            list.after,
+            Span {
+                data: "",
+                line: 4,
+                col: 8,
+                offset: 32,
+            }
+        );
     }
 }

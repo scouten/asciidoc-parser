@@ -109,7 +109,7 @@ impl<'src> Block<'src> {
         source: Span<'src>,
         parser: &mut Parser,
     ) -> MatchAndWarnings<'src, Option<MatchedItem<'src, Self>>> {
-        Self::parse_internal(source, parser, false)
+        Self::parse_internal(source, parser, None)
     }
 
     /// Parse a block of any type and return a `Block` that describes it.
@@ -121,15 +121,16 @@ impl<'src> Block<'src> {
     pub(crate) fn parse_for_list_item(
         source: Span<'src>,
         parser: &mut Parser,
+        parent_list_markers: &[ListItemMarker<'src>],
     ) -> MatchAndWarnings<'src, Option<MatchedItem<'src, Self>>> {
-        Self::parse_internal(source, parser, true)
+        Self::parse_internal(source, parser, Some(parent_list_markers))
     }
 
     /// Shared parser for [`Block::parse`] and [`Block::parse_for_list_item`].
     fn parse_internal(
         source: Span<'src>,
         parser: &mut Parser,
-        is_for_list_item: bool,
+        parent_list_markers: Option<&[ListItemMarker<'src>]>,
     ) -> MatchAndWarnings<'src, Option<MatchedItem<'src, Self>>> {
         // Optimization: If the first line doesn't match any of the early indications
         // for delimited blocks, titles, or attrlists, we can skip directly to treating
@@ -172,7 +173,7 @@ impl<'src> Block<'src> {
             && (first_line.ends_with(':') || first_line.contains(": "))
             && let Some(attr) = Attribute::parse(source, parser)
         {
-            if is_for_list_item {
+            if parent_list_markers.is_some() {
                 return MatchAndWarnings {
                     item: None,
                     warnings: vec![],
@@ -299,7 +300,7 @@ impl<'src> Block<'src> {
                     SectionBlock::parse(&metadata, parser, &mut warnings)
             {
                 // New section blocks terminate a list.
-                if is_for_list_item {
+                if parent_list_markers.is_some() {
                     return MatchAndWarnings {
                         item: None,
                         warnings: vec![],
@@ -335,14 +336,36 @@ impl<'src> Block<'src> {
                 };
             }
 
-            if let Some(mi_list) = ListBlock::parse(&metadata, parser, &mut warnings) {
-                if is_for_list_item {
+            if let Some(parent_list_markers) = parent_list_markers
+                && let Some(this_marker) = ListItemMarker::parse(line.item)
+            {
+                if parent_list_markers
+                    .iter()
+                    .any(|m| m.is_match_for(&this_marker.item))
+                {
                     return MatchAndWarnings {
                         item: None,
                         warnings: vec![],
                     };
+                } else {
+                    if let Some(mi_list) = ListBlock::parse_inside_list(
+                        &metadata,
+                        parent_list_markers,
+                        parser,
+                        &mut warnings,
+                    ) {
+                        return MatchAndWarnings {
+                            item: Some(MatchedItem {
+                                item: Self::List(mi_list.item),
+                                after: mi_list.after,
+                            }),
+                            warnings,
+                        };
+                    }
                 }
+            }
 
+            if let Some(mi_list) = ListBlock::parse(&metadata, parser, &mut warnings) {
                 return MatchAndWarnings {
                     item: Some(MatchedItem {
                         item: Self::List(mi_list.item),
@@ -359,7 +382,7 @@ impl<'src> Block<'src> {
 
             // TEMPORARY: Don't take a line comment if in list item mode.
             // We'll need to revisit this when we figure out how to handle line comments.
-            if is_for_list_item
+            if parent_list_markers.is_some()
                 && metadata.block_start.starts_with("//")
                 && !metadata.block_start.starts_with("///")
             {
@@ -370,7 +393,7 @@ impl<'src> Block<'src> {
             }
 
             // The following check disables that spin loop.
-            let simple_block_mi = if is_for_list_item {
+            let simple_block_mi = if parent_list_markers.is_some() {
                 SimpleBlock::parse_for_list_item(&metadata, parser)
             } else {
                 SimpleBlock::parse(&metadata, parser)
@@ -396,7 +419,7 @@ impl<'src> Block<'src> {
         }
 
         // If no other block kind matches, we can always use SimpleBlock.
-        let simple_block_mi = if is_for_list_item {
+        let simple_block_mi = if parent_list_markers.is_some() {
             SimpleBlock::parse_for_list_item(&metadata, parser)
         } else {
             SimpleBlock::parse(&metadata, parser)

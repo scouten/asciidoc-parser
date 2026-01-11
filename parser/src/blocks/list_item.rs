@@ -42,6 +42,9 @@ impl<'src> ListItem<'src> {
         let marker_mi = ListItemMarker::parse(source)?;
         let marker = marker_mi.item;
 
+        let mut list_markers_including_peer = parent_list_markers.to_vec();
+        list_markers_including_peer.push(marker.clone());
+
         let mut blocks: Vec<Block<'src>> = vec![];
 
         // Text after list item marker is always a simple block with no metadata.
@@ -146,7 +149,8 @@ impl<'src> ListItem<'src> {
 
             // A list item does not terminate if subsequent blocks are indented (i.e. use
             // literal syntax).
-            let indented_block_maw = Block::parse_for_list_item(next, parser);
+            let indented_block_maw =
+                Block::parse_for_list_item(next, parser, &list_markers_including_peer);
             // TO DO: Transfer warnings.
 
             let Some(indented_block_mi) = indented_block_maw.item else {
