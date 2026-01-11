@@ -347,21 +347,19 @@ impl<'src> Block<'src> {
                         item: None,
                         warnings: vec![],
                     };
-                } else {
-                    if let Some(mi_list) = ListBlock::parse_inside_list(
-                        &metadata,
-                        parent_list_markers,
-                        parser,
-                        &mut warnings,
-                    ) {
-                        return MatchAndWarnings {
-                            item: Some(MatchedItem {
-                                item: Self::List(mi_list.item),
-                                after: mi_list.after,
-                            }),
-                            warnings,
-                        };
-                    }
+                } else if let Some(mi_list) = ListBlock::parse_inside_list(
+                    &metadata,
+                    parent_list_markers,
+                    parser,
+                    &mut warnings,
+                ) {
+                    return MatchAndWarnings {
+                        item: Some(MatchedItem {
+                            item: Self::List(mi_list.item),
+                            after: mi_list.after,
+                        }),
+                        warnings,
+                    };
                 }
             }
 
