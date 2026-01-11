@@ -433,10 +433,10 @@ Specifically, this syntax sets the ID to `rules`, adds the role `prominent`, and
                     },),
                 ],
                 source: Span {
-                    data: "* Work hard\n* Play hard\n* Be happy",
-                    line: 2,
+                    data: "[#rules.prominent%incremental]\n* Work hard\n* Play hard\n* Be happy",
+                    line: 1,
                     col: 1,
-                    offset: 31,
+                    offset: 0,
                 },
                 title_source: None,
                 title: None,
