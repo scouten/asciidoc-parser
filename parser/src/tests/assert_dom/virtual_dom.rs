@@ -187,7 +187,14 @@ impl ToVirtualDom for Block<'_> {
                 let heading_level = (section.level() + 1).min(6);
                 let heading_tag = format!("h{}", heading_level);
 
-                let title_node = VirtualNode::new(heading_tag).with_text(section.section_title());
+                let mut title_node =
+                    VirtualNode::new(heading_tag).with_text(section.section_title());
+
+                // Add the section ID to the heading element if present.
+                if let Some(id) = section.id() {
+                    title_node = title_node.with_id(id);
+                }
+
                 node.children.insert(0, title_node);
                 node
             }
