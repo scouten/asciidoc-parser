@@ -43,6 +43,9 @@ pub struct VirtualNode {
     /// Text content of this element (for leaf nodes).
     pub text: Option<String>,
 
+    /// Other HTML attributes (e.g., "start", "type", etc.).
+    pub attributes: std::collections::HashMap<String, String>,
+
     /// Child elements.
     pub children: Vec<VirtualNode>,
 }
@@ -56,6 +59,7 @@ impl VirtualNode {
             classes: Vec::new(),
             id: None,
             text: None,
+            attributes: std::collections::HashMap::new(),
             children: Vec::new(),
         }
     }
@@ -75,6 +79,12 @@ impl VirtualNode {
     /// Sets the ID of this node.
     pub fn with_id(mut self, id: impl Into<String>) -> Self {
         self.id = Some(id.into());
+        self
+    }
+
+    /// Sets an arbitrary HTML attribute on this node.
+    pub fn with_attribute(mut self, name: impl Into<String>, value: impl Into<String>) -> Self {
+        self.attributes.insert(name.into(), value.into());
         self
     }
 
@@ -251,6 +261,15 @@ fn list_block_to_node<'a>(list: &'a ListBlock<'a>) -> VirtualNode {
     // (This matches Asciidoctor's default numbering style.)
     if list.type_() == ListType::Ordered {
         list_element = list_element.with_class("arabic");
+    }
+
+    // Add all named attributes from the attrlist to the list element.
+    if let Some(attrlist) = list.attrlist() {
+        for attr in attrlist.attributes() {
+            if let Some(attr_name) = attr.name() {
+                list_element = list_element.with_attribute(attr_name, attr.value());
+            }
+        }
     }
 
     // Add style class to the list element if present.

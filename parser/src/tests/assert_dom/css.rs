@@ -398,7 +398,10 @@ fn matches_single_predicate(node: &VirtualNode, predicate: &str) -> bool {
         match attr_name {
             "class" => return node.classes.iter().any(|c| c == value),
             "id" => return node.id.as_deref() == Some(value),
-            _ => return false,
+            _ => {
+                // Check arbitrary attributes.
+                return node.attributes.get(attr_name).map(|v| v.as_str()) == Some(value);
+            }
         }
     }
 
@@ -531,5 +534,19 @@ mod tests {
         // Test: .ulist > ul > li > p + .olist
         let matches = query_css(&vdom, ".ulist > ul > li > p + .olist");
         assert_eq!(matches.len(), 1, "Should find 1 .olist with full selector");
+    }
+
+    #[test]
+    fn query_with_arbitrary_attribute() {
+        // Test querying for elements with arbitrary attributes.
+        let doc = Parser::default().parse("* Foo\n[start=2]\n. Boo\n* Blech\n");
+        let vdom = doc.to_virtual_dom();
+
+        // Find all ol elements with start attribute using CSS-style attribute selector.
+        let result = query_css(&vdom, "ol[@start=\"2\"]");
+        assert_eq!(result.len(), 1, "Should find one ol with start=2");
+
+        // Verify the attribute value.
+        assert_eq!(result[0].attributes.get("start"), Some(&"2".to_string()));
     }
 }

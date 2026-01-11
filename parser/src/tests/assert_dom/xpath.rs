@@ -843,7 +843,10 @@ fn matches_single_predicate(node: &VirtualNode, predicate: &str) -> bool {
                     .all(|required| node.classes.iter().any(|c| c == *required));
             }
             "id" => return node.id.as_deref() == Some(value),
-            _ => return false,
+            _ => {
+                // Check arbitrary attributes.
+                return node.attributes.get(attr_name).map(|v| v.as_str()) == Some(value);
+            }
         }
     }
 
@@ -1311,5 +1314,19 @@ mod tests {
             0,
             "Last element should have no following siblings"
         );
+    }
+
+    #[test]
+    fn query_with_arbitrary_attribute() {
+        // Test querying for elements with arbitrary attributes.
+        let doc = Parser::default().parse("* Foo\n[start=2]\n. Boo\n* Blech\n");
+        let vdom = doc.to_virtual_dom();
+
+        // Find all ol elements with start attribute.
+        let result = query_xpath(&vdom, "//ol[@start=\"2\"]");
+        assert_eq!(result.len(), 1, "Should find one ol with start=2");
+
+        // Verify the attribute value.
+        assert_eq!(result[0].attributes.get("start"), Some(&"2".to_string()));
     }
 }
