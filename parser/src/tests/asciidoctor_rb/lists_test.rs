@@ -777,19 +777,20 @@ mod bulleted_lists {
         }
 
         #[test]
-        #[ignore] // SKIP until we understand how "with line separator" gets inserted
         fn should_match_trailing_line_separator_in_text_of_list_item() {
-            let _doc = Parser::default().parse("* a\n* b\u{2028}\n* c");
-            todo!("assert_css: 'li', output, 3");
-            todo!("assert_xpath: '(//li)[2]/p[text()=b with line separator]', output, 1");
+            let doc = Parser::default().parse("* a\n* b\u{2028}\n* c");
+            dbg!(&doc);
+
+            assert_css(&doc, "li", 3);
+            assert_xpath(&doc, "(//li)[2]/p[text()=\"b\u{2028}\"]", 1);
         }
 
         #[test]
-        #[ignore] // SKIP until we understand how "with line separator" gets inserted
         fn should_match_line_separator_in_text_of_list_item() {
-            let _doc = Parser::default().parse("* a\n* b\u{2028}b\n* c");
-            todo!("assert_css: 'li', output, 3");
-            todo!("assert_xpath: '(//li)[2]/p[text()=b with line separator b]', output, 1");
+            let doc = Parser::default().parse("* a\n* b\u{2028}b\n* c");
+
+            assert_css(&doc, "li", 3);
+            assert_xpath(&doc, "(//li)[2]/p[text()=\"b\u{2028}b\"]", 1);
         }
     }
 
