@@ -1147,13 +1147,12 @@ mod bulleted_lists {
         }
 
         #[test]
-        #[ignore]
         fn nested_ordered_with_attribute_inside_unordered_elements() {
-            let _doc = Parser::default().parse("Blah\n====\n\n* Foo\n[start=2]\n. Boo\n* Blech\n");
-            todo!("assert_xpath: '//ul', output, 1");
-            todo!("assert_xpath: '//ol', output, 1");
-            todo!("assert_xpath: '(//ul)[1]/li', output, 2");
-            todo!("assert_xpath: '((//ul)[1]/li//ol)[1][@start = 2]/li', output, 1");
+            let doc = Parser::default().parse("Blah\n====\n\n* Foo\n[start=2]\n. Boo\n* Blech\n");
+            assert_xpath(&doc, "//ul", 1);
+            assert_xpath(&doc, "//ol", 1);
+            assert_xpath(&doc, "(//ul)[1]/li", 2);
+            assert_xpath(&doc, "((//ul)[1]/li//ol)[1][@start = 2]/li", 1);
         }
     }
 
