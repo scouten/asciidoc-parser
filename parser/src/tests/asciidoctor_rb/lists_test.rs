@@ -752,13 +752,13 @@ mod bulleted_lists {
         }
 
         #[test]
-        #[ignore] // SKIP test until we port block anchor syntax
         fn list_should_terminate_before_next_lower_section_heading_with_implicit_id() {
-            let _doc = Parser::default()
-                .parse("List\n====\n\n* first\nitem\n* second\nitem\n\n[[sec]]\n== Section\n");
-            todo!("assert_xpath: '//ul', output, 1");
-            todo!("assert_xpath: '//ul/li', output, 2");
-            todo!("assert_xpath: '//h2[@id = \"sec\"][text() = \"Section\"]', output, 1");
+            let doc = Parser::default()
+                .parse("== List\n\n* first\nitem\n* second\nitem\n\n[[sec]]\n== Section\n");
+
+            assert_xpath(&doc, "//ul", 1);
+            assert_xpath(&doc, "//ul/li", 2);
+            assert_xpath(&doc, "//h2[@id = \"sec\"][text() = \"Section\"]", 1);
         }
 
         #[test]
