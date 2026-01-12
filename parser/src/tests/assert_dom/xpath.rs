@@ -479,6 +479,13 @@ fn query_from_root<'a>(node: &'a VirtualNode, pattern: &str) -> Vec<&'a VirtualN
         return find_preceding_siblings(node, node, axis_rest.trim());
     }
 
+    // Check for descendant-or-self pattern (//). Handle this before split_once
+    // to preserve the // distinction.
+    if let Some(descendant_rest) = pattern.strip_prefix("//") {
+        // Pattern starts with //, so this is a descendant-or-self query.
+        return query_descendant_or_self(node, descendant_rest);
+    }
+
     if let Some((first, rest)) = pattern.split_once('/') {
         let first = first.trim();
         let rest = rest.trim();
@@ -544,26 +551,34 @@ fn query_from_root<'a>(node: &'a VirtualNode, pattern: &str) -> Vec<&'a VirtualN
             return final_results;
         }
 
-        let mut results = Vec::new();
+        // First, collect all matching children.
+        let mut matching_children: Vec<&VirtualNode> = node
+            .children
+            .iter()
+            .filter(|child| matches_selector(child, first))
+            .collect();
 
-        for child in &node.children {
-            if matches_selector(child, first) {
-                if rest.is_empty() {
-                    results.push(child);
-                } else if rest.starts_with('/') {
-                    // Continue with descendant-or-self
-                    results.extend(query_descendant_or_self(
-                        child,
-                        rest.trim_start_matches('/'),
-                    ));
-                } else {
-                    // Continue with direct children.
-                    results.extend(query_from_root(child, rest));
-                }
+        // Apply numeric predicate to the matching children.
+        matching_children = apply_numeric_predicate(matching_children, first.trim());
+
+        // Now process each (possibly filtered) child.
+        let mut results = Vec::new();
+        for child in matching_children {
+            if rest.is_empty() {
+                results.push(child);
+            } else if rest.starts_with('/') {
+                // Continue with descendant-or-self.
+                results.extend(query_descendant_or_self(
+                    child,
+                    rest.trim_start_matches('/'),
+                ));
+            } else {
+                // Continue with direct children.
+                results.extend(query_from_root(child, rest));
             }
         }
 
-        apply_numeric_predicate(results, first.trim())
+        results
     } else {
         // Direct children only.
         let results: Vec<&VirtualNode> = node
@@ -1351,5 +1366,35 @@ mod tests {
 
         // Verify the attribute value.
         assert_eq!(result[0].attributes.get("start"), Some(&"2".to_string()));
+    }
+
+    #[test]
+    fn query_deeply_nested_descendants() {
+        // Test for the failing test case: //ul/li[1]//p should find all p elements
+        // including those nested in divs.
+        let doc = Parser::default().parse(
+            "== Lists\n\n* Item one, paragraph one\n+\nItem one, paragraph two\n+\n* Item two\n",
+        );
+        let vdom = doc.to_virtual_dom();
+
+        // Find all p tags in the document.
+        let all_p = query_xpath(&vdom, "//p");
+        assert_eq!(
+            all_p.len(),
+            3,
+            "Should find 3 total p tags (2 in first li, 1 in second li)"
+        );
+
+        // Find direct children p tags of first li.
+        let direct_p = query_xpath(&vdom, "//ul/li[1]/p");
+        assert_eq!(direct_p.len(), 1, "Should find 1 direct p child");
+
+        // Find ALL descendant p tags of first li (including nested ones).
+        let all_descendants_p = query_xpath(&vdom, "//ul/li[1]//p");
+        assert_eq!(
+            all_descendants_p.len(),
+            2,
+            "Should find 2 descendant p tags (direct + nested in div)"
+        );
     }
 }
