@@ -801,7 +801,7 @@ mod bulleted_lists {
         fn quoted_text() {
             let doc = Parser::default()
                 .parse("List\n====\n\n- I am *strong*.\n- I am _stressed_.\n- I am `flexible`.\n");
-            
+
             assert_xpath(&doc, "//ul", 1);
             assert_xpath(&doc, "//ul/li", 3);
             assert_xpath(&doc, "(//ul/li)[1]//strong", 1);
@@ -1161,16 +1161,24 @@ mod bulleted_lists {
         use super::*;
 
         #[test]
-        #[ignore]
         fn adjacent_list_continuation_line_attaches_following_paragraph() {
-            let _doc = Parser::default().parse("Lists\n=====\n\n* Item one, paragraph one\n+\nItem one, paragraph two\n+\n* Item two\n");
-            todo!("assert_xpath: '//ul', output, 1");
-            todo!("assert_xpath: '//ul/li', output, 2");
-            todo!("assert_xpath: '//ul/li[1]/p', output, 1");
-            todo!("assert_xpath: '//ul/li[1]//p', output, 2");
-            todo!("assert_xpath: '//ul/li[1]/p[text() = \"Item one, paragraph one\"]', output, 1");
-            todo!(
-                "assert_xpath: '//ul/li[1]/*[@class = \"paragraph\"]/p[text() = \"Item one, paragraph two\"]', output, 1"
+            let doc = Parser::default().parse("== Lists\n\n* Item one, paragraph one\n+\nItem one, paragraph two\n+\n* Item two\n");
+
+            assert_xpath(&doc, "//ul", 1);
+            assert_xpath(&doc, "//ul/li", 2);
+            assert_xpath(&doc, "//ul/li[1]/p", 1);
+            assert_xpath(&doc, "//ul/li[1]//p", 2);
+
+            assert_xpath(
+                &doc,
+                "//ul/li[1]/p[text() = \"Item one, paragraph one\"]",
+                1,
+            );
+
+            assert_xpath(
+                &doc,
+                "//ul/li[1]/*[@class = \"paragraph\"]/p[text() = \"Item one, paragraph two\"]",
+                1,
             );
         }
 
