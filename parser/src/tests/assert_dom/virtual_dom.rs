@@ -120,14 +120,14 @@ fn extract_tag_name(tag_content: &str) -> Option<String> {
     if tag_content.is_empty() || tag_content.starts_with('/') {
         return None;
     }
-    
+
     // Extract tag name (before any whitespace or attributes).
     let tag_name = tag_content
         .split_whitespace()
         .next()
         .unwrap_or(tag_content)
         .trim_end_matches('/');
-    
+
     if tag_name.is_empty() {
         None
     } else {
@@ -212,7 +212,7 @@ impl VirtualNode {
     /// child nodes for them.
     pub fn with_html_content(mut self, text: impl Into<String>) -> Self {
         let content = text.into();
-        
+
         // Check if there's any HTML to parse.
         if content.contains('<') {
             self.children = parse_html_content(&content);
@@ -220,7 +220,7 @@ impl VirtualNode {
             // No HTML - just set as plain text.
             self.text = Some(decode_html_entities(&content));
         }
-        
+
         self
     }
 
@@ -758,7 +758,10 @@ mod tests {
         assert_eq!(para.tag, "p");
 
         // Should have parsed HTML into child nodes.
-        assert!(!para.children.is_empty(), "Should have child nodes from parsed HTML");
+        assert!(
+            !para.children.is_empty(),
+            "Should have child nodes from parsed HTML"
+        );
 
         // Verify strong element.
         let strong = para.children.iter().find(|c| c.tag == "strong");
