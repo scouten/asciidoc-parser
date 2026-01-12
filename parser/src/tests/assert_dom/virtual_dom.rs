@@ -25,6 +25,116 @@ fn decode_html_entities(s: &str) -> String {
         .replace("&apos;", "'")
 }
 
+/// Parses simple HTML inline markup from text and returns a mix of text and
+/// element nodes.
+///
+/// This handles common inline HTML elements like <strong>, <em>, <code>, etc.
+/// It does not handle nested elements or attributes - just simple tags with
+/// text content.
+fn parse_html_content(text: &str) -> Vec<VirtualNode> {
+    let mut result = Vec::new();
+    let mut last_pos = 0;
+    let mut i = 0;
+
+    while i < text.len() {
+        if text[i..].starts_with('<') {
+            // Try to parse an HTML element.
+            if let Some((element, new_pos)) = try_parse_element(text, i) {
+                // Add any text before this element.
+                if i > last_pos {
+                    let text_content = &text[last_pos..i];
+                    if !text_content.is_empty() {
+                        result.push(VirtualNode::new("text").with_text(text_content));
+                    }
+                }
+
+                // Add the element.
+                result.push(element);
+
+                // Move forward.
+                i = new_pos;
+                last_pos = new_pos;
+                continue;
+            }
+        }
+        i += 1;
+    }
+
+    // Add any remaining text.
+    if last_pos < text.len() {
+        let remaining = &text[last_pos..];
+        if !remaining.is_empty() {
+            result.push(VirtualNode::new("text").with_text(remaining));
+        }
+    }
+
+    // If we never created any nodes, create a text node.
+    if result.is_empty() && !text.is_empty() {
+        result.push(VirtualNode::new("text").with_text(text));
+    }
+
+    result
+}
+
+/// Attempts to parse an HTML element starting at position `pos`.
+/// Returns the element and the position after the closing tag if successful.
+fn try_parse_element(text: &str, pos: usize) -> Option<(VirtualNode, usize)> {
+    if !text[pos..].starts_with('<') {
+        return None;
+    }
+
+    // Find the end of the opening tag.
+    let tag_end = text[pos + 1..].find('>')?;
+    let tag_content = &text[pos + 1..pos + 1 + tag_end];
+    let tag_name = extract_tag_name(tag_content)?;
+
+    // Check for self-closing tag.
+    if tag_content.ends_with('/') {
+        return None; // Ignore self-closing tags.
+    }
+
+    // Find the closing tag.
+    let after_opening = pos + 1 + tag_end + 1;
+    let closing_tag = format!("</{tag_name}>");
+    let close_pos = text[after_opening..].find(&closing_tag)?;
+
+    // Extract content between tags.
+    let content = &text[after_opening..after_opening + close_pos];
+    let after_closing = after_opening + close_pos + closing_tag.len();
+
+    // Create the element.
+    let element = if content.contains('<') {
+        // Nested HTML - recursively parse.
+        VirtualNode::new(tag_name).with_children(parse_html_content(content))
+    } else {
+        // Plain text content.
+        VirtualNode::new(tag_name).with_text(content)
+    };
+
+    Some((element, after_closing))
+}
+
+/// Extracts the tag name from an opening tag string (without the < and >).
+fn extract_tag_name(tag_content: &str) -> Option<String> {
+    let tag_content = tag_content.trim();
+    if tag_content.is_empty() || tag_content.starts_with('/') {
+        return None;
+    }
+    
+    // Extract tag name (before any whitespace or attributes).
+    let tag_name = tag_content
+        .split_whitespace()
+        .next()
+        .unwrap_or(tag_content)
+        .trim_end_matches('/');
+    
+    if tag_name.is_empty() {
+        None
+    } else {
+        Some(tag_name.to_string())
+    }
+}
+
 /// A virtual DOM node representing an HTML-like element.
 ///
 /// This structure is built from a parsed `Document` and maps AsciiDoc blocks
@@ -93,6 +203,24 @@ impl VirtualNode {
     /// Decodes HTML entities to match what a browser's text content would show.
     pub fn with_text(mut self, text: impl Into<String>) -> Self {
         self.text = Some(decode_html_entities(&text.into()));
+        self
+    }
+
+    /// Sets the text content and parses any HTML inline elements.
+    ///
+    /// This will parse HTML tags like <strong>, <em>, <code>, etc. and create
+    /// child nodes for them.
+    pub fn with_html_content(mut self, text: impl Into<String>) -> Self {
+        let content = text.into();
+        
+        // Check if there's any HTML to parse.
+        if content.contains('<') {
+            self.children = parse_html_content(&content);
+        } else {
+            // No HTML - just set as plain text.
+            self.text = Some(decode_html_entities(&content));
+        }
+        
         self
     }
 
@@ -249,7 +377,7 @@ fn simple_block_to_node<'a>(block: &'a SimpleBlock<'a>) -> VirtualNode {
 
     // Extract text content for paragraphs (only for <p> tags).
     if tag == "p" {
-        node.text = Some(block.content().rendered().to_string());
+        node = node.with_html_content(block.content().rendered().to_string());
     }
 
     node
@@ -301,7 +429,7 @@ fn list_block_to_node<'a>(list: &'a ListBlock<'a>) -> VirtualNode {
                     }
 
                     // Set the term text.
-                    dt_node = dt_node.with_text(term.rendered().to_string());
+                    dt_node = dt_node.with_html_content(term.rendered().to_string());
                     list_element.children.push(dt_node);
 
                     // Create dd node for the definition.
@@ -617,6 +745,35 @@ mod tests {
         for li in &ol.children {
             assert_eq!(li.tag, "li");
         }
+    }
+
+    #[test]
+    fn inline_html_markup_in_paragraph() {
+        let doc = Parser::default().parse("I am *strong* and _emphasized_ and `code`.");
+        let vdom = doc.to_virtual_dom();
+
+        assert_eq!(vdom.children.len(), 1);
+
+        let para = &vdom.children[0];
+        assert_eq!(para.tag, "p");
+
+        // Should have parsed HTML into child nodes.
+        assert!(!para.children.is_empty(), "Should have child nodes from parsed HTML");
+
+        // Verify strong element.
+        let strong = para.children.iter().find(|c| c.tag == "strong");
+        assert!(strong.is_some(), "Should have a <strong> element");
+        assert_eq!(strong.unwrap().text.as_deref(), Some("strong"));
+
+        // Verify em element.
+        let em = para.children.iter().find(|c| c.tag == "em");
+        assert!(em.is_some(), "Should have an <em> element");
+        assert_eq!(em.unwrap().text.as_deref(), Some("emphasized"));
+
+        // Verify code element.
+        let code = para.children.iter().find(|c| c.tag == "code");
+        assert!(code.is_some(), "Should have a <code> element");
+        assert_eq!(code.unwrap().text.as_deref(), Some("code"));
     }
 
     #[test]

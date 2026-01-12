@@ -728,8 +728,12 @@ fn matches_selector(node: &VirtualNode, selector: &str) -> bool {
         (selector, None)
     };
 
-    // Wildcard selector: matches any element.
+    // Wildcard selector: matches any element (but not text nodes).
     if base_selector == "*" {
+        // Exclude text nodes from wildcard matches.
+        if node.tag == "text" {
+            return false;
+        }
         if let Some(predicate) = predicate {
             return matches_predicate(node, predicate);
         }
@@ -793,6 +797,25 @@ fn matches_predicate(node: &VirtualNode, predicate: &str) -> bool {
     true
 }
 
+/// Gets the text content of a node, recursively collecting text from all
+/// child nodes.
+///
+/// This mimics the behavior of the XPath `text()` function or DOM's
+/// `textContent`.
+fn get_text_content(node: &VirtualNode) -> String {
+    if let Some(ref text) = node.text {
+        // Node has direct text content.
+        return text.clone();
+    }
+
+    // No direct text - collect from children.
+    let mut result = String::new();
+    for child in &node.children {
+        result.push_str(&get_text_content(child));
+    }
+    result
+}
+
 /// Checks if a node matches a single predicate.
 fn matches_single_predicate(node: &VirtualNode, predicate: &str) -> bool {
     let predicate = predicate.trim();
@@ -807,7 +830,7 @@ fn matches_single_predicate(node: &VirtualNode, predicate: &str) -> bool {
             if let Some(value) = value_part.strip_prefix('\'') {
                 if let Some(value) = value.strip_suffix('\'') {
                     let unescaped = unescape_xpath_string(value);
-                    return node.text.as_deref() == Some(&unescaped);
+                    return get_text_content(node) == unescaped;
                 }
             }
             // Try double-quoted string.
@@ -815,7 +838,7 @@ fn matches_single_predicate(node: &VirtualNode, predicate: &str) -> bool {
                 && let Some(value) = value.strip_suffix('"')
             {
                 let unescaped = unescape_xpath_string(value);
-                return node.text.as_deref() == Some(&unescaped);
+                return get_text_content(node) == unescaped;
             }
         }
 
