@@ -1183,14 +1183,17 @@ mod bulleted_lists {
         }
 
         #[test]
-        #[ignore]
         fn adjacent_list_continuation_line_attaches_following_block() {
-            let _doc = Parser::default().parse("Lists\n=====\n\n* Item one, paragraph one\n+\n....\nItem one, literal block\n....\n+\n* Item two\n");
-            todo!("assert_xpath: '//ul', output, 1");
-            todo!("assert_xpath: '//ul/li', output, 2");
-            todo!("assert_xpath: '//ul/li[1]/p', output, 1");
-            todo!(
-                "assert_xpath: '(//ul/li[1]/p/following-sibling::*)[1][@class = \"literalblock\"]', output, 1"
+            let doc = Parser::default().parse("== Lists\n\n* Item one, paragraph one\n+\n....\nItem one, literal block\n....\n+\n* Item two\n");
+
+            assert_xpath(&doc, "//ul", 1);
+            assert_xpath(&doc, "//ul/li", 2);
+            assert_xpath(&doc, "//ul/li[1]/p", 1);
+
+            assert_xpath(
+                &doc,
+                "(//ul/li[1]/p/following-sibling::*)[1][@class = \"literalblock\"]",
+                1,
             );
         }
 
