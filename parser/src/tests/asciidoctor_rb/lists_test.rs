@@ -798,15 +798,15 @@ mod bulleted_lists {
         use super::*;
 
         #[test]
-        #[ignore] // SKIP this test: need support for intra-text rendering
         fn quoted_text() {
-            let _doc = Parser::default()
+            let doc = Parser::default()
                 .parse("List\n====\n\n- I am *strong*.\n- I am _stressed_.\n- I am `flexible`.\n");
-            todo!("assert_xpath: '//ul', output, 1");
-            todo!("assert_xpath: '//ul/li', output, 3");
-            todo!("assert_xpath: '(//ul/li)[1]//strong', output, 1");
-            todo!("assert_xpath: '(//ul/li)[2]//em', output, 1");
-            todo!("assert_xpath: '(//ul/li)[3]//code', output, 1");
+            
+            assert_xpath(&doc, "//ul", 1);
+            assert_xpath(&doc, "//ul/li", 3);
+            assert_xpath(&doc, "(//ul/li)[1]//strong", 1);
+            assert_xpath(&doc, "(//ul/li)[2]//em", 1);
+            assert_xpath(&doc, "(//ul/li)[3]//code", 1);
         }
 
         #[test]
