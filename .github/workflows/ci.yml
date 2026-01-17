@@ -183,6 +183,28 @@ jobs:
       - name: Check format
         run: cargo +nightly fmt --all -- --check
 
+  taplo_fmt:
+    name: Enforce TOML format
+    if: |
+      github.event_name != 'pull_request' ||
+      github.event.pull_request.author_association == 'OWNER' ||
+      github.event.pull_request.author_association == 'COLLABORATOR' ||
+      github.event.pull_request.author_association == 'MEMBER' ||
+      github.event.pull_request.user.login == 'dependabot[bot]' ||
+      contains(github.event.pull_request.labels.*.name, 'safe to test')
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Install Taplo CLI
+        run: cargo install taplo-cli --locked
+
+      - name: Check TOML format
+        run: taplo fmt --check
+
   docs_rs:
     name: Preflight docs.rs build
     if: |
