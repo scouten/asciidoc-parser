@@ -128,8 +128,8 @@ impl<'src> BlockMetadata<'src> {
             }
 
             // Try to parse an attribute list.
-            if attrlist.is_none() {
-                if let Some(MatchAndWarnings {
+            if attrlist.is_none()
+                && let Some(MatchAndWarnings {
                     item:
                         MatchedItem {
                             item: attrlist_item,
@@ -137,23 +137,22 @@ impl<'src> BlockMetadata<'src> {
                         },
                     warnings: mut attrlist_warnings,
                 }) = parse_maybe_attrlist_line(block_start, parser)
-                {
-                    if !attrlist_warnings.is_empty() {
-                        warnings.append(&mut attrlist_warnings);
-                    }
-
-                    attrlist = Some(attrlist_item);
-                    block_start = new_block_start;
-                    continue;
+            {
+                if !attrlist_warnings.is_empty() {
+                    warnings.append(&mut attrlist_warnings);
                 }
+
+                attrlist = Some(attrlist_item);
+                block_start = new_block_start;
+                continue;
             }
 
             // No more metadata items found.
             break;
         }
 
-        let title = title_source.as_ref().map(|ref span| {
-            let mut content = Content::from(**span);
+        let title = title_source.as_ref().map(|span| {
+            let mut content = Content::from(*span);
             SubstitutionGroup::Normal.apply(&mut content, parser, None);
             content.rendered.into_string()
         });
@@ -283,6 +282,8 @@ fn parse_maybe_attrlist_line<'src>(
 
 #[cfg(test)]
 mod tests {
+    #![allow(clippy::unwrap_used)]
+
     use crate::tests::prelude::*;
 
     #[test]
