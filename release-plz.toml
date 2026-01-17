@@ -39,8 +39,8 @@ release_always = false
 release_commits = "^(feat|fix|update|doc)[(:]"
 
 [[package]]
-name = "asciidoc-parser"
 changelog_path = "./CHANGELOG.md"
+name = "asciidoc-parser"
 
 [[package]]
 name = "sdd"
