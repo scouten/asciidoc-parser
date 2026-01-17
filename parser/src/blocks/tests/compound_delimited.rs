@@ -1598,6 +1598,7 @@ mod quote {
         HasSpan, Parser,
         blocks::{ContentModel, IsBlock, SimpleBlockStyle},
         tests::prelude::*,
+        warnings::WarningType,
     };
 
     #[test]
@@ -1987,6 +1988,124 @@ mod quote {
             mi.item.span(),
             Span {
                 data: "____\nblock1\n\n_____\nblock2\n_____\n____",
+                line: 1,
+                col: 1,
+                offset: 0,
+            }
+        );
+    }
+
+    #[test]
+    fn err_nested_block_with_invalid_anchor_and_reftext() {
+        let mut parser = Parser::default();
+        let maw = crate::blocks::Block::parse(
+            crate::Span::new("====\n[[2 invalid,See Here!]]\nblock content\n===="),
+            &mut parser,
+        );
+
+        assert_eq!(
+            maw.warnings,
+            vec![Warning {
+                source: Span {
+                    data: "2 invalid",
+                    line: 2,
+                    col: 3,
+                    offset: 7,
+                },
+                warning: WarningType::InvalidBlockAnchorName,
+            }]
+        );
+
+        let mi = maw.item.unwrap().clone();
+
+        assert_eq!(
+            mi.item,
+            Block::CompoundDelimited(CompoundDelimitedBlock {
+                blocks: &[Block::Simple(SimpleBlock {
+                    content: Content {
+                        original: Span {
+                            data: "[[2 invalid,See Here!]]\nblock content",
+                            line: 2,
+                            col: 1,
+                            offset: 5,
+                        },
+                        rendered: "[[2 invalid,See Here!]]\nblock content",
+                    },
+                    source: Span {
+                        data: "[[2 invalid,See Here!]]\nblock content",
+                        line: 2,
+                        col: 1,
+                        offset: 5,
+                    },
+                    style: SimpleBlockStyle::Paragraph,
+                    title_source: None,
+                    title: None,
+                    anchor: None,
+                    anchor_reftext: None,
+                    attrlist: None,
+                },),],
+                context: "example",
+                source: Span {
+                    data: "====\n[[2 invalid,See Here!]]\nblock content\n====",
+                    line: 1,
+                    col: 1,
+                    offset: 0,
+                },
+                title_source: None,
+                title: None,
+                anchor: None,
+                anchor_reftext: None,
+                attrlist: None,
+            })
+        );
+
+        assert_eq!(mi.item.content_model(), ContentModel::Compound);
+        assert!(mi.item.rendered_content().is_none());
+        assert_eq!(mi.item.raw_context().as_ref(), "example");
+        assert_eq!(mi.item.resolved_context().as_ref(), "example");
+        assert!(mi.item.id().is_none());
+        assert!(mi.item.roles().is_empty());
+        assert!(mi.item.options().is_empty());
+        assert!(mi.item.title_source().is_none());
+        assert!(mi.item.title().is_none());
+        assert!(mi.item.anchor().is_none());
+        assert!(mi.item.anchor_reftext().is_none());
+        assert!(mi.item.attrlist().is_none());
+
+        let mut blocks = mi.item.nested_blocks();
+        assert_eq!(
+            blocks.next().unwrap(),
+            &Block::Simple(SimpleBlock {
+                content: Content {
+                    original: Span {
+                        data: "[[2 invalid,See Here!]]\nblock content",
+                        line: 2,
+                        col: 1,
+                        offset: 5,
+                    },
+                    rendered: "[[2 invalid,See Here!]]\nblock content",
+                },
+                source: Span {
+                    data: "[[2 invalid,See Here!]]\nblock content",
+                    line: 2,
+                    col: 1,
+                    offset: 5,
+                },
+                style: SimpleBlockStyle::Paragraph,
+                title_source: None,
+                title: None,
+                anchor: None,
+                anchor_reftext: None,
+                attrlist: None,
+            },)
+        );
+
+        assert!(blocks.next().is_none());
+
+        assert_eq!(
+            mi.item.span(),
+            Span {
+                data: "====\n[[2 invalid,See Here!]]\nblock content\n====",
                 line: 1,
                 col: 1,
                 offset: 0,
