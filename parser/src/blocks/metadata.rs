@@ -52,89 +52,110 @@ impl<'src> BlockMetadata<'src> {
         let mut warnings: Vec<Warning<'src>> = vec![];
         let source = source.discard_empty_lines();
 
-        // TO DO (https://github.com/scouten/asciidoc-parser/issues/203):
-        // Figure out if these items have to appear in specific order.
+        // Block metadata items (title, anchor, and attribute list) can appear in any
+        // order. We loop through lines until we can't parse any more metadata
+        // items.
+        let mut title_source: Option<Span<'src>> = None;
+        let mut anchor: Option<Span<'src>> = None;
+        let mut reftext: Option<Span<'src>> = None;
+        let mut attrlist: Option<Attrlist<'src>> = None;
+        let mut block_start = source;
 
-        // Does this block have a title?
-        let maybe_title = source.take_normalized_line();
-        let (title_source, block_start) =
-            if maybe_title.item.starts_with('.') && !maybe_title.item.starts_with("..") {
-                let title = maybe_title.item.discard(1);
-                if title.take_whitespace().item.is_empty() {
-                    (Some(title), maybe_title.after)
-                } else {
-                    (None, source)
+        loop {
+            let original_block_start = block_start;
+
+            // Try to parse a title.
+            if title_source.is_none() {
+                let maybe_title = block_start.take_normalized_line();
+                if maybe_title.item.starts_with('.') && !maybe_title.item.starts_with("..") {
+                    let title = maybe_title.item.discard(1);
+                    if title.take_whitespace().item.is_empty() {
+                        title_source = Some(title);
+                        block_start = maybe_title.after;
+                        continue;
+                    }
                 }
-            } else {
-                (None, source)
-            };
+            }
 
-        let title = title_source.map(|ref span| {
+            // Try to parse a block anchor.
+            if anchor.is_none() {
+                let mut anchor_maw = parse_maybe_block_anchor(block_start);
+
+                // Collect any warnings from the anchor parsing (e.g., empty anchor).
+                if !anchor_maw.warnings.is_empty() {
+                    warnings.append(&mut anchor_maw.warnings);
+                }
+
+                if let Some(mi) = anchor_maw.item {
+                    if let Some(comma_position) = mi.item.position(|c| c == ',')
+                        && comma_position < mi.item.len() - 1
+                    {
+                        let anchor_span = mi.item.slice_to(RangeTo {
+                            end: comma_position,
+                        });
+                        let reftext_span = mi.item.slice_from(RangeFrom {
+                            start: comma_position + 1,
+                        });
+
+                        // Validate anchor name.
+                        if anchor_span.is_xml_name() {
+                            anchor = Some(anchor_span);
+                            reftext = Some(reftext_span);
+                            block_start = mi.after;
+                        } else {
+                            warnings.push(Warning {
+                                source: anchor_span,
+                                warning: WarningType::InvalidBlockAnchorName,
+                            });
+                        }
+                    } else {
+                        // Validate anchor name.
+                        if mi.item.is_xml_name() {
+                            anchor = Some(mi.item);
+                            block_start = mi.after;
+                        } else {
+                            warnings.push(Warning {
+                                source: mi.item,
+                                warning: WarningType::InvalidBlockAnchorName,
+                            });
+                        }
+                    }
+
+                    if block_start != original_block_start {
+                        continue;
+                    }
+                }
+            }
+
+            // Try to parse an attribute list.
+            if attrlist.is_none()
+                && let Some(MatchAndWarnings {
+                    item:
+                        MatchedItem {
+                            item: attrlist_item,
+                            after: new_block_start,
+                        },
+                    warnings: mut attrlist_warnings,
+                }) = parse_maybe_attrlist_line(block_start, parser)
+            {
+                if !attrlist_warnings.is_empty() {
+                    warnings.append(&mut attrlist_warnings);
+                }
+
+                attrlist = Some(attrlist_item);
+                block_start = new_block_start;
+                continue;
+            }
+
+            // No more metadata items found.
+            break;
+        }
+
+        let title = title_source.as_ref().map(|span| {
             let mut content = Content::from(*span);
             SubstitutionGroup::Normal.apply(&mut content, parser, None);
             content.rendered.into_string()
         });
-
-        // Does this block have a block anchor?
-        let mut anchor_maw = parse_maybe_block_anchor(block_start);
-        let original_block_start = block_start;
-
-        let (mut anchor, mut reftext, mut block_start) = if let Some(mi) = anchor_maw.item {
-            if let Some(comma_position) = mi.item.position(|c| c == ',')
-                && comma_position < mi.item.len() - 1
-            {
-                let anchor = mi.item.slice_to(RangeTo {
-                    end: comma_position,
-                });
-                let reftext = mi.item.slice_from(RangeFrom {
-                    start: comma_position + 1,
-                });
-
-                (Some(anchor), Some(reftext), mi.after)
-            } else {
-                (Some(mi.item), None, mi.after)
-            }
-        } else {
-            (None, None, block_start)
-        };
-
-        if !anchor_maw.warnings.is_empty() {
-            warnings.append(&mut anchor_maw.warnings);
-        }
-
-        // If anchor name doesn't match the XML "Name" pattern, discard the anchor name
-        // and issue a warning.
-        if let Some(anchor_span) = anchor
-            && !anchor_span.is_xml_name()
-        {
-            warnings.push(Warning {
-                source: anchor_span,
-                warning: WarningType::InvalidBlockAnchorName,
-            });
-
-            anchor = None;
-            reftext = None;
-            block_start = original_block_start;
-        }
-
-        // Does this block have an attribute list?
-        let (attrlist, block_start) = if let Some(MatchAndWarnings {
-            item:
-                MatchedItem {
-                    item: attrlist,
-                    after: block_start,
-                },
-            warnings: mut attrlist_warnings,
-        }) = parse_maybe_attrlist_line(block_start, parser)
-        {
-            if !attrlist_warnings.is_empty() {
-                warnings.append(&mut attrlist_warnings);
-            }
-
-            (Some(attrlist), block_start)
-        } else {
-            (None, block_start)
-        };
 
         MatchAndWarnings {
             item: Self {
@@ -257,4 +278,129 @@ fn parse_maybe_attrlist_line<'src>(
         },
         warnings,
     })
+}
+
+#[cfg(test)]
+mod tests {
+    #![allow(clippy::unwrap_used)]
+
+    use crate::tests::prelude::*;
+
+    #[test]
+    fn metadata_order_title_anchor_attrlist() {
+        let input = ".My Title\n[[my-anchor]]\n[role=\"example\"]\nContent\n";
+        let metadata = super::BlockMetadata::new(input);
+
+        assert_eq!(metadata.title.as_deref(), Some("My Title"));
+        assert_eq!(
+            metadata.anchor.unwrap(),
+            Span {
+                data: "my-anchor",
+                line: 2,
+                col: 3,
+                offset: 12,
+            }
+        );
+        assert!(metadata.attrlist.is_some());
+    }
+
+    #[test]
+    fn metadata_order_anchor_title_attrlist() {
+        let input = "[[another-anchor]]\n.Another Title\n[role=\"sidebar\"]\nContent\n";
+        let metadata = super::BlockMetadata::new(input);
+
+        assert_eq!(metadata.title.as_deref(), Some("Another Title"));
+        assert_eq!(
+            metadata.anchor.unwrap(),
+            Span {
+                data: "another-anchor",
+                line: 1,
+                col: 3,
+                offset: 2,
+            }
+        );
+        assert!(metadata.attrlist.is_some());
+    }
+
+    #[test]
+    fn metadata_order_attrlist_title_anchor() {
+        let input = "[role=\"note\"]\n.Third Title\n[[third-anchor]]\nContent\n";
+        let metadata = super::BlockMetadata::new(input);
+
+        assert_eq!(metadata.title.as_deref(), Some("Third Title"));
+        assert_eq!(
+            metadata.anchor.unwrap(),
+            Span {
+                data: "third-anchor",
+                line: 3,
+                col: 3,
+                offset: 29,
+            }
+        );
+        assert!(metadata.attrlist.is_some());
+    }
+
+    #[test]
+    fn metadata_order_anchor_attrlist_title() {
+        let input = "[[fourth-anchor]]\n[role=\"warning\"]\n.Fourth Title\nContent\n";
+        let metadata = super::BlockMetadata::new(input);
+
+        assert_eq!(metadata.title.as_deref(), Some("Fourth Title"));
+        assert_eq!(
+            metadata.anchor.unwrap(),
+            Span {
+                data: "fourth-anchor",
+                line: 1,
+                col: 3,
+                offset: 2,
+            }
+        );
+        assert!(metadata.attrlist.is_some());
+    }
+
+    #[test]
+    fn metadata_order_title_attrlist_only() {
+        let input = ".Just Title\n[role=\"tip\"]\nContent\n";
+        let metadata = super::BlockMetadata::new(input);
+
+        assert_eq!(metadata.title.as_deref(), Some("Just Title"));
+        assert!(metadata.anchor.is_none());
+        assert!(metadata.attrlist.is_some());
+    }
+
+    #[test]
+    fn metadata_order_anchor_attrlist_only() {
+        let input = "[[just-anchor]]\n[role=\"caution\"]\nContent\n";
+        let metadata = super::BlockMetadata::new(input);
+
+        assert!(metadata.title.is_none());
+        assert_eq!(
+            metadata.anchor.unwrap(),
+            Span {
+                data: "just-anchor",
+                line: 1,
+                col: 3,
+                offset: 2,
+            }
+        );
+        assert!(metadata.attrlist.is_some());
+    }
+
+    #[test]
+    fn metadata_order_attrlist_anchor_only() {
+        let input = "[role=\"important\"]\n[[attrlist-first]]\nContent\n";
+        let metadata = super::BlockMetadata::new(input);
+
+        assert!(metadata.title.is_none());
+        assert_eq!(
+            metadata.anchor.unwrap(),
+            Span {
+                data: "attrlist-first",
+                line: 2,
+                col: 3,
+                offset: 21,
+            }
+        );
+        assert!(metadata.attrlist.is_some());
+    }
 }

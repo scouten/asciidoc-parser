@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 As of January 2026 and until the 1.0.0 version is released, I will only make minor version changes (incrementing the x in 0.x.0) if breaking changes are made (including changing the minimum supported Rust version). Features will now result in a patch version change (incrementing the y in 0.x.y). This brings us into closer compliance with typical SemVer practice (and follows the default behavior of release-plz).
 
+## [0.14.2](https://github.com/scouten/asciidoc-parser/compare/v0.14.1...v0.14.2)
+_17 January 2026_
+
+### Fixed
+
+* Revised the `BlockMetadata::parse` function to accept block metadata items in any order ([#463](https://github.com/scouten/asciidoc-parser/pull/463))
+
 ## [0.14.1](https://github.com/scouten/asciidoc-parser/compare/v0.14.0...v0.14.1)
 _02 January 2026_
 
