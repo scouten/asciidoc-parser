@@ -1,0 +1,12 @@
+# Taplo TOML formatter configuration.
+# Used for Cargo.toml files within this project.
+
+[formatting]
+# Enforce alphabetical ordering of dependencies.
+reorder_keys = true
+
+# Spaces inside inline tables (hash maps).
+inline_table_padding = 1
+
+# No spaces inside arrays.
+array_padding = 0
