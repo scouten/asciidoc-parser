@@ -1200,18 +1200,28 @@ mod bulleted_lists {
         #[test]
         #[ignore]
         fn adjacent_list_continuation_line_attaches_following_block_with_block_attributes() {
-            let _doc = Parser::default().parse("Lists\n=====\n\n* Item one, paragraph one\n+\n:foo: bar\n[[beck]]\n.Read the following aloud to yourself\n[source, ruby]\n----\n5.times { print \"Odelay!\" }\n----\n\n* Item two\n");
-            todo!("assert_xpath: '//ul', output, 1");
-            todo!("assert_xpath: '//ul/li', output, 2");
-            todo!("assert_xpath: '//ul/li[1]/p', output, 1");
-            todo!(
-                "assert_xpath: '(//ul/li[1]/p/following-sibling::*)[1][@id=\"beck\"][@class = \"listingblock\"]', output, 1"
+            let doc = Parser::default().parse("== Lists\n\n* Item one, paragraph one\n+\n:foo: bar\n[[beck]]\n.Read the following aloud to yourself\n[source, ruby]\n----\n5.times { print \"Odelay!\" }\n----\n\n* Item two\n");
+
+            assert_xpath(&doc, "//ul", 1);
+            assert_xpath(&doc, "//ul/li", 2);
+            assert_xpath(&doc, "//ul/li[1]/p", 1);
+
+            assert_xpath(
+                &doc,
+                "(//ul/li[1]/p/following-sibling::*)[1][@id=\"beck\"][@class = \"listingblock\"]",
+                1,
             );
-            todo!(
-                "assert_xpath: '(//ul/li[1]/p/following-sibling::*)[1][@id=\"beck\"]/div[@class=\"title\"][starts-with(text(),\"Read\")]', output, 1"
+
+            assert_xpath(
+                &doc,
+                "(//ul/li[1]/p/following-sibling::*)[1][@id=\"beck\"]/div[@class=\"title\"][starts-with(text(),\"Read\")]",
+                1,
             );
-            todo!(
-                "assert_xpath: '(//ul/li[1]/p/following-sibling::*)[1][@id=\"beck\"]//code[@data-lang=\"ruby\"][starts-with(text(),\"5.times\")]', output, 1"
+
+            assert_xpath(
+                &doc,
+                "(//ul/li[1]/p/following-sibling::*)[1][@id=\"beck\"]//code[@data-lang=\"ruby\"][starts-with(text(),\"5.times\")]",
+                1,
             );
         }
 

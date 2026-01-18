@@ -173,13 +173,6 @@ impl<'src> Block<'src> {
             && (first_line.ends_with(':') || first_line.contains(": "))
             && let Some(attr) = Attribute::parse(source, parser)
         {
-            if parent_list_markers.is_some() {
-                return MatchAndWarnings {
-                    item: None,
-                    warnings: vec![],
-                };
-            }
-
             let mut warnings: Vec<Warning<'src>> = vec![];
             parser.set_attribute_from_body(&attr.item, &mut warnings);
 

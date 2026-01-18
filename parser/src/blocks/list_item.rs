@@ -63,6 +63,7 @@ impl<'src> ListItem<'src> {
 
         let mut next = simple_block_mi.after;
         let mut next_block_must_be_indented = false;
+        let mut continuation_active = false;
 
         loop {
             if next.is_empty() {
@@ -74,12 +75,14 @@ impl<'src> ListItem<'src> {
             if next_line_mi.item.data() == "+" {
                 next = next_line_mi.after;
                 next_block_must_be_indented = false;
+                continuation_active = true;
                 continue;
             }
 
             if next_line_mi.item.data().is_empty() {
                 if parent_list_markers.is_empty() {
                     next = next.discard_empty_lines();
+                    next_block_must_be_indented = true;
                     continue;
                 } else {
                     next = next_line_mi.after;
@@ -157,9 +160,44 @@ impl<'src> ListItem<'src> {
                 break;
             };
 
-            blocks.push(indented_block_mi.item);
+            // After a continuation marker, subsequent blocks don't need to be indented.
+            // However, document attributes don't consume the continuation status.
+            let is_document_attribute =
+                matches!(indented_block_mi.item, Block::DocumentAttribute(_));
+
+            // Check if this is a SimpleBlock that looks like orphaned metadata.
+            // (This happens when metadata like [[anchor]] and .title are parsed but
+            // no block follows, so they get turned into a SimpleBlock.)
+            let looks_like_orphaned_metadata = if let Block::Simple(ref sb) = indented_block_mi.item
+            {
+                sb.content().original().data().starts_with('.')
+            } else {
+                false
+            };
+
+            // Document attributes should not be added to the list item blocks.
+            // They're processed for their side effects but don't appear in the output.
+            // Similarly, orphaned metadata blocks shouldn't be added; they'll be
+            // re-parsed on the next iteration where they can attach to a real block.
+            if !is_document_attribute && !looks_like_orphaned_metadata {
+                blocks.push(indented_block_mi.item);
+            }
             next = indented_block_mi.after;
-            next_block_must_be_indented = true;
+
+            if is_document_attribute || looks_like_orphaned_metadata {
+                // Document attributes and orphaned metadata are transparent to
+                // continuation logic. Keep continuation_active
+                // and next_block_must_be_indented unchanged.
+            } else if continuation_active {
+                // This block consumed the continuation.
+                // The next block after this one will need to be indented (or have another
+                // continuation).
+                continuation_active = false;
+                next_block_must_be_indented = true;
+            } else {
+                // No active continuation; next block must be indented.
+                next_block_must_be_indented = true;
+            }
         }
 
         let source = source.trim_remainder(next).trim_trailing_whitespace();
