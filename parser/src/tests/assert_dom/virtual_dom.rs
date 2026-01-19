@@ -608,8 +608,40 @@ fn raw_delimited_to_node<'a>(raw: &'a RawDelimitedBlock<'a>) -> VirtualNode {
     }
 
     if tag != "comment" {
-        let pre = VirtualNode::new("pre");
-        node.children.push(pre);
+        // Check if this is a source block by looking for style="source" in attrlist.
+        let is_source_block = raw
+            .attrlist()
+            .and_then(|attrlist| attrlist.attributes().next())
+            .map(|attr| attr.value() == "source")
+            .unwrap_or(false);
+
+        if is_source_block {
+            // For source blocks, create pre > code structure.
+            let mut code = VirtualNode::new("code");
+
+            // Add data-lang attribute if language is specified (second positional
+            // attribute).
+            if let Some(attrlist) = raw.attrlist() {
+                let mut attrs = attrlist.attributes();
+                // Skip first attribute (style="source").
+                attrs.next();
+                // Second attribute is the language.
+                if let Some(lang_attr) = attrs.next() {
+                    code = code.with_attribute("data-lang", lang_attr.value());
+                }
+            }
+
+            // Add the block's rendered content to the code element.
+            if let Some(content) = raw.rendered_content() {
+                code = code.with_text(content);
+            }
+
+            let pre = VirtualNode::new("pre").with_child(code);
+            node.children.push(pre);
+        } else {
+            let pre = VirtualNode::new("pre");
+            node.children.push(pre);
+        }
     }
 
     node

@@ -1198,7 +1198,6 @@ mod bulleted_lists {
         }
 
         #[test]
-        #[ignore]
         fn adjacent_list_continuation_line_attaches_following_block_with_block_attributes() {
             let doc = Parser::default().parse("== Lists\n\n* Item one, paragraph one\n+\n:foo: bar\n[[beck]]\n.Read the following aloud to yourself\n[source, ruby]\n----\n5.times { print \"Odelay!\" }\n----\n\n* Item two\n");
 

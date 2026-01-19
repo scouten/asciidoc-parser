@@ -99,8 +99,27 @@ fn query_parenthesized<'a>(root: &'a VirtualNode, xpath: &str) -> Vec<&'a Virtua
                 if !remaining.is_empty() {
                     // Check if remaining starts with another predicate (e.g., [text()="value"])
                     if remaining.starts_with('[') {
-                        // Apply the additional predicate(s) to the current results
-                        results.retain(|node| matches_predicate(node, remaining));
+                        // Extract consecutive predicates.
+                        let (predicates, path_after) = extract_predicates(remaining);
+
+                        // Apply the predicates to filter the results.
+                        results.retain(|node| matches_predicate(node, predicates));
+
+                        // If there's more path after the predicates, continue processing.
+                        if !path_after.is_empty() {
+                            let mut final_results = Vec::new();
+                            for node in results {
+                                if path_after.starts_with('/') && !path_after.starts_with("//") {
+                                    // Direct child path.
+                                    final_results.extend(query_from_root(node, &path_after[1..]));
+                                } else if let Some(stripped) = path_after.strip_prefix("//") {
+                                    // Descendant path.
+                                    final_results.extend(query_descendant_or_self(node, stripped));
+                                }
+                            }
+                            return final_results;
+                        }
+
                         return results;
                     }
 
@@ -778,6 +797,41 @@ fn matches_selector(node: &VirtualNode, selector: &str) -> bool {
     true
 }
 
+/// Extracts consecutive predicates from a path string.
+///
+/// Given a string like `[@id="beck"][@class="title"]/div/span`, returns
+/// `("[@id=\"beck\"][@class=\"title\"]", "/div/span")`.
+fn extract_predicates(path: &str) -> (&str, &str) {
+    let path = path.trim();
+    let mut end = 0;
+    let mut in_predicate = false;
+    let mut bracket_depth = 0;
+
+    for (i, ch) in path.chars().enumerate() {
+        match ch {
+            '[' => {
+                in_predicate = true;
+                bracket_depth += 1;
+            }
+            ']' => {
+                bracket_depth -= 1;
+                if bracket_depth == 0 {
+                    end = i + 1;
+                    in_predicate = false;
+                }
+            }
+            '/' if !in_predicate && bracket_depth == 0 => {
+                // Found a path separator after all predicates.
+                return (&path[..end], &path[end..]);
+            }
+            _ => {}
+        }
+    }
+
+    // All predicates, no path after.
+    (&path[..end], &path[end..])
+}
+
 /// Checks if a node matches a predicate like `[@class="value"]` or
 /// `[text()="value"]`.
 /// Can handle multiple predicates like `[@class="value"][text()="text"]`.
@@ -834,6 +888,37 @@ fn get_text_content(node: &VirtualNode) -> String {
 /// Checks if a node matches a single predicate.
 fn matches_single_predicate(node: &VirtualNode, predicate: &str) -> bool {
     let predicate = predicate.trim();
+
+    // Check for `starts-with()` predicate.
+    if let Some(rest) = predicate.strip_prefix("starts-with(") {
+        // Parse starts-with(text(), "value").
+        let rest = rest.trim();
+        if let Some(args) = rest.strip_prefix("text()") {
+            let args = args.trim();
+            if let Some(args) = args.strip_prefix(',') {
+                let args = args.trim();
+                // Find the closing parenthesis for starts-with().
+                if let Some(close_paren) = args.rfind(')') {
+                    let value_part = args[..close_paren].trim();
+                    // Try double-quoted string.
+                    if let Some(value) = value_part.strip_prefix('"')
+                        && let Some(value) = value.strip_suffix('"')
+                    {
+                        let unescaped = unescape_xpath_string(value);
+                        return get_text_content(node).starts_with(&unescaped);
+                    }
+                    // Try single-quoted string.
+                    else if let Some(value) = value_part.strip_prefix('\'')
+                        && let Some(value) = value.strip_suffix('\'')
+                    {
+                        let unescaped = unescape_xpath_string(value);
+                        return get_text_content(node).starts_with(&unescaped);
+                    }
+                }
+            }
+        }
+        return false;
+    }
 
     // Check for `text()` predicate.
     if let Some(rest) = predicate.strip_prefix("text()") {
@@ -1396,5 +1481,91 @@ mod tests {
             2,
             "Should find 2 descendant p tags (direct + nested in div)"
         );
+    }
+
+    #[test]
+    fn query_with_starts_with_predicate() {
+        // Test starts-with() function in predicates.
+        let doc = Parser::default().parse("Hello World\n\nGoodbye Moon\n");
+        let vdom = doc.to_virtual_dom();
+
+        // Find paragraphs that start with "Hello".
+        let result = query_xpath(&vdom, "//p[starts-with(text(),\"Hello\")]");
+        assert_eq!(
+            result.len(),
+            1,
+            "Should find one paragraph starting with Hello"
+        );
+        assert_eq!(result[0].text.as_deref(), Some("Hello World"));
+
+        // Find paragraphs that start with "Good".
+        let result = query_xpath(&vdom, "//p[starts-with(text(),\"Good\")]");
+        assert_eq!(
+            result.len(),
+            1,
+            "Should find one paragraph starting with Good"
+        );
+        assert_eq!(result[0].text.as_deref(), Some("Goodbye Moon"));
+
+        // Find paragraphs that start with "Foo" (should find none).
+        let result = query_xpath(&vdom, "//p[starts-with(text(),\"Foo\")]");
+        assert_eq!(
+            result.len(),
+            0,
+            "Should find no paragraphs starting with Foo"
+        );
+    }
+
+    #[test]
+    fn test_extract_predicates() {
+        use super::extract_predicates;
+
+        // Single predicate followed by path.
+        let (pred, path) = extract_predicates("[@id=\"beck\"]/div");
+        assert_eq!(pred, "[@id=\"beck\"]");
+        assert_eq!(path, "/div");
+
+        // Multiple predicates followed by path.
+        let (pred, path) = extract_predicates("[@id=\"beck\"][@class=\"title\"]/div/span");
+        assert_eq!(pred, "[@id=\"beck\"][@class=\"title\"]");
+        assert_eq!(path, "/div/span");
+
+        // Predicates only, no path.
+        let (pred, path) = extract_predicates("[@id=\"test\"]");
+        assert_eq!(pred, "[@id=\"test\"]");
+        assert_eq!(path, "");
+
+        // Path only, no predicates.
+        let (pred, path) = extract_predicates("/div/span");
+        assert_eq!(pred, "");
+        assert_eq!(path, "/div/span");
+    }
+
+    #[test]
+    fn query_parenthesized_with_predicates_and_child_path() {
+        // Test the complex query pattern from the failing test:
+        // (//ul/li[1]/p/following-sibling::*)[1][@id="beck"]/div[@class="title"]
+        let doc = Parser::default().parse("== Lists\n\n* Item one, paragraph one\n+\n:foo: bar\n[[beck]]\n.Read the following aloud to yourself\n[source, ruby]\n----\n5.times { print \"Odelay!\" }\n----\n\n* Item two\n");
+        let vdom = doc.to_virtual_dom();
+
+        // First verify the listingblock with id="beck" exists.
+        let listing = query_xpath(&vdom, "//*[@id=\"beck\"]");
+        assert_eq!(listing.len(), 1, "Should find the beck listingblock");
+
+        // Verify the div.title child exists.
+        let title = query_xpath(&vdom, "//*[@id=\"beck\"]/div[@class=\"title\"]");
+        assert_eq!(title.len(), 1, "Should find the title div");
+
+        // Now test the full complex query.
+        let result = query_xpath(
+            &vdom,
+            "(//ul/li[1]/p/following-sibling::*)[1][@id=\"beck\"]/div[@class=\"title\"]",
+        );
+        assert_eq!(
+            result.len(),
+            1,
+            "Should find the title div via complex query"
+        );
+        assert_eq!(result[0].text.as_deref().unwrap().starts_with("Read"), true);
     }
 }
