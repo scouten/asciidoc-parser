@@ -1266,19 +1266,31 @@ mod bulleted_lists {
         }
 
         #[test]
-        #[ignore]
         fn list_item_with_hanging_indent_followed_by_block_attached_by_list_continuation() {
-            let _doc = Parser::default().parse("== Lists\n\n. list item 1\n  continued\n+\n--\nopen block in list item 1\n--\n\n. list item 2\n");
-            todo!("assert_css: 'ol', output, 1");
-            todo!("assert_css: 'ol li', output, 2");
-            todo!("assert_xpath: '(//ol/li)[1]/p[text()=\"list item 1\\ncontinued\"]', output, 1");
-            todo!(
-                "assert_xpath: '(//ol/li)[1]/p/following-sibling::*[@class=\"openblock\"]', output, 1"
+            let doc = Parser::default().parse("== Lists\n\n. list item 1\n  continued\n+\n--\nopen block in list item 1\n--\n\n. list item 2\n");
+
+            assert_css(&doc, "ol", 1);
+            assert_css(&doc, "ol li", 2);
+
+            assert_xpath(
+                &doc,
+                "(//ol/li)[1]/p[text()=\"list item 1\\ncontinued\"]",
+                1,
             );
-            todo!(
-                "assert_xpath: '(//ol/li)[1]/p/following-sibling::*[@class=\"openblock\"]//p[text()=\"open block in list item 1\"]', output, 1"
+
+            assert_xpath(
+                &doc,
+                "(//ol/li)[1]/p/following-sibling::*[@class=\"openblock\"]",
+                1,
             );
-            todo!("assert_xpath: '(//ol/li)[2]/p[text()=\"list item 2\"]', output, 1");
+
+            assert_xpath(
+                &doc,
+                "(//ol/li)[1]/p/following-sibling::*[@class=\"openblock\"]//p[text()=\"open block in list item 1\"]",
+                1,
+            );
+
+            assert_xpath(&doc, "(//ol/li)[2]/p[text()=\"list item 2\"]", 1);
         }
 
         #[test]
