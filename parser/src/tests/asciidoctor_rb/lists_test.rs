@@ -1236,12 +1236,12 @@ mod bulleted_lists {
         }
 
         #[test]
-        #[ignore]
         fn trailing_block_title_line_attached_by_continuation_should_not_create_block() {
-            let _doc = Parser::default().parse("Lists\n=====\n\n* Item one, paragraph one\n+\n.Disappears into the ether\n\n* Item two\n");
-            todo!("assert_xpath: '//ul', output, 1");
-            todo!("assert_xpath: '//ul/li', output, 2");
-            todo!("assert_xpath: '//ul/li[1]/*', output, 1");
+            let doc = Parser::default().parse("== Lists\n\n* Item one, paragraph one\n+\n.Disappears into the ether\n\n* Item two\n");
+
+            assert_xpath(&doc, "//ul", 1);
+            assert_xpath(&doc, "//ul/li", 2);
+            assert_xpath(&doc, "//ul/li[1]/*", 1);
         }
 
         #[test]
