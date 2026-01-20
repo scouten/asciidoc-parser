@@ -91,20 +91,9 @@ impl<'src> ListItem<'src> {
             }
 
             let is_indented = next.starts_with(' ') || next.starts_with('\t');
-            let indented_next = next.discard_whitespace();
+            let metadata = BlockMetadata::parse(next, parser);
 
-            // TEMPORARY: Ignore block metadata for potential peer list items.
-            let list_item_metadata = BlockMetadata {
-                title_source: None,
-                title: None,
-                anchor: None,
-                anchor_reftext: None,
-                attrlist: None,
-                source: next,
-                block_start: next,
-            };
-
-            if let Some(list_item_marker_mi) = ListItemMarker::parse(indented_next) {
+            if let Some(list_item_marker_mi) = ListItemMarker::parse(metadata.item.block_start) {
                 // We've found a new list item. How does it compare with the existing item in
                 // the hierarchy?
                 let new_item_marker = list_item_marker_mi.item;
@@ -133,7 +122,7 @@ impl<'src> ListItem<'src> {
                 // a test case where it would fail). We use the `?` to provide a safe escape in
                 // case it doesn't.
                 let nested_list_mi = ListBlock::parse_inside_list(
-                    &list_item_metadata,
+                    &metadata.item,
                     &nested_list_markers,
                     parser,
                     warnings,
@@ -148,6 +137,18 @@ impl<'src> ListItem<'src> {
 
             if next_block_must_be_indented && !is_indented {
                 break;
+            }
+
+            // If there's block metadata but no block, just discard it and continue.
+            if metadata
+                .item
+                .block_start
+                .take_normalized_line()
+                .item
+                .is_empty()
+            {
+                next = metadata.item.block_start.discard_empty_lines();
+                continue;
             }
 
             // A list item does not terminate if subsequent blocks are indented (i.e. use
@@ -165,26 +166,16 @@ impl<'src> ListItem<'src> {
             let is_document_attribute =
                 matches!(indented_block_mi.item, Block::DocumentAttribute(_));
 
-            // Check if this is a SimpleBlock that looks like orphaned metadata.
-            // (This happens when metadata like [[anchor]] and .title are parsed but
-            // no block follows, so they get turned into a SimpleBlock.)
-            let looks_like_orphaned_metadata = if let Block::Simple(ref sb) = indented_block_mi.item
-            {
-                sb.content().original().data().starts_with('.')
-            } else {
-                false
-            };
-
             // Document attributes should not be added to the list item blocks.
             // They're processed for their side effects but don't appear in the output.
             // Similarly, orphaned metadata blocks shouldn't be added; they'll be
             // re-parsed on the next iteration where they can attach to a real block.
-            if !is_document_attribute && !looks_like_orphaned_metadata {
+            if !is_document_attribute {
                 blocks.push(indented_block_mi.item);
             }
             next = indented_block_mi.after;
 
-            if is_document_attribute || looks_like_orphaned_metadata {
+            if is_document_attribute {
                 // Document attributes and orphaned metadata are transparent to
                 // continuation logic. Keep continuation_active
                 // and next_block_must_be_indented unchanged.
