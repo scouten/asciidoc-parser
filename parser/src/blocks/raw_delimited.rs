@@ -33,29 +33,37 @@ pub struct RawDelimitedBlock<'src> {
     substitution_group: SubstitutionGroup,
 }
 
+#[derive(Copy, Clone)]
+enum DelimKind {
+    Comment,
+    Listing,
+    Literal,
+    Pass,
+}
+
+fn delim_kind<'src>(line: &Span<'src>) -> Option<DelimKind> {
+    let bytes = line.data().as_bytes();
+
+    let  (first4, rest) = bytes.split_first_chunk::<4>()?;
+
+    let (delim, context) = match first4 {
+        b"////" => (b'/', DelimKind::Comment),
+        b"----" => (b'-', DelimKind::Listing),
+        b"...." => (b'.', DelimKind::Literal),
+        b"++++" => (b'+', DelimKind::Pass),
+        _ => return None,
+    };
+
+    if rest.iter().all(|&x| x == delim) {
+        Some(context)
+    } else {
+        None
+    }
+}
+
 impl<'src> RawDelimitedBlock<'src> {
     pub(crate) fn is_valid_delimiter(line: &Span<'src>) -> bool {
-        let data = line.data();
-
-        // TO DO (https://github.com/scouten/asciidoc-parser/issues/145):
-        // Seek spec clarity: Do the characters after the fourth char
-        // have to match the first four?
-
-        if data.len() >= 4 {
-            if data.starts_with("////") {
-                data.split_at(4).1.chars().all(|c| c == '/')
-            } else if data.starts_with("----") {
-                data.split_at(4).1.chars().all(|c| c == '-')
-            } else if data.starts_with("....") {
-                data.split_at(4).1.chars().all(|c| c == '.')
-            } else if data.starts_with("++++") {
-                data.split_at(4).1.chars().all(|c| c == '+')
-            } else {
-                false
-            }
-        } else {
-            false
-        }
+        delim_kind(line).is_some()
     }
 
     pub(crate) fn parse(
@@ -64,30 +72,22 @@ impl<'src> RawDelimitedBlock<'src> {
     ) -> Option<MatchAndWarnings<'src, Option<MatchedItem<'src, Self>>>> {
         let delimiter = metadata.block_start.take_normalized_line();
 
-        if delimiter.item.len() < 4 {
-            return None;
-        }
+        let delim_kind = delim_kind(&delimiter.item)?;
 
-        let (content_model, context, mut substitution_group) =
-            match delimiter.item.data().split_at(4).0 {
-                "////" => (ContentModel::Raw, "comment", SubstitutionGroup::None),
-                "----" => (
-                    ContentModel::Verbatim,
-                    "listing",
-                    SubstitutionGroup::Verbatim,
-                ),
-                "...." => (
-                    ContentModel::Verbatim,
-                    "literal",
-                    SubstitutionGroup::Verbatim,
-                ),
-                "++++" => (ContentModel::Raw, "pass", SubstitutionGroup::Pass),
-                _ => return None,
-            };
-
-        if !Self::is_valid_delimiter(&delimiter.item) {
-            return None;
-        }
+        let (content_model, context, mut substitution_group) = match delim_kind {
+            DelimKind::Comment => (ContentModel::Raw, "comment", SubstitutionGroup::None),
+            DelimKind::Listing => (
+                ContentModel::Verbatim,
+                "listing",
+                SubstitutionGroup::Verbatim,
+            ),
+            DelimKind::Literal => (
+                ContentModel::Verbatim,
+                "literal",
+                SubstitutionGroup::Verbatim,
+            ),
+            DelimKind::Pass => (ContentModel::Raw, "pass", SubstitutionGroup::Pass),
+        };
 
         let content_start = delimiter.after;
         let mut next = content_start;
