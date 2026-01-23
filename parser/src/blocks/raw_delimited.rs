@@ -46,7 +46,7 @@ fn delim_kind<'src>(line: &Span<'src>) -> Option<DelimKind> {
 
     let  (first4, rest) = bytes.split_first_chunk::<4>()?;
 
-    let (delim, context) = match first4 {
+    let (delim, kind) = match first4 {
         b"////" => (b'/', DelimKind::Comment),
         b"----" => (b'-', DelimKind::Listing),
         b"...." => (b'.', DelimKind::Literal),
@@ -55,7 +55,7 @@ fn delim_kind<'src>(line: &Span<'src>) -> Option<DelimKind> {
     };
 
     if rest.iter().all(|&x| x == delim) {
-        Some(context)
+        Some(kind)
     } else {
         None
     }

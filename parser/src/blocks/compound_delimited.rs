@@ -34,31 +34,33 @@ pub struct CompoundDelimitedBlock<'src> {
     attrlist: Option<Attrlist<'src>>,
 }
 
+fn context<'src>(line: &Span<'src>) -> Option<&'static str> {
+    let bytes = line.data().as_bytes();
+
+    if bytes == b"--" {
+        return Some("open");
+    }
+
+    let  (first4, rest) = bytes.split_first_chunk::<4>()?;
+
+    let context = match first4 {
+        b"====" => "example",
+        b"****" => "sidebar",
+        b"____" => "quote",
+        _ => return None,
+    };
+
+    if rest.iter().all(|&x| x == first4[0]) {
+        Some(context)
+    } else {
+        None
+    }
+}
+
+
 impl<'src> CompoundDelimitedBlock<'src> {
     pub(crate) fn is_valid_delimiter(line: &Span<'src>) -> bool {
-        let data = line.data();
-
-        if data == "--" {
-            return true;
-        }
-
-        // TO DO (https://github.com/scouten/asciidoc-parser/issues/145):
-        // Seek spec clarity: Do the characters after the fourth char
-        // have to match the first four?
-
-        if data.len() >= 4 {
-            if data.starts_with("====") {
-                data.split_at(4).1.chars().all(|c| c == '=')
-            } else if data.starts_with("****") {
-                data.split_at(4).1.chars().all(|c| c == '*')
-            } else if data.starts_with("____") {
-                data.split_at(4).1.chars().all(|c| c == '_')
-            } else {
-                false
-            }
-        } else {
-            false
-        }
+        context(line).is_some()
     }
 
     pub(crate) fn parse(
@@ -66,25 +68,8 @@ impl<'src> CompoundDelimitedBlock<'src> {
         parser: &mut Parser,
     ) -> Option<MatchAndWarnings<'src, Option<MatchedItem<'src, Self>>>> {
         let delimiter = metadata.block_start.take_normalized_line();
-        let maybe_delimiter_text = delimiter.item.data();
 
-        // TO DO (https://github.com/scouten/asciidoc-parser/issues/146):
-        // Seek spec clarity on whether three hyphens can be used to
-        // delimit an open block. Assuming yes for now.
-        let context = match maybe_delimiter_text
-            .split_at(maybe_delimiter_text.len().min(4))
-            .0
-        {
-            "====" => "example",
-            "--" => "open",
-            "****" => "sidebar",
-            "____" => "quote",
-            _ => return None,
-        };
-
-        if !Self::is_valid_delimiter(&delimiter.item) {
-            return None;
-        }
+        let context = context(&delimiter.item)?;
 
         let mut next = delimiter.after;
         let (closing_delimiter, after) = loop {
@@ -226,6 +211,9 @@ mod tests {
             ));
             assert!(!CompoundDelimitedBlock::is_valid_delimiter(
                 &crate::Span::new("//////////x")
+            ));
+            assert!(!CompoundDelimitedBlock::is_valid_delimiter(
+                &crate::Span::new("//✅/")
             ));
         }
 
@@ -514,6 +502,21 @@ mod tests {
             assert!(
                 crate::blocks::CompoundDelimitedBlock::parse(
                     &BlockMetadata::new("////\nline1  \nline2\n////"),
+                    &mut parser
+                )
+                .is_none()
+            );
+        }
+    }
+
+    mod utf8_code_point {
+        use crate::{Parser, blocks::metadata::BlockMetadata};
+        #[test]
+        fn utf8_code_point() {
+            let mut parser = Parser::default();
+            assert!(
+                crate::blocks::CompoundDelimitedBlock::parse(
+                    &BlockMetadata::new("///✅"),
                     &mut parser
                 )
                 .is_none()
