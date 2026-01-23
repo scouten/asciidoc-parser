@@ -509,21 +509,6 @@ mod tests {
         }
     }
 
-    mod utf8_code_point {
-        use crate::{Parser, blocks::metadata::BlockMetadata};
-        #[test]
-        fn utf8_code_point() {
-            let mut parser = Parser::default();
-            assert!(
-                crate::blocks::CompoundDelimitedBlock::parse(
-                    &BlockMetadata::new("///✅"),
-                    &mut parser
-                )
-                .is_none()
-            );
-        }
-    }
-
     mod example {
         use pretty_assertions_sorted::assert_eq;
 
@@ -908,6 +893,17 @@ mod tests {
             );
 
             assert!(blocks.next().is_none());
+        }
+        #[test]
+        fn no_panic_for_utf8_code_point_using_more_than_one_byte() {
+            let mut parser = Parser::default();
+            assert!(
+                crate::blocks::CompoundDelimitedBlock::parse(
+                    &BlockMetadata::new("===😀"),
+                    &mut parser
+                )
+                .is_none()
+            );
         }
     }
 
