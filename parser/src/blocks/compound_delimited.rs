@@ -213,7 +213,7 @@ mod tests {
                 &crate::Span::new("//////////x")
             ));
             assert!(!CompoundDelimitedBlock::is_valid_delimiter(
-                &crate::Span::new("//✅/")
+                &crate::Span::new("//😀/")
             ));
         }
 

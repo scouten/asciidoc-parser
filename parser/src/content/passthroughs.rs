@@ -109,7 +109,7 @@ static INLINE_PASS_MACRO: LazyLock<Regex> = LazyLock::new(|| {
                     ([^\[\]]+)     # Group 2: attrlist contents
                 \]
             )?
-            
+
             (\\{0,2})              # Group 3: optional escape prefix (e.g., \ or \\)
 
             # Passthrough span delimiters: +++, ++, or $$
@@ -315,7 +315,7 @@ static INLINE_PASS: LazyLock<Regex> = LazyLock::new(|| {
                                         # Option 1: [... x-] followed by `xxx`
                 \[(x-|[^\[\]]+\ x-)\]       # Group 1: [attrlist] with x- suffix
                 \`(\S(?:.*?\S)??)\`         # Group 2: `...` content
-            
+
             |                           # --OR--
                                         # Option 2: [...] followed by +xxx+
                 \[([^\[\]]+)\]              # Group 3: [attrlist]
