@@ -1294,26 +1294,50 @@ mod bulleted_lists {
         }
 
         #[test]
-        #[ignore]
         fn list_item_paragraph_in_list_item_and_nested_list_item() {
-            let _doc = Parser::default().parse("== Lists\n\n. list item 1\n+\nlist item 1 paragraph\n\n* nested list item\n+\nnested list item paragraph\n\n. list item 2\n");
-            todo!("assert_css: '.olist ol', output, 1");
-            todo!("assert_css: '.olist ol > li', output, 2");
-            todo!("assert_css: '.ulist ul', output, 1");
-            todo!("assert_css: '.ulist ul > li', output, 1");
-            todo!("assert_xpath: '(//ol/li)[1]/*', output, 3");
-            todo!("assert_xpath: '((//ol/li)[1]/*)[1]/self::p', output, 1");
-            todo!("assert_xpath: '((//ol/li)[1]/*)[1]/self::p[text()=\"list item 1\"]', output, 1");
-            todo!("assert_xpath: '((//ol/li)[1]/*)[2]/self::div[@class=\"paragraph\"]', output, 1");
-            todo!("assert_xpath: '((//ol/li)[1]/*)[3]/self::div[@class=\"ulist\"]', output, 1");
-            todo!(
-                "assert_xpath: '((//ol/li)[1]/*)[3]/self::div[@class=\"ulist\"]/ul/li', output, 1"
+            let doc = Parser::default().parse("== Lists\n\n. list item 1\n+\nlist item 1 paragraph\n\n* nested list item\n+\nnested list item paragraph\n\n. list item 2\n");
+
+            let vdom = doc.to_virtual_dom();
+            dbg!(&vdom);
+
+            assert_css(&doc, ".olist ol", 1);
+            assert_css(&doc, ".olist ol > li", 2);
+            assert_css(&doc, ".ulist ul", 1);
+            assert_css(&doc, ".ulist ul > li", 1);
+
+            assert_xpath(&doc, "(//ol/li)[1]/*", 3);
+            assert_xpath(&doc, "((//ol/li)[1]/*)[1]/self::p", 1);
+
+            assert_xpath(
+                &doc,
+                "((//ol/li)[1]/*)[1]/self::p[text()=\"list item 1\"]",
+                1,
             );
-            todo!(
-                "assert_xpath: '((//ol/li)[1]/*)[3]/self::div[@class=\"ulist\"]/ul/li/p[text()=\"nested list item\"]', output, 1"
+
+            assert_xpath(
+                &doc,
+                "((//ol/li)[1]/*)[2]/self::div[@class=\"paragraph\"]",
+                1,
             );
-            todo!(
-                "assert_xpath: '((//ol/li)[1]/*)[3]/self::div[@class=\"ulist\"]/ul/li/p/following-sibling::div[@class=\"paragraph\"]', output, 1"
+
+            assert_xpath(&doc, "((//ol/li)[1]/*)[3]/self::div[@class=\"ulist\"]", 1);
+
+            assert_xpath(
+                &doc,
+                "((//ol/li)[1]/*)[3]/self::div[@class=\"ulist\"]/ul/li",
+                1,
+            );
+
+            assert_xpath(
+                &doc,
+                "((//ol/li)[1]/*)[3]/self::div[@class=\"ulist\"]/ul/li/p[text()=\"nested list item\"]",
+                1,
+            );
+
+            assert_xpath(
+                &doc,
+                "((//ol/li)[1]/*)[3]/self::div[@class=\"ulist\"]/ul/li/p/following-sibling::div[@class=\"paragraph\"]",
+                1,
             );
         }
 

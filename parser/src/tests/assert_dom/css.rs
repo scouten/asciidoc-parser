@@ -27,8 +27,78 @@ pub(crate) fn query_css<'a>(root: &'a VirtualNode, selector: &str) -> Vec<&'a Vi
     query_descendant_or_self(root, selector)
 }
 
+/// Finds the position of a space that acts as a descendant combinator.
+/// Returns `None` if there are no descendant combinator spaces.
+///
+/// This distinguishes between:
+/// - `div p` - space is a descendant combinator
+/// - `div > p` - space is just whitespace around `>`
+/// - `div + p` - space is just whitespace around `+`
+fn find_descendant_combinator_space(pattern: &str) -> Option<usize> {
+    let gt_pos = pattern.find('>');
+    let plus_pos = pattern.find('+');
+
+    // Find first space.
+    for (i, ch) in pattern.char_indices() {
+        if ch == ' ' {
+            // Check if this space is before any `>` or `+` combinator.
+            let before_gt = gt_pos.map_or(true, |gt| i < gt);
+            let before_plus = plus_pos.map_or(true, |plus| i < plus);
+
+            if before_gt && before_plus {
+                // This space comes before any other combinators.
+                // Check if the next non-whitespace character is a combinator.
+                let rest = pattern[i..].trim_start();
+                if rest.starts_with('>') || rest.starts_with('+') {
+                    // This is whitespace before a combinator, not a descendant combinator.
+                    continue;
+                }
+
+                // This is a descendant combinator.
+                return Some(i);
+            }
+        }
+    }
+
+    None
+}
+
 /// Queries for descendants or self matching the pattern.
 fn query_descendant_or_self<'a>(node: &'a VirtualNode, pattern: &str) -> Vec<&'a VirtualNode> {
+    // Check which combinator appears first to process them in correct order.
+    // Space (descendant) has lower precedence and should be processed first.
+    // However, we need to distinguish between a space as a descendant combinator
+    // and a space that's just whitespace around `>` or `+` combinators.
+    let space_pos = find_descendant_combinator_space(pattern);
+    let gt_pos = pattern.find('>');
+
+    // Process space combinator first if it appears before `>`.
+    if let Some(space) = space_pos
+        && (gt_pos.is_none() || space < gt_pos.unwrap())
+    {
+        // Split on first ` ` to handle paths like `ul li`.
+        let (first, rest) = pattern.split_at(space);
+        let first = first.trim();
+        let rest = rest.trim();
+
+        // Find all nodes matching first part.
+        let mut results = Vec::new();
+        collect_descendants_matching(node, first, &mut results);
+
+        // For each matching node, search its descendants (not including itself) for
+        // the rest of the pattern. The descendant combinator (space) means "any
+        // descendant", which by definition excludes the element itself.
+        let mut final_results = Vec::new();
+        for matched_node in results {
+            // Search only children (descendants), not the matched node itself
+            for child in &matched_node.children {
+                let descendants = query_descendant_or_self(child, rest);
+                final_results.extend(descendants);
+            }
+        }
+        return final_results;
+    }
+
     // Handle direct child combinator: "tag > child".
     if let Some((first, rest)) = pattern.split_once('>') {
         let first = first.trim();
@@ -51,30 +121,10 @@ fn query_descendant_or_self<'a>(node: &'a VirtualNode, pattern: &str) -> Vec<&'a
         return final_results;
     }
 
-    // Split on first ' ' to handle paths like "ul li".
-    if let Some((first, rest)) = pattern.split_once(' ') {
-        let first = first.trim();
-        let rest = rest.trim();
-
-        // Find all nodes matching first part.
-        let mut results = Vec::new();
-        collect_descendants_matching(node, first, &mut results);
-
-        // For each matching node, query its children with the rest of the path.
-        let mut final_results = Vec::new();
-        for matched_node in results {
-            for child in &matched_node.children {
-                let descendants = query_descendant_or_self(child, rest.trim());
-                final_results.extend(descendants);
-            }
-        }
-        final_results
-    } else {
-        // Simple tag match: Find all descendants (or self) matching this selector.
-        let mut results = Vec::new();
-        collect_descendants_matching(node, pattern.trim(), &mut results);
-        results
-    }
+    // Simple tag match: Find all descendants (or self) matching this selector.
+    let mut results = Vec::new();
+    collect_descendants_matching(node, pattern.trim(), &mut results);
+    results
 }
 
 /// Recursively collects all descendants (including self) that match the

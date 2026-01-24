@@ -184,6 +184,38 @@ fn query_parenthesized<'a>(root: &'a VirtualNode, xpath: &str) -> Vec<&'a Virtua
                         return final_results;
                     }
 
+                    if let Some(axis_rest) = remaining.strip_prefix("/self::") {
+                        // The `self::` axis tests if the current node matches the given selector.
+                        // Parse to separate the selector (with predicates) from any continuation
+                        // path.
+                        let (selector, predicate, continuation) =
+                            parse_selector_with_predicates(axis_rest);
+
+                        let selector_with_pred = if let Some(pred) = predicate {
+                            format!("{}{}", selector, pred)
+                        } else {
+                            selector.to_string()
+                        };
+
+                        // Filter results to only nodes matching the selector.
+                        results.retain(|node| matches_selector(node, &selector_with_pred));
+
+                        // If there's a continuation path, apply it to the filtered results.
+                        if let Some(cont) = continuation {
+                            let mut final_results = Vec::new();
+                            for node in results {
+                                if let Some(stripped) = cont.strip_prefix("//") {
+                                    final_results.extend(query_descendant_or_self(node, stripped));
+                                } else if let Some(stripped) = cont.strip_prefix('/') {
+                                    final_results.extend(query_from_root(node, stripped));
+                                }
+                            }
+                            return final_results;
+                        }
+
+                        return results;
+                    }
+
                     let mut final_results = Vec::new();
                     for node in results {
                         if remaining.starts_with('/') && !remaining.starts_with("//") {
@@ -254,6 +286,37 @@ fn query_parenthesized<'a>(root: &'a VirtualNode, xpath: &str) -> Vec<&'a Virtua
                     }
                 }
                 return final_results;
+            }
+
+            // Check if rest is a `self` axis.
+            if let Some(axis_rest) = rest.strip_prefix("/self::") {
+                // The `self::` axis tests if the current node matches the given selector.
+                // Parse to separate the selector (with predicates) from any continuation path.
+                let (selector, predicate, continuation) = parse_selector_with_predicates(axis_rest);
+
+                let selector_with_pred = if let Some(pred) = predicate {
+                    format!("{}{}", selector, pred)
+                } else {
+                    selector.to_string()
+                };
+
+                // Filter results to only nodes matching the selector.
+                results.retain(|node| matches_selector(node, &selector_with_pred));
+
+                // If there's a continuation path, apply it to the filtered results.
+                if let Some(cont) = continuation {
+                    let mut final_results = Vec::new();
+                    for node in results {
+                        if let Some(stripped) = cont.strip_prefix("//") {
+                            final_results.extend(query_descendant_or_self(node, stripped));
+                        } else if let Some(stripped) = cont.strip_prefix('/') {
+                            final_results.extend(query_from_root(node, stripped));
+                        }
+                    }
+                    return final_results;
+                }
+
+                return results;
             }
 
             // Continue with the remaining path without a predicate.
