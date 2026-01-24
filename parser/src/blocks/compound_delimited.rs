@@ -34,33 +34,31 @@ pub struct CompoundDelimitedBlock<'src> {
     attrlist: Option<Attrlist<'src>>,
 }
 
-fn context<'src>(line: &Span<'src>) -> Option<&'static str> {
-    let bytes = line.data().as_bytes();
-
-    if bytes == b"--" {
-        return Some("open");
-    }
-
-    let  (first4, rest) = bytes.split_first_chunk::<4>()?;
-
-    let context = match first4 {
-        b"====" => "example",
-        b"****" => "sidebar",
-        b"____" => "quote",
-        _ => return None,
-    };
-
-    if rest.iter().all(|&x| x == first4[0]) {
-        Some(context)
-    } else {
-        None
-    }
-}
-
-
 impl<'src> CompoundDelimitedBlock<'src> {
     pub(crate) fn is_valid_delimiter(line: &Span<'src>) -> bool {
-        context(line).is_some()
+        let data = line.data();
+
+        if data == "--" {
+            return true;
+        }
+
+        // TO DO (https://github.com/scouten/asciidoc-parser/issues/145):
+        // Seek spec clarity: Do the characters after the fourth char
+        // have to match the first four?
+
+        if data.len() >= 4 {
+            if data.starts_with("====") {
+                data.split_at(4).1.chars().all(|c| c == '=')
+            } else if data.starts_with("****") {
+                data.split_at(4).1.chars().all(|c| c == '*')
+            } else if data.starts_with("____") {
+                data.split_at(4).1.chars().all(|c| c == '_')
+            } else {
+                false
+            }
+        } else {
+            false
+        }
     }
 
     pub(crate) fn parse(
@@ -68,8 +66,25 @@ impl<'src> CompoundDelimitedBlock<'src> {
         parser: &mut Parser,
     ) -> Option<MatchAndWarnings<'src, Option<MatchedItem<'src, Self>>>> {
         let delimiter = metadata.block_start.take_normalized_line();
+        let maybe_delimiter_text = delimiter.item.data();
 
-        let context = context(&delimiter.item)?;
+        // TO DO (https://github.com/scouten/asciidoc-parser/issues/146):
+        // Seek spec clarity on whether three hyphens can be used to
+        // delimit an open block. Assuming yes for now.
+        let context = match maybe_delimiter_text
+            .split_at_checked(maybe_delimiter_text.len().min(4))?
+            .0
+        {
+            "====" => "example",
+            "--" => "open",
+            "****" => "sidebar",
+            "____" => "quote",
+            _ => return None,
+        };
+
+        if !Self::is_valid_delimiter(&delimiter.item) {
+            return None;
+        }
 
         let mut next = delimiter.after;
         let (closing_delimiter, after) = loop {
