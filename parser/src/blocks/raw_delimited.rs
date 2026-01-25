@@ -662,11 +662,8 @@ mod tests {
         fn no_panic_for_utf8_code_point_using_more_than_one_byte() {
             let mut parser = Parser::default();
             assert!(
-                crate::blocks::RawDelimitedBlock::parse(
-                    &BlockMetadata::new("///😀"),
-                    &mut parser
-                )
-                .is_none()
+                crate::blocks::RawDelimitedBlock::parse(&BlockMetadata::new("///😀"), &mut parser)
+                    .is_none()
             );
         }
     }
