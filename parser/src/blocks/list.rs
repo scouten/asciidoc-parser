@@ -50,6 +50,7 @@ impl<'src> ListBlock<'src> {
 
         loop {
             let next_line_mi = next_item_source.take_normalized_line();
+
             if next_line_mi.item.data().is_empty() || next_line_mi.item.data() == "+" {
                 if next_item_source.is_empty() || !parent_list_markers.is_empty() {
                     break;

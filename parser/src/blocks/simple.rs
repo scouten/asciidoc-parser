@@ -155,7 +155,7 @@ impl<'src> SimpleBlock<'src> {
 fn parse_lines<'src>(
     source: Span<'src>,
     attrlist: &Option<Attrlist<'src>>,
-    stop_for_list_items: bool,
+    mut stop_for_list_items: bool,
     parser: &Parser,
 ) -> Option<MatchedItem<'src, (Content<'src>, SimpleBlockStyle)>> {
     let source_after_whitespace = source.discard_whitespace();
@@ -164,6 +164,7 @@ fn parse_lines<'src>(
     let mut style = if source_after_whitespace.col() == source.col() {
         SimpleBlockStyle::Paragraph
     } else {
+        stop_for_list_items = false;
         SimpleBlockStyle::Literal
     };
 
@@ -176,14 +177,17 @@ fn parse_lines<'src>(
             }
 
             Some("literal") => {
+                stop_for_list_items = false;
                 style = SimpleBlockStyle::Literal;
             }
 
             Some("listing") => {
+                stop_for_list_items = false;
                 style = SimpleBlockStyle::Listing;
             }
 
             Some("source") => {
+                stop_for_list_items = false;
                 style = SimpleBlockStyle::Source;
             }
 
