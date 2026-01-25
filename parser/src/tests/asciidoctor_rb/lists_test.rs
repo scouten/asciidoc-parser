@@ -1454,15 +1454,73 @@ mod bulleted_lists {
         }
 
         #[test]
-        #[ignore]
         fn repeated_list_continuations_should_attach_to_list_items_at_respective_levels() {
-            let _doc = Parser::default().parse("== Lists\n\n. list item 1\n\n* nested list item 1\n+\n--\nopen block for nested list item 1\n--\n+\n* nested list item 2\n+\nparagraph for nested list item 2\n\n+\nparagraph for list item 1\n\n. list item 2\n");
-            todo!("assert_css: '.olist ol', output, 1");
-            todo!("assert_css: '.olist ol > li', output, 2");
-            todo!("assert_css: '.ulist ul', output, 1");
-            todo!("assert_css: '.ulist ul > li', output, 2");
-            todo!("assert_css: '.olist .ulist', output, 1");
-            todo!("Multiple xpath assertions for nested continuation structure");
+            let doc = Parser::default().parse("== Lists\n\n. list item 1\n\n* nested list item 1\n+\n--\nopen block for nested list item 1\n--\n+\n* nested list item 2\n+\nparagraph for nested list item 2\n\n+\nparagraph for list item 1\n\n. list item 2\n");
+
+            assert_css(&doc, ".olist ol", 1);
+            assert_css(&doc, ".olist ol > li", 2);
+            assert_css(&doc, ".ulist ul", 1);
+            assert_css(&doc, ".ulist ul > li", 2);
+            assert_css(&doc, ".olist .ulist", 1);
+
+            assert_xpath(&doc, "(//ol/li)[1]/*", 3);
+            assert_xpath(&doc, "((//ol/li)[1]/*)[1]/self::p", 1);
+
+            assert_xpath(
+                &doc,
+                "((//ol/li)[1]/*)[1]/self::p[text()=\"list item 1\"]",
+                1,
+            );
+
+            assert_xpath(&doc, "((//ol/li)[1]/*)[2]/self::div[@class=\"ulist\"]", 1);
+
+            assert_xpath(
+                &doc,
+                "((//ol/li)[1]/*)[2]/self::div[@class=\"ulist\"]/ul/li",
+                2,
+            );
+
+            assert_xpath(
+                &doc,
+                "(((//ol/li)[1]/*)[2]/self::div[@class=\"ulist\"]/ul/li)[1]/*",
+                2,
+            );
+
+            assert_xpath(
+                &doc,
+                "(((//ol/li)[1]/*)[2]/self::div[@class=\"ulist\"]/ul/li)[1]/p",
+                1,
+            );
+
+            assert_xpath(
+                &doc,
+                "(((//ol/li)[1]/*)[2]/self::div[@class=\"ulist\"]/ul/li)[1]/div[@class=\"openblock\"]",
+                1,
+            );
+
+            assert_xpath(
+                &doc,
+                "(((//ol/li)[1]/*)[2]/self::div[@class=\"ulist\"]/ul/li)[2]/*",
+                2,
+            );
+
+            assert_xpath(
+                &doc,
+                "(((//ol/li)[1]/*)[2]/self::div[@class=\"ulist\"]/ul/li)[2]/p",
+                1,
+            );
+
+            assert_xpath(
+                &doc,
+                "(((//ol/li)[1]/*)[2]/self::div[@class=\"ulist\"]/ul/li)[2]/div[@class=\"paragraph\"]",
+                1,
+            );
+
+            assert_xpath(
+                &doc,
+                "((//ol/li)[1]/*)[3]/self::div[@class=\"paragraph\"]",
+                1,
+            );
         }
 
         #[test]
