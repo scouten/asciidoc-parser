@@ -1629,6 +1629,6 @@ mod tests {
             1,
             "Should find the title div via complex query"
         );
-        assert_eq!(result[0].text.as_deref().unwrap().starts_with("Read"), true);
+        assert!(result[0].text.as_deref().unwrap().starts_with("Read"));
     }
 }

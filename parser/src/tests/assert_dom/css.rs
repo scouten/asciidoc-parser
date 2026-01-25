@@ -42,8 +42,8 @@ fn find_descendant_combinator_space(pattern: &str) -> Option<usize> {
     for (i, ch) in pattern.char_indices() {
         if ch == ' ' {
             // Check if this space is before any `>` or `+` combinator.
-            let before_gt = gt_pos.map_or(true, |gt| i < gt);
-            let before_plus = plus_pos.map_or(true, |plus| i < plus);
+            let before_gt = gt_pos.is_none_or(|gt| i < gt);
+            let before_plus = plus_pos.is_none_or(|plus| i < plus);
 
             if before_gt && before_plus {
                 // This space comes before any other combinators.
