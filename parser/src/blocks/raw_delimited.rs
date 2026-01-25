@@ -69,19 +69,19 @@ impl<'src> RawDelimitedBlock<'src> {
         }
 
         let (content_model, context, mut substitution_group) =
-            match delimiter.item.data().split_at(4).0 {
-                "////" => (ContentModel::Raw, "comment", SubstitutionGroup::None),
-                "----" => (
+            match delimiter.item.data().as_bytes().split_at(4).0 {
+                b"////" => (ContentModel::Raw, "comment", SubstitutionGroup::None),
+                b"----" => (
                     ContentModel::Verbatim,
                     "listing",
                     SubstitutionGroup::Verbatim,
                 ),
-                "...." => (
+                b"...." => (
                     ContentModel::Verbatim,
                     "literal",
                     SubstitutionGroup::Verbatim,
                 ),
-                "++++" => (ContentModel::Raw, "pass", SubstitutionGroup::Pass),
+                b"++++" => (ContentModel::Raw, "pass", SubstitutionGroup::Pass),
                 _ => return None,
             };
 
@@ -419,6 +419,12 @@ mod tests {
                 crate::blocks::RawDelimitedBlock::parse(&BlockMetadata::new("==\n=="), &mut parser)
                     .is_none()
             );
+
+            let mut parser = Parser::default();
+            assert!(
+                crate::blocks::RawDelimitedBlock::parse(&BlockMetadata::new("===😀"), &mut parser)
+                    .is_none()
+            );
         }
 
         #[test]
@@ -649,6 +655,15 @@ mod tests {
                     },
                     rendered: "line1  \n/////\nline2",
                 }
+            );
+        }
+
+        #[test]
+        fn no_panic_for_utf8_code_point_using_more_than_one_byte() {
+            let mut parser = Parser::default();
+            assert!(
+                crate::blocks::RawDelimitedBlock::parse(&BlockMetadata::new("///😀"), &mut parser)
+                    .is_none()
             );
         }
     }

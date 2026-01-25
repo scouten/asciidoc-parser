@@ -72,7 +72,7 @@ impl<'src> CompoundDelimitedBlock<'src> {
         // Seek spec clarity on whether three hyphens can be used to
         // delimit an open block. Assuming yes for now.
         let context = match maybe_delimiter_text
-            .split_at(maybe_delimiter_text.len().min(4))
+            .split_at_checked(maybe_delimiter_text.len().min(4))?
             .0
         {
             "====" => "example",
@@ -226,6 +226,9 @@ mod tests {
             ));
             assert!(!CompoundDelimitedBlock::is_valid_delimiter(
                 &crate::Span::new("//////////x")
+            ));
+            assert!(!CompoundDelimitedBlock::is_valid_delimiter(
+                &crate::Span::new("//😀/")
             ));
         }
 
@@ -905,6 +908,17 @@ mod tests {
             );
 
             assert!(blocks.next().is_none());
+        }
+        #[test]
+        fn no_panic_for_utf8_code_point_using_more_than_one_byte() {
+            let mut parser = Parser::default();
+            assert!(
+                crate::blocks::CompoundDelimitedBlock::parse(
+                    &BlockMetadata::new("===😀"),
+                    &mut parser
+                )
+                .is_none()
+            );
         }
     }
 
