@@ -1391,12 +1391,66 @@ mod bulleted_lists {
         }
 
         #[test]
-        #[ignore]
         fn trailing_list_continuations_should_attach_to_list_items_of_different_types_at_respective_levels()
          {
-            let _doc = Parser::default().parse("== Lists\n\n* bullet 1\n. numbered 1.1\n** bullet 1.1.1\n\n+\nnumbered 1.1 paragraph\n\n+\nbullet 1 paragraph\n\n* bullet 2\n");
-            todo!("assert_xpath: '(//ul)[1]/li', output, 2");
-            todo!("Multiple xpath assertions for complex nested structure");
+            let doc = Parser::default().parse("== Lists\n\n* bullet 1\n. numbered 1.1\n** bullet 1.1.1\n\n+\nnumbered 1.1 paragraph\n\n+\nbullet 1 paragraph\n\n* bullet 2\n");
+
+            assert_xpath(&doc, "(//ul)[1]/li", 2);
+
+            assert_xpath(&doc, "((//ul)[1]/li[1])/*", 3);
+
+            assert_xpath(
+                &doc,
+                "(((//ul)[1]/li[1])/*)[1]/self::p[text()=\"bullet 1\"]",
+                1,
+            );
+
+            assert_xpath(&doc, "(((//ul)[1]/li[1])/*)[2]/ol", 1);
+
+            assert_xpath(
+                &doc,
+                "(((//ul)[1]/li[1])/*)[3]/self::div[@class=\"paragraph\"]/p[text()=\"bullet 1 paragraph\"]",
+                1,
+            );
+
+            assert_xpath(&doc, "((//ul)[1]/li)[1]/div/ol/li", 1);
+            assert_xpath(&doc, "((//ul)[1]/li)[1]/div/ol/li/*", 3);
+
+            assert_xpath(
+                &doc,
+                "(((//ul)[1]/li)[1]/div/ol/li/*)[1]/self::p[text()=\"numbered 1.1\"]",
+                1,
+            );
+
+            assert_xpath(
+                &doc,
+                "(((//ul)[1]/li)[1]/div/ol/li/*)[2]/self::div[@class=\"ulist\"]",
+                1,
+            );
+
+            assert_xpath(
+                &doc,
+                "(((//ul)[1]/li)[1]/div/ol/li/*)[3]/self::div[@class=\"paragraph\"]/p[text()=\"numbered 1.1 paragraph\"]",
+                1,
+            );
+
+            assert_xpath(
+                &doc,
+                "((//ul)[1]/li)[1]/div/ol/li/div[@class=\"ulist\"]/ul/li",
+                1,
+            );
+
+            assert_xpath(
+                &doc,
+                "((//ul)[1]/li)[1]/div/ol/li/div[@class=\"ulist\"]/ul/li/*",
+                1,
+            );
+
+            assert_xpath(
+                &doc,
+                "((//ul)[1]/li)[1]/div/ol/li/div[@class=\"ulist\"]/ul/li/p[text()=\"bullet 1.1.1\"]",
+                1,
+            );
         }
 
         #[test]
