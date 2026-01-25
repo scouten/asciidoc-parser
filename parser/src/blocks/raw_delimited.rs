@@ -657,6 +657,7 @@ mod tests {
                 }
             );
         }
+
         #[test]
         fn no_panic_for_utf8_code_point_using_more_than_one_byte() {
             let mut parser = Parser::default();
