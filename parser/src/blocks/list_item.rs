@@ -155,7 +155,7 @@ impl<'src> ListItem<'src> {
             // literal syntax).
             let indented_block_maw =
                 Block::parse_for_list_item(next, parser, &list_markers_including_peer);
-            // TO DO: Transfer warnings.
+            warnings.extend(indented_block_maw.warnings);
 
             let Some(indented_block_mi) = indented_block_maw.item else {
                 break;

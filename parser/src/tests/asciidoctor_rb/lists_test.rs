@@ -1822,10 +1822,15 @@ mod bulleted_lists {
         }
 
         #[test]
-        #[ignore]
         fn should_warn_if_unterminated_block_is_detected_in_list_item() {
-            let _doc = Parser::default().parse("* item\n+\n====\nexample\n* swallowed item\n");
-            todo!("memory logger test");
+            let doc = Parser::default().parse("* item\n+\n====\nexample\n* swallowed item\n");
+
+            assert_xpath(&doc, "//ul/li", 1);
+            assert_xpath(&doc, "//ul/li/*[@class=\"exampleblock\"]", 1);
+            assert_xpath(&doc, "//p[text()=\"example\n* swallowed item\"]", 1);
+
+            let mut warnings = doc.warnings();
+            assert!(warnings.next().is_some());
         }
     }
 }
