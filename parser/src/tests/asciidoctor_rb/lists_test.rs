@@ -521,9 +521,6 @@ mod bulleted_lists {
                 "* item\n+\nparagraph\n+\n[comment]\ncomment\n+\n====\nexample\n====\n'''\n",
             );
 
-            let vdom = doc.to_virtual_dom();
-            dbg!(&vdom);
-
             assert_css(&doc, "ul > li > .paragraph", 1);
             assert_css(&doc, "ul > li > .exampleblock", 1);
         }
@@ -776,7 +773,6 @@ mod bulleted_lists {
         #[test]
         fn should_match_trailing_line_separator_in_text_of_list_item() {
             let doc = Parser::default().parse("* a\n* b\u{2028}\n* c");
-            dbg!(&doc);
 
             assert_css(&doc, "li", 3);
             assert_xpath(&doc, "(//li)[2]/p[text()=\"b\u{2028}\"]", 1);
@@ -1294,9 +1290,6 @@ mod bulleted_lists {
         fn list_item_paragraph_in_list_item_and_nested_list_item() {
             let doc = Parser::default().parse("== Lists\n\n. list item 1\n+\nlist item 1 paragraph\n\n* nested list item\n+\nnested list item paragraph\n\n. list item 2\n");
 
-            let vdom = doc.to_virtual_dom();
-            dbg!(&vdom);
-
             assert_css(&doc, ".olist ol", 1);
             assert_css(&doc, ".olist ol > li", 2);
             assert_css(&doc, ".ulist ul", 1);
@@ -1584,24 +1577,135 @@ mod bulleted_lists {
         }
 
         #[test]
-        #[ignore]
         fn repeated_list_continuations_should_attach_to_list_items_at_respective_levels_ignoring_blank_lines()
          {
-            let _doc = Parser::default().parse("== Lists\n\n. list item 1\n+\n* nested list item 1\n+\n--\nopen block for nested list item 1\n--\n+\n* nested list item 2\n+\nparagraph for nested list item 2\n\n\n+\nparagraph for list item 1\n\n. list item 2\n");
-            todo!("assert_css: '.olist ol', output, 1");
-            todo!("assert_css: '.olist ol > li', output, 2");
-            todo!("assert_css: '.ulist ul', output, 1");
-            todo!("assert_css: '.ulist ul > li', output, 2");
-            todo!("assert_css: '.olist .ulist', output, 1");
-            todo!("Multiple xpath assertions for nested continuation structure with blank lines");
+            let doc = Parser::default().parse("== Lists\n\n. list item 1\n+\n* nested list item 1\n+\n--\nopen block for nested list item 1\n--\n+\n* nested list item 2\n+\nparagraph for nested list item 2\n\n\n+\nparagraph for list item 1\n\n. list item 2\n");
+
+            assert_css(&doc, ".olist ol", 1);
+            assert_css(&doc, ".olist ol > li", 2);
+            assert_css(&doc, ".ulist ul", 1);
+            assert_css(&doc, ".ulist ul > li", 2);
+            assert_css(&doc, ".olist .ulist", 1);
+
+            assert_xpath(&doc, "(//ol/li)[1]/*", 3);
+            assert_xpath(&doc, "((//ol/li)[1]/*)[1]/self::p", 1);
+
+            assert_xpath(
+                &doc,
+                "((//ol/li)[1]/*)[1]/self::p[text()=\"list item 1\"]",
+                1,
+            );
+
+            assert_xpath(&doc, "((//ol/li)[1]/*)[2]/self::div[@class=\"ulist\"]", 1);
+
+            assert_xpath(
+                &doc,
+                "((//ol/li)[1]/*)[2]/self::div[@class=\"ulist\"]/ul/li",
+                2,
+            );
+
+            assert_xpath(
+                &doc,
+                "(((//ol/li)[1]/*)[2]/self::div[@class=\"ulist\"]/ul/li)[1]/*",
+                2,
+            );
+
+            assert_xpath(
+                &doc,
+                "(((//ol/li)[1]/*)[2]/self::div[@class=\"ulist\"]/ul/li)[1]/p",
+                1,
+            );
+
+            assert_xpath(
+                &doc,
+                "(((//ol/li)[1]/*)[2]/self::div[@class=\"ulist\"]/ul/li)[1]/div[@class=\"openblock\"]",
+                1,
+            );
+
+            assert_xpath(
+                &doc,
+                "(((//ol/li)[1]/*)[2]/self::div[@class=\"ulist\"]/ul/li)[2]/*",
+                2,
+            );
+
+            assert_xpath(
+                &doc,
+                "(((//ol/li)[1]/*)[2]/self::div[@class=\"ulist\"]/ul/li)[2]/p",
+                1,
+            );
+
+            assert_xpath(
+                &doc,
+                "(((//ol/li)[1]/*)[2]/self::div[@class=\"ulist\"]/ul/li)[2]/div[@class=\"paragraph\"]",
+                1,
+            );
+
+            assert_xpath(
+                &doc,
+                "((//ol/li)[1]/*)[3]/self::div[@class=\"paragraph\"]",
+                1,
+            );
         }
 
         #[test]
-        #[ignore]
         fn trailing_list_continuations_should_ignore_preceding_blank_lines() {
-            let _doc = Parser::default().parse("== Lists\n\n* bullet 1\n** bullet 1.1\n*** bullet 1.1.1\n+\n--\nopen block\n--\n\n\n+\nbullet 1.1 paragraph\n\n\n+\nbullet 1 paragraph\n\n* bullet 2\n");
-            todo!("assert_xpath: '((//ul)[1]/li[1])/*', output, 3");
-            todo!("Multiple xpath assertions for complex nested continuation with blank lines");
+            let doc = Parser::default().parse("== Lists\n\n* bullet 1\n** bullet 1.1\n*** bullet 1.1.1\n+\n--\nopen block\n--\n\n\n+\nbullet 1.1 paragraph\n\n\n+\nbullet 1 paragraph\n\n* bullet 2\n");
+
+            assert_xpath(&doc, "((//ul)[1]/li[1])/*", 3);
+            assert_xpath(
+                &doc,
+                "(((//ul)[1]/li[1])/*)[1]/self::p[text()=\"bullet 1\"]",
+                1,
+            );
+            assert_xpath(
+                &doc,
+                "(((//ul)[1]/li[1])/*)[2]/self::div[@class=\"ulist\"]",
+                1,
+            );
+            assert_xpath(
+                &doc,
+                "(((//ul)[1]/li[1])/*)[3]/self::div[@class=\"paragraph\"]/p[text()=\"bullet 1 paragraph\"]",
+                1,
+            );
+
+            assert_xpath(&doc, "((//ul)[1]/li)[1]/div[@class=\"ulist\"]/ul/li", 1);
+            assert_xpath(&doc, "((//ul)[1]/li)[1]/div[@class=\"ulist\"]/ul/li/*", 3);
+            assert_xpath(
+                &doc,
+                "(((//ul)[1]/li)[1]/div[@class=\"ulist\"]/ul/li/*)[1]/self::p[text()=\"bullet 1.1\"]",
+                1,
+            );
+            assert_xpath(
+                &doc,
+                "(((//ul)[1]/li)[1]/div[@class=\"ulist\"]/ul/li/*)[2]/self::div[@class=\"ulist\"]",
+                1,
+            );
+            assert_xpath(
+                &doc,
+                "(((//ul)[1]/li)[1]/div[@class=\"ulist\"]/ul/li/*)[3]/self::div[@class=\"paragraph\"]/p[text()=\"bullet 1.1 paragraph\"]",
+                1,
+            );
+
+            assert_xpath(
+                &doc,
+                "((//ul)[1]/li)[1]/div[@class=\"ulist\"]/ul/li/div[@class=\"ulist\"]/ul/li",
+                1,
+            );
+            assert_xpath(
+                &doc,
+                "((//ul)[1]/li)[1]/div[@class=\"ulist\"]/ul/li/div[@class=\"ulist\"]/ul/li/*",
+                2,
+            );
+            assert_xpath(
+                &doc,
+                "(((//ul)[1]/li)[1]/div[@class=\"ulist\"]/ul/li/div[@class=\"ulist\"]/ul/li/*)[1]/self::p",
+                1,
+            );
+            assert_xpath(
+                &doc,
+                "(((//ul)[1]/li)[1]/div[@class=\"ulist\"]/ul/li/div[@class=\"ulist\"]/ul/li/*)[2]/self::div[@class=\"openblock\"]",
+                1,
+            );
         }
 
         #[test]

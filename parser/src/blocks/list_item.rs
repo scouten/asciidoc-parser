@@ -85,7 +85,7 @@ impl<'src> ListItem<'src> {
                     next_block_must_be_indented = true;
                     continue;
                 } else {
-                    next = next_line_mi.after;
+                    next = next.discard_empty_lines();
                     break;
                 }
             }
