@@ -1791,20 +1791,33 @@ mod bulleted_lists {
             );
         }
 
-        // NOTE: This is not consistent w/ AsciiDoc.py, but this is some screwy input
-        // anyway. FIXME: one list continuation is left behind.
         #[test]
         #[ignore]
         fn consecutive_list_continuation_lines_are_folded() {
-            let _doc = Parser::default().parse("Lists\n=====\n\n* Item one, paragraph one\n+\n+\nItem one, paragraph two\n+\n+\n* Item two\n+\n+\n");
-            todo!("assert_xpath: '//ul', output, 1");
-            todo!("assert_xpath: '//ul/li', output, 2");
-            todo!("assert_xpath: '//ul/li[1]/p', output, 1");
-            todo!("assert_xpath: '//ul/li[1]/div/p', output, 1");
-            todo!("assert_xpath: '//ul/li[1]//p[text() = \"Item one, paragraph one\"]', output, 1");
+            // The Ruby asciidoctor implementation on which this is based comes with the
+            // following comment:
+
+            // NOTE: This is not consistent w/ AsciiDoc.py, but this is some screwy input
+            // anyway. FIXME: one list continuation is left behind.
+
+            let doc = Parser::default().parse("Lists\n=====\n\n* Item one, paragraph one\n+\n+\nItem one, paragraph two\n+\n+\n* Item two\n+\n+\n");
+
+            assert_xpath(&doc, "//ul", 1);
+            assert_xpath(&doc, "//ul/li", 2);
+            assert_xpath(&doc, "//ul/li[1]/p", 1);
+            assert_xpath(&doc, "//ul/li[1]/div/p", 1);
+
+            assert_xpath(
+                &doc,
+                "//ul/li[1]//p[text() = \"Item one, paragraph one\"]",
+                1,
+            );
+
             // NOTE: This is a negative assertion.
-            todo!(
-                "assert_xpath: '//ul/li[1]//p[text() = \"+\\nItem one, paragraph two\"]', output, 1"
+            assert_xpath(
+                &doc,
+                "//ul/li[1]//p[text() = \"+\nItem one, paragraph two\"]",
+                1,
             );
         }
 
