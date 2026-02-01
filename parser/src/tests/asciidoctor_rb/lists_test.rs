@@ -1751,15 +1751,44 @@ mod bulleted_lists {
         }
 
         #[test]
-        #[ignore]
         fn indented_description_list_item_inside_outline_list_item_offset_by_a_blank_line_should_be_recognized_as_a_nested_list()
          {
-            let _doc = Parser::default().parse("* item 1\n\n  term a:: description a\n+\nattached paragraph\n\n  term b:: description b\n+\nattached paragraph\n\n* item 2\n");
-            todo!("assert_css: 'ul', output, 1");
-            todo!("assert_css: 'dl', output, 1");
-            todo!("assert_css: 'ul dl', output, 1");
-            todo!("assert_css: 'ul > li', output, 2");
-            todo!("Multiple xpath assertions for nested description list");
+            let doc = Parser::default().parse("* item 1\n\n  term a:: description a\n+\nattached paragraph\n\n  term b:: description b\n+\nattached paragraph\n\n* item 2\n");
+
+            assert_css(&doc, "ul", 1);
+            assert_css(&doc, "dl", 1);
+            assert_css(&doc, "ul dl", 1);
+            assert_css(&doc, "ul > li", 2);
+
+            assert_xpath(&doc, "((//ul/li)[1]/*)", 2);
+            assert_xpath(&doc, "((//ul/li)[1]/*)[1]/self::p", 1);
+            assert_xpath(&doc, "((//ul/li)[1]/*)[2]/self::div/dl", 1);
+            assert_xpath(&doc, "((//ul/li)[1]/*)[2]/self::div/dl/dt", 2);
+            assert_xpath(&doc, "((//ul/li)[1]/*)[2]/self::div/dl/dd", 2);
+
+            assert_xpath(&doc, "(((//ul/li)[1]/*)[2]/self::div/dl/dd)[1]/*", 2);
+            assert_xpath(
+                &doc,
+                "((((//ul/li)[1]/*)[2]/self::div/dl/dd)[1]/*)[1]/self::p",
+                1,
+            );
+            assert_xpath(
+                &doc,
+                "((((//ul/li)[1]/*)[2]/self::div/dl/dd)[1]/*)[2]/self::div[@class=\"paragraph\"]",
+                1,
+            );
+
+            assert_xpath(&doc, "(((//ul/li)[1]/*)[2]/self::div/dl/dd)[2]/*", 2);
+            assert_xpath(
+                &doc,
+                "((((//ul/li)[1]/*)[2]/self::div/dl/dd)[2]/*)[1]/self::p",
+                1,
+            );
+            assert_xpath(
+                &doc,
+                "((((//ul/li)[1]/*)[2]/self::div/dl/dd)[2]/*)[2]/self::div[@class=\"paragraph\"]",
+                1,
+            );
         }
 
         // NOTE: This is not consistent w/ AsciiDoc.py, but this is some screwy input
