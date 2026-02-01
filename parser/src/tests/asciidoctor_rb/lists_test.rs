@@ -1709,15 +1709,45 @@ mod bulleted_lists {
         }
 
         #[test]
-        #[ignore]
         fn indented_outline_list_item_with_different_marker_offset_by_a_blank_line_should_be_recognized_as_a_nested_list()
          {
-            let _doc = Parser::default().parse("* item 1\n\n  . item 1.1\n+\nattached paragraph\n\n  . item 1.2\n+\nattached paragraph\n\n* item 2\n");
-            todo!("assert_css: 'ul', output, 1");
-            todo!("assert_css: 'ol', output, 1");
-            todo!("assert_css: 'ul ol', output, 1");
-            todo!("assert_css: 'ul > li', output, 2");
-            todo!("Multiple xpath assertions for nested structure");
+            let doc = Parser::default().parse("* item 1\n\n  . item 1.1\n+\nattached paragraph\n\n  . item 1.2\n+\nattached paragraph\n\n* item 2\n");
+
+            assert_css(&doc, "ul", 1);
+            assert_css(&doc, "ol", 1);
+            assert_css(&doc, "ul ol", 1);
+            assert_css(&doc, "ul > li", 2);
+
+            assert_xpath(&doc, "((//ul/li)[1]/*)", 2);
+            assert_xpath(&doc, "((//ul/li)[1]/*)[1]/self::p", 1);
+            assert_xpath(&doc, "((//ul/li)[1]/*)[2]/self::div/ol", 1);
+            assert_xpath(&doc, "((//ul/li)[1]/*)[2]/self::div/ol/li", 2);
+
+            assert_xpath(&doc, "(((//ul/li)[1]/*)[2]/self::div/ol/li)[1]/*", 2);
+
+            assert_xpath(
+                &doc,
+                "((((//ul/li)[1]/*)[2]/self::div/ol/li)[1]/*)[1]/self::p",
+                1,
+            );
+            assert_xpath(
+                &doc,
+                "((((//ul/li)[1]/*)[2]/self::div/ol/li)[1]/*)[2]/self::div[@class=\"paragraph\"]",
+                1,
+            );
+
+            assert_xpath(&doc, "(((//ul/li)[1]/*)[2]/self::div/ol/li)[2]/*", 2);
+
+            assert_xpath(
+                &doc,
+                "((((//ul/li)[1]/*)[2]/self::div/ol/li)[2]/*)[1]/self::p",
+                1,
+            );
+            assert_xpath(
+                &doc,
+                "((((//ul/li)[1]/*)[2]/self::div/ol/li)[2]/*)[2]/self::div[@class=\"paragraph\"]",
+                1,
+            );
         }
 
         #[test]
