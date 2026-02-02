@@ -1851,11 +1851,11 @@ mod ordered_lists {
         }
 
         #[test]
-        #[ignore]
         fn indented_dot_elements_using_spaces() {
-            let _doc = Parser::default().parse(" . Foo\n . Boo\n . Blech\n");
-            todo!("assert_xpath: '//ol', output, 1");
-            todo!("assert_xpath: '//ol/li', output, 3");
+            let doc = Parser::default().parse(" . Foo\n . Boo\n . Blech\n");
+
+            assert_xpath(&doc, "//ol", 1);
+            assert_xpath(&doc, "//ol/li", 3);
         }
 
         #[test]
