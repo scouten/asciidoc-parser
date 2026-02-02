@@ -434,24 +434,44 @@ fn matches_single_predicate(node: &VirtualNode, predicate: &str) -> bool {
         return false;
     }
 
-    // Check for attribute predicates `[@attr="value"]`.
-    if let Some(attr_part) = predicate.strip_prefix('@')
-        && let Some((attr_name, value_part)) = attr_part.split_once('=')
-    {
-        let attr_name = attr_name.trim();
-        let value = value_part
-            .trim()
-            .strip_prefix('"')
-            .and_then(|s| s.strip_suffix('"'))
-            .unwrap_or(value_part.trim());
+    // Check for attribute predicates `[@attr="value"]` or `[@attr]`.
+    if let Some(attr_part) = predicate.strip_prefix('@') {
+        if let Some((attr_name, value_part)) = attr_part.split_once('=') {
+            // Attribute with value: [@attr="value"].
+            let attr_name = attr_name.trim();
+            let value = value_part
+                .trim()
+                .strip_prefix('"')
+                .and_then(|s| s.strip_suffix('"'))
+                .unwrap_or(value_part.trim());
 
-        match attr_name {
-            "class" => return node.classes.iter().any(|c| c == value),
-            "id" => return node.id.as_deref() == Some(value),
-            _ => {
-                // Check arbitrary attributes.
-                return node.attributes.get(attr_name).map(|v| v.as_str()) == Some(value);
+            match attr_name {
+                "class" => return node.classes.iter().any(|c| c == value),
+                "id" => return node.id.as_deref() == Some(value),
+                _ => {
+                    // Check arbitrary attributes.
+                    return node.attributes.get(attr_name).map(|v| v.as_str()) == Some(value);
+                }
             }
+        } else {
+            // Attribute existence: [@attr].
+            let attr_name = attr_part.trim();
+            match attr_name {
+                "class" => return !node.classes.is_empty(),
+                "id" => return node.id.is_some(),
+                _ => return node.attributes.contains_key(attr_name),
+            }
+        }
+    }
+
+    // Check for CSS-style attribute existence selector: [attr] (without @).
+    if !predicate.contains('=') && !predicate.contains('(') {
+        // This is a simple attribute existence check.
+        let attr_name = predicate.trim();
+        match attr_name {
+            "class" => return !node.classes.is_empty(),
+            "id" => return node.id.is_some(),
+            _ => return node.attributes.contains_key(attr_name),
         }
     }
 
@@ -598,5 +618,32 @@ mod tests {
 
         // Verify the attribute value.
         assert_eq!(result[0].attributes.get("start"), Some(&"2".to_string()));
+    }
+
+    #[test]
+    fn query_attribute_existence() {
+        // Test attribute existence selectors (without value comparison).
+        let doc = Parser::default().parse("* Foo\n[start=2]\n. Boo\n. Blech\n");
+        let vdom = doc.to_virtual_dom();
+
+        // Find all ol elements with start attribute (CSS-style: [start]).
+        let with_start = query_css(&vdom, "ol[start]");
+        assert_eq!(
+            with_start.len(),
+            1,
+            "Should find one ol with start attribute"
+        );
+
+        // Find all ol elements (should be 1 total).
+        let all_ol = query_css(&vdom, "ol");
+        assert_eq!(all_ol.len(), 1, "Should find one ol element total");
+
+        // Test XPath-style attribute existence: [@start].
+        let with_start_xpath = query_css(&vdom, "ol[@start]");
+        assert_eq!(
+            with_start_xpath.len(),
+            1,
+            "Should find one ol with start attribute (XPath-style)"
+        );
     }
 }

@@ -1835,19 +1835,19 @@ mod bulleted_lists {
     }
 }
 
-mod ordered_lists_olist {
+mod ordered_lists {
     use crate::{Parser, tests::prelude::*};
 
     mod simple_lists {
         use super::*;
 
         #[test]
-        #[ignore]
         fn dot_elements_with_no_blank_lines() {
-            let _doc = Parser::default().parse("List\n====\n\n. Foo\n. Boo\n. Blech\n");
-            todo!("assert_xpath: '//ol', output, 1");
-            todo!("assert_css: 'ol[start]', output, 0");
-            todo!("assert_xpath: '//ol/li', output, 3");
+            let doc = Parser::default().parse("List\n====\n\n. Foo\n. Boo\n. Blech\n");
+
+            assert_xpath(&doc, "//ol", 1);
+            assert_css(&doc, "ol[start]", 0);
+            assert_xpath(&doc, "//ol/li", 3);
         }
 
         #[test]
