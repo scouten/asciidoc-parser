@@ -1859,19 +1859,19 @@ mod ordered_lists {
         }
 
         #[test]
-        #[ignore]
         fn indented_dot_elements_using_tabs() {
-            let _doc = Parser::default().parse("\t.\tFoo\n\t.\tBoo\n\t.\tBlech\n");
-            todo!("assert_xpath: '//ol', output, 1");
-            todo!("assert_xpath: '//ol/li', output, 3");
+            let doc = Parser::default().parse("\t.\tFoo\n\t.\tBoo\n\t.\tBlech\n");
+
+            assert_xpath(&doc, "//ol", 1);
+            assert_xpath(&doc, "//ol/li", 3);
         }
 
         #[test]
-        #[ignore]
         fn should_represent_explicit_role_attribute_as_style_class() {
-            let _doc = Parser::default().parse("[role=\"dry\"]\n. Once\n. Again\n. Refactor!\n");
-            todo!("assert_css: '.olist.arabic.dry', output, 1");
-            todo!("assert_css: '.olist ol.arabic', output, 1");
+            let doc = Parser::default().parse("[role=\"dry\"]\n. Once\n. Again\n. Refactor!\n");
+
+            assert_css(&doc, ".olist.arabic.dry", 1);
+            assert_css(&doc, ".olist ol.arabic", 1);
         }
 
         #[test]
