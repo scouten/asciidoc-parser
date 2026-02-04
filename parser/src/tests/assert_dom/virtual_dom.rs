@@ -392,11 +392,12 @@ fn list_block_to_node<'a>(list: &'a ListBlock<'a>) -> VirtualNode {
 
     let mut list_element = VirtualNode::new(list_tag);
 
-    // For ordered lists, add style class to the list element based on marker length.
-    if list.type_() == ListType::Ordered {
-        if let Some(style) = list.marker_style() {
-            list_element = list_element.with_class(style);
-        }
+    // For ordered lists, add style class to the list element based on marker
+    // length.
+    if list.type_() == ListType::Ordered
+        && let Some(style) = list.marker_style()
+    {
+        list_element = list_element.with_class(style);
     }
 
     // Add all named attributes from the attrlist to the list element.
@@ -469,10 +470,10 @@ fn list_block_to_node<'a>(list: &'a ListBlock<'a>) -> VirtualNode {
     let mut wrapper = VirtualNode::new("div").with_class(base_class);
 
     // For ordered lists, add style class to the wrapper based on marker length.
-    if list.type_() == ListType::Ordered {
-        if let Some(style) = list.marker_style() {
-            wrapper = wrapper.with_class(style);
-        }
+    if list.type_() == ListType::Ordered
+        && let Some(style) = list.marker_style()
+    {
+        wrapper = wrapper.with_class(style);
     }
 
     // Add style class to the wrapper if present.
