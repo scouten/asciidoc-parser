@@ -1875,12 +1875,12 @@ mod ordered_lists {
         }
 
         #[test]
-        #[ignore]
         fn should_base_list_style_on_marker_length_rather_than_list_depth() {
-            let _doc = Parser::default().parse("... parent\n.. child\n. grandchild\n");
-            todo!("assert_css: '.olist.lowerroman', output, 1");
-            todo!("assert_css: '.olist.lowerroman .olist.loweralpha', output, 1");
-            todo!("assert_css: '.olist.lowerroman .olist.loweralpha .olist.arabic', output, 1");
+            let doc = Parser::default().parse("... parent\n.. child\n. grandchild\n");
+
+            assert_css(&doc, ".olist.lowerroman", 1);
+            assert_css(&doc, ".olist.lowerroman .olist.loweralpha", 1);
+            assert_css(&doc, ".olist.lowerroman .olist.loweralpha .olist.arabic", 1);
         }
 
         #[test]

@@ -392,10 +392,11 @@ fn list_block_to_node<'a>(list: &'a ListBlock<'a>) -> VirtualNode {
 
     let mut list_element = VirtualNode::new(list_tag);
 
-    // For ordered lists, add "arabic" class to the list element.
-    // (This matches Asciidoctor's default numbering style.)
+    // For ordered lists, add style class to the list element based on marker length.
     if list.type_() == ListType::Ordered {
-        list_element = list_element.with_class("arabic");
+        if let Some(style) = list.marker_style() {
+            list_element = list_element.with_class(style);
+        }
     }
 
     // Add all named attributes from the attrlist to the list element.
@@ -467,9 +468,11 @@ fn list_block_to_node<'a>(list: &'a ListBlock<'a>) -> VirtualNode {
     // Wrap the list in a div container (matching Asciidoctor's HTML structure).
     let mut wrapper = VirtualNode::new("div").with_class(base_class);
 
-    // For ordered lists, add "arabic" class to the wrapper as well.
+    // For ordered lists, add style class to the wrapper based on marker length.
     if list.type_() == ListType::Ordered {
-        wrapper = wrapper.with_class("arabic");
+        if let Some(style) = list.marker_style() {
+            wrapper = wrapper.with_class(style);
+        }
     }
 
     // Add style class to the wrapper if present.

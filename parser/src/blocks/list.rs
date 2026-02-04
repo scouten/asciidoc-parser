@@ -19,6 +19,7 @@ use crate::{
 pub struct ListBlock<'src> {
     type_: ListType,
     items: Vec<Block<'src>>,
+    first_marker: ListItemMarker<'src>,
     source: Span<'src>,
     title_source: Option<Span<'src>>,
     title: Option<String>,
@@ -127,6 +128,7 @@ impl<'src> ListBlock<'src> {
             item: Self {
                 type_,
                 items,
+                first_marker,
                 source: metadata
                     .source
                     .trim_remainder(next_item_source)
@@ -145,6 +147,30 @@ impl<'src> ListBlock<'src> {
     /// Returns the type of this list.
     pub fn type_(&self) -> ListType {
         self.type_
+    }
+
+    /// Returns the style class for this list based on the marker length.
+    /// For ordered lists, the style is determined by the number of dots:
+    /// - 1 dot: arabic (1, 2, 3, ...)
+    /// - 2 dots: loweralpha (a, b, c, ...)
+    /// - 3 dots: lowerroman (i, ii, iii, ...)
+    /// - 4 dots: upperalpha (A, B, C, ...)
+    /// - 5 dots: upperroman (I, II, III, ...)
+    pub fn marker_style(&self) -> Option<&'static str> {
+        match &self.first_marker {
+            ListItemMarker::Dots(span) => {
+                let marker_len = span.data().len();
+                match marker_len {
+                    1 => Some("arabic"),
+                    2 => Some("loweralpha"),
+                    3 => Some("lowerroman"),
+                    4 => Some("upperalpha"),
+                    5 => Some("upperroman"),
+                    _ => Some("arabic"),
+                }
+            }
+            _ => None,
+        }
     }
 }
 
@@ -193,6 +219,7 @@ impl std::fmt::Debug for ListBlock<'_> {
         f.debug_struct("ListBlock")
             .field("type_", &self.type_)
             .field("items", &DebugSliceReference(&self.items))
+            .field("first_marker", &self.first_marker)
             .field("source", &self.source)
             .field("title_source", &self.title_source)
             .field("title", &self.title)
@@ -434,7 +461,7 @@ mod tests {
 
         assert_eq!(
             format!("{:#?}", list.item),
-            "ListBlock {\n    type_: ListType::Unordered,\n    items: &[\n        Block::ListItem(\n            ListItem {\n                marker: ListItemMarker::Hyphen(\n                    Span {\n                        data: \"-\",\n                        line: 1,\n                        col: 1,\n                        offset: 0,\n                    },\n                ),\n                blocks: &[\n                    Block::Simple(\n                        SimpleBlock {\n                            content: Content {\n                                original: Span {\n                                    data: \"blah\",\n                                    line: 1,\n                                    col: 3,\n                                    offset: 2,\n                                },\n                                rendered: \"blah\",\n                            },\n                            source: Span {\n                                data: \"blah\",\n                                line: 1,\n                                col: 3,\n                                offset: 2,\n                            },\n                            style: SimpleBlockStyle::Paragraph,\n                            title_source: None,\n                            title: None,\n                            anchor: None,\n                            anchor_reftext: None,\n                            attrlist: None,\n                        },\n                    ),\n                ],\n                source: Span {\n                    data: \"- blah\",\n                    line: 1,\n                    col: 1,\n                    offset: 0,\n                },\n                anchor: None,\n                anchor_reftext: None,\n                attrlist: None,\n            },\n        ),\n    ],\n    source: Span {\n        data: \"- blah\",\n        line: 1,\n        col: 1,\n        offset: 0,\n    },\n    title_source: None,\n    title: None,\n    anchor: None,\n    anchor_reftext: None,\n    attrlist: None,\n}"
+            "ListBlock {\n    type_: ListType::Unordered,\n    items: &[\n        Block::ListItem(\n            ListItem {\n                marker: ListItemMarker::Hyphen(\n                    Span {\n                        data: \"-\",\n                        line: 1,\n                        col: 1,\n                        offset: 0,\n                    },\n                ),\n                blocks: &[\n                    Block::Simple(\n                        SimpleBlock {\n                            content: Content {\n                                original: Span {\n                                    data: \"blah\",\n                                    line: 1,\n                                    col: 3,\n                                    offset: 2,\n                                },\n                                rendered: \"blah\",\n                            },\n                            source: Span {\n                                data: \"blah\",\n                                line: 1,\n                                col: 3,\n                                offset: 2,\n                            },\n                            style: SimpleBlockStyle::Paragraph,\n                            title_source: None,\n                            title: None,\n                            anchor: None,\n                            anchor_reftext: None,\n                            attrlist: None,\n                        },\n                    ),\n                ],\n                source: Span {\n                    data: \"- blah\",\n                    line: 1,\n                    col: 1,\n                    offset: 0,\n                },\n                anchor: None,\n                anchor_reftext: None,\n                attrlist: None,\n            },\n        ),\n    ],\n    first_marker: ListItemMarker::Hyphen(\n        Span {\n            data: \"-\",\n            line: 1,\n            col: 1,\n            offset: 0,\n        },\n    ),\n    source: Span {\n        data: \"- blah\",\n        line: 1,\n        col: 1,\n        offset: 0,\n    },\n    title_source: None,\n    title: None,\n    anchor: None,\n    anchor_reftext: None,\n    attrlist: None,\n}"
         );
 
         assert_eq!(
@@ -636,5 +663,47 @@ mod tests {
                 offset: 32,
             }
         );
+    }
+
+    #[test]
+    fn marker_style_single_dot() {
+        let list = list_parse(". Item one\n. Item two\n").unwrap();
+        assert_eq!(list.item.marker_style(), Some("arabic"));
+    }
+
+    #[test]
+    fn marker_style_double_dots() {
+        let list = list_parse(".. Item a\n.. Item b\n").unwrap();
+        assert_eq!(list.item.marker_style(), Some("loweralpha"));
+    }
+
+    #[test]
+    fn marker_style_triple_dots() {
+        let list = list_parse("... Item i\n... Item ii\n").unwrap();
+        assert_eq!(list.item.marker_style(), Some("lowerroman"));
+    }
+
+    #[test]
+    fn marker_style_four_dots() {
+        let list = list_parse(".... Item A\n.... Item B\n").unwrap();
+        assert_eq!(list.item.marker_style(), Some("upperalpha"));
+    }
+
+    #[test]
+    fn marker_style_five_dots() {
+        let list = list_parse("..... Item I\n..... Item II\n").unwrap();
+        assert_eq!(list.item.marker_style(), Some("upperroman"));
+    }
+
+    #[test]
+    fn marker_style_hyphen_returns_none() {
+        let list = list_parse("- Item one\n- Item two\n").unwrap();
+        assert_eq!(list.item.marker_style(), None);
+    }
+
+    #[test]
+    fn marker_style_asterisk_returns_none() {
+        let list = list_parse("* Item one\n* Item two\n").unwrap();
+        assert_eq!(list.item.marker_style(), None);
     }
 }
