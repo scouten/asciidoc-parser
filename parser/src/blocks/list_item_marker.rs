@@ -25,6 +25,9 @@ pub enum ListItemMarker<'src> {
     /// Lowercase Roman numeral followed by closing paren.
     RomanNumeralLower(Span<'src>),
 
+    /// Explicit Arabic numeral followed by dot (e.g., "7.").
+    ArabicNumeral(Span<'src>),
+
     /// A term to be defined.
     DefinedTerm {
         /// The name of the term being defined.
@@ -72,6 +75,13 @@ impl<'src> ListItemMarker<'src> {
                     .all(|c| "ivxlcdm".contains(c))
             {
                 Self::RomanNumeralLower(marker)
+            } else if marker_str.ends_with('.')
+                && marker_str
+                    .chars()
+                    .take(marker_str.len() - 1)
+                    .all(|c| c.is_ascii_digit())
+            {
+                Self::ArabicNumeral(marker)
             } else {
                 todo!("Not handled yet: {}", &captures[1]);
             };
@@ -134,6 +144,10 @@ impl<'src> ListItemMarker<'src> {
                 matches!(other, Self::RomanNumeralLower(_other_span))
             }
 
+            Self::ArabicNumeral(_self_span) => {
+                matches!(other, Self::ArabicNumeral(_other_span))
+            }
+
             Self::DefinedTerm {
                 term: _,
                 marker: self_marker,
@@ -159,6 +173,7 @@ impl<'src> HasSpan<'src> for ListItemMarker<'src> {
             Self::Dots(x) => *x,
             Self::AlphaListCapital(x) => *x,
             Self::RomanNumeralLower(x) => *x,
+            Self::ArabicNumeral(x) => *x,
 
             Self::DefinedTerm {
                 term: _,
@@ -184,6 +199,11 @@ impl std::fmt::Debug for ListItemMarker<'_> {
 
             Self::RomanNumeralLower(x) => f
                 .debug_tuple("ListItemMarker::RomanNumeralLower")
+                .field(x)
+                .finish(),
+
+            Self::ArabicNumeral(x) => f
+                .debug_tuple("ListItemMarker::ArabicNumeral")
                 .field(x)
                 .finish(),
 

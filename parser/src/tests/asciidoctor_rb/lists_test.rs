@@ -2020,10 +2020,14 @@ mod ordered_lists {
         // Backend-specific test omitted: DocBook.
 
         #[test]
-        #[ignore]
         fn should_not_warn_if_explicit_numbering_starts_at_value_of_start_attribute() {
-            let _doc = Parser::default().parse("== List\n\n[start=7]\n7. item 7\n8. item 8\n");
-            todo!("memory logger test");
+            let doc = Parser::default().parse("== List\n\n[start=7]\n7. item 7\n8. item 8\n");
+
+            assert_css(&doc, "ol[start=7]", 1);
+            assert_css(&doc, "ol.arabic", 1);
+            assert_css(&doc, "ol li", 2);
+
+            assert!(doc.warnings().next().is_none());
         }
 
         #[test]

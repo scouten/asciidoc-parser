@@ -117,6 +117,7 @@ impl<'src> ListBlock<'src> {
             ListItemMarker::Dots(_) => ListType::Ordered,
             ListItemMarker::AlphaListCapital(_) => ListType::Ordered,
             ListItemMarker::RomanNumeralLower(_) => ListType::Ordered,
+            ListItemMarker::ArabicNumeral(_) => ListType::Ordered,
 
             ListItemMarker::DefinedTerm {
                 term: _,
@@ -170,6 +171,7 @@ impl<'src> ListBlock<'src> {
                     _ => Some("arabic"),
                 }
             }
+            ListItemMarker::ArabicNumeral(_) => Some("arabic"),
             _ => None,
         }
     }
