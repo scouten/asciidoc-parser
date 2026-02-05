@@ -1902,11 +1902,11 @@ mod ordered_lists {
         }
 
         #[test]
-        #[ignore]
         fn should_set_reversed_attribute_on_list_if_reversed_option_is_set() {
-            let _doc = Parser::default()
+            let doc = Parser::default()
                 .parse("[%reversed, start=3]\n. three\n. two\n. one\n. blast off!\n");
-            todo!("assert_css: 'ol[reversed][start=\"3\"]', output, 1");
+
+            assert_css(&doc, "ol[reversed][start=\"3\"]", 1);
         }
 
         #[test]

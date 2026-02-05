@@ -409,6 +409,11 @@ fn list_block_to_node<'a>(list: &'a ListBlock<'a>) -> VirtualNode {
         }
     }
 
+    // Add options as boolean attributes on the list element.
+    for option in list.options() {
+        list_element = list_element.with_attribute(option, "");
+    }
+
     // Add style class to the list element if present.
     if let Some(style) = list.declared_style() {
         list_element = list_element.with_class(style);
