@@ -1952,12 +1952,12 @@ mod ordered_lists {
         }
 
         #[test]
-        #[ignore]
         fn dot_elements_with_interspersed_line_comments_should_be_skipped_and_not_break_list() {
-            let _doc = Parser::default().parse("== List\n\n. Foo\n// line comment\n// another line comment\n. Boo\n// line comment\nmore text\n// another line comment\n. Blech\n");
-            todo!("assert_xpath: '//ol', output, 1");
-            todo!("assert_xpath: '//ol/li', output, 3");
-            todo!("assert_xpath: '(//ol/li)[2]/p[text()=\"Boo\\nmore text\"]', output, 1");
+            let doc = Parser::default().parse("== List\n\n. Foo\n// line comment\n// another line comment\n. Boo\n// line comment\nmore text\n// another line comment\n. Blech\n");
+
+            assert_xpath(&doc, "//ol", 1);
+            assert_xpath(&doc, "//ol/li", 3);
+            assert_xpath(&doc, "(//ol/li)[2]/p[text()=\"Boo\nmore text\"]", 1);
         }
 
         #[test]
