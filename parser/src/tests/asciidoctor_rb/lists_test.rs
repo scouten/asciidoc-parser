@@ -1961,12 +1961,12 @@ mod ordered_lists {
         }
 
         #[test]
-        #[ignore]
         fn dot_elements_separated_by_line_comment_offset_by_blank_lines_should_not_merge_lists() {
-            let _doc = Parser::default().parse("List\n====\n\n. Foo\n. Boo\n\n//\n\n. Blech\n");
-            todo!("assert_xpath: '//ol', output, 2");
-            todo!("assert_xpath: '(//ol)[1]/li', output, 2");
-            todo!("assert_xpath: '(//ol)[2]/li', output, 1");
+            let doc = Parser::default().parse("List\n====\n\n. Foo\n. Boo\n\n//\n\n. Blech\n");
+
+            assert_xpath(&doc, "//ol", 2);
+            assert_xpath(&doc, "(//ol)[1]/li", 2);
+            assert_xpath(&doc, "(//ol)[2]/li", 1);
         }
 
         #[test]
