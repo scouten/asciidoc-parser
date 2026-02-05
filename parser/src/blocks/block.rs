@@ -357,7 +357,12 @@ impl<'src> Block<'src> {
                 }
             }
 
-            if let Some(mi_list) = ListBlock::parse(&metadata, parser, &mut warnings) {
+            // Only try to parse as a new list if we're NOT inside a list item context.
+            // If we are inside a list context, lists can only be created when the first
+            // line is a list item marker (handled above).
+            if parent_list_markers.is_none()
+                && let Some(mi_list) = ListBlock::parse(&metadata, parser, &mut warnings)
+            {
                 return MatchAndWarnings {
                     item: Some(MatchedItem {
                         item: Self::List(mi_list.item),

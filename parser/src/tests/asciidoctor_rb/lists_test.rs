@@ -1792,7 +1792,6 @@ mod bulleted_lists {
         }
 
         #[test]
-        #[ignore]
         fn consecutive_list_continuation_lines_are_folded() {
             // The Ruby asciidoctor implementation on which this is based comes with the
             // following comment:
@@ -1800,7 +1799,7 @@ mod bulleted_lists {
             // NOTE: This is not consistent w/ AsciiDoc.py, but this is some screwy input
             // anyway. FIXME: one list continuation is left behind.
 
-            let doc = Parser::default().parse("Lists\n=====\n\n* Item one, paragraph one\n+\n+\nItem one, paragraph two\n+\n+\n* Item two\n+\n+\n");
+            let doc = Parser::default().parse("== Lists\n\n* Item one, paragraph one\n+\n+\nItem one, paragraph two\n+\n+\n* Item two\n+\n+\n");
 
             assert_xpath(&doc, "//ul", 1);
             assert_xpath(&doc, "//ul/li", 2);

@@ -64,6 +64,7 @@ impl<'src> ListItem<'src> {
         let mut next = simple_block_mi.after;
         let mut next_block_must_be_indented = false;
         let mut continuation_active = false;
+        let mut had_content_starting_with_plus = false;
 
         loop {
             if next.is_empty() {
@@ -72,7 +73,15 @@ impl<'src> ListItem<'src> {
 
             let next_line_mi: MatchedItem<'_, Span<'_>> = next.take_normalized_line();
 
-            if next_line_mi.item.data() == "+" {
+            // Don't consume `+` as continuation if:
+            // - A continuation is already active (consecutive `+` - second one becomes
+            //   content)
+            // - We've already had a block that started with `+` as content (trailing `+`
+            //   markers)
+            if next_line_mi.item.data() == "+"
+                && !continuation_active
+                && !had_content_starting_with_plus
+            {
                 next = next_line_mi.after;
                 next_block_must_be_indented = false;
                 continuation_active = true;
@@ -131,6 +140,7 @@ impl<'src> ListItem<'src> {
                 blocks.push(Block::List(nested_list_mi.item));
 
                 next = nested_list_mi.after;
+                continuation_active = false;
                 next_block_must_be_indented = true;
                 continue;
             }
@@ -183,6 +193,13 @@ impl<'src> ListItem<'src> {
                 // This block consumed the continuation.
                 // The next block after this one will need to be indented (or have another
                 // continuation).
+                //
+                // If the block started with `+` as content (not as continuation), mark it
+                // so we don't allow more continuation markers. This handles odd input like
+                // consecutive `+` markers.
+                if next_line_mi.item.data() == "+" {
+                    had_content_starting_with_plus = true;
+                }
                 continuation_active = false;
                 next_block_must_be_indented = true;
             } else {
