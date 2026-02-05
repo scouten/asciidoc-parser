@@ -2002,12 +2002,12 @@ mod ordered_lists {
         }
 
         #[test]
-        #[ignore]
         fn should_allow_value_of_start_attribute_to_be_0() {
-            let _doc =
+            let doc =
                 Parser::default().parse("== List\n\n[start=0]\n. item 0\n. item 1\n. item 2\n");
-            todo!("assert_css: 'ol.arabic', output, 1");
-            todo!("assert_css: 'ol[start=0]', output, 1");
+
+            assert_css(&doc, "ol.arabic", 1);
+            assert_css(&doc, "ol[start=0]", 1);
         }
 
         #[test]
