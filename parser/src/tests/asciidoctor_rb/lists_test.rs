@@ -1893,12 +1893,12 @@ mod ordered_lists {
         }
 
         #[test]
-        #[ignore]
         fn should_represent_custom_numbering_and_explicit_role_attribute_as_style_classes() {
-            let _doc = Parser::default()
+            let doc = Parser::default()
                 .parse("[loweralpha, role=\"dry\"]\n. Once\n. Again\n. Refactor!\n");
-            todo!("assert_css: '.olist.loweralpha.dry', output, 1");
-            todo!("assert_css: '.olist ol.loweralpha', output, 1");
+
+            assert_css(&doc, ".olist.loweralpha.dry", 1);
+            assert_css(&doc, ".olist ol.loweralpha", 1);
         }
 
         #[test]
