@@ -2097,11 +2097,11 @@ mod description_lists_dlist {
         }
 
         #[test]
-        #[ignore]
         fn should_not_parse_an_indented_bare_dlist_delimiter_as_a_dlist() {
-            let _doc = Parser::default().parse(" ::");
-            todo!("assert_css: 'dl', output, 0");
-            todo!("assert_xpath: '//pre[text()=\"::\"]', output, 1");
+            let doc = Parser::default().parse(" ::");
+
+            assert_css(&doc, "dl", 0);
+            assert_xpath(&doc, "//pre[text()=\"::\"]", 1);
         }
 
         #[test]
