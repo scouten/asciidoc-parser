@@ -2089,11 +2089,11 @@ mod description_lists_dlist {
         use super::*;
 
         #[test]
-        #[ignore]
         fn should_not_parse_a_bare_dlist_delimiter_as_a_dlist() {
-            let _doc = Parser::default().parse("::");
-            todo!("assert_css: 'dl', output, 0");
-            todo!("assert_xpath: '//p[text()=\"::\"]', output, 1");
+            let doc = Parser::default().parse("::");
+
+            assert_css(&doc, "dl", 0);
+            assert_xpath(&doc, "//p[text()=\"::\"]", 1);
         }
 
         #[test]
