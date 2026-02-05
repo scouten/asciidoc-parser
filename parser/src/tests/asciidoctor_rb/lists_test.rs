@@ -1970,14 +1970,16 @@ mod ordered_lists {
         }
 
         #[test]
-        #[ignore]
         fn dot_elements_separated_by_a_block_title_offset_by_a_blank_line_should_not_merge_lists() {
-            let _doc = Parser::default().parse("List\n====\n\n. Foo\n. Boo\n\n.Also\n. Blech\n");
-            todo!("assert_xpath: '//ol', output, 2");
-            todo!("assert_xpath: '(//ol)[1]/li', output, 2");
-            todo!("assert_xpath: '(//ol)[2]/li', output, 1");
-            todo!(
-                "assert_xpath: '(//ol)[2]/preceding-sibling::*[@class = \"title\"][text() = \"Also\"]', output, 1"
+            let doc = Parser::default().parse("List\n====\n\n. Foo\n. Boo\n\n.Also\n. Blech\n");
+
+            assert_xpath(&doc, "//ol", 2);
+            assert_xpath(&doc, "(//ol)[1]/li", 2);
+            assert_xpath(&doc, "(//ol)[2]/li", 1);
+            assert_xpath(
+                &doc,
+                "(//ol)[2]/preceding-sibling::*[@class = \"title\"][text() = \"Also\"]",
+                1,
             );
         }
 
