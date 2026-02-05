@@ -2011,11 +2011,11 @@ mod ordered_lists {
         }
 
         #[test]
-        #[ignore]
         fn should_allow_value_of_start_attribute_to_be_negative() {
-            let _doc = Parser::default().parse("== List\n\n[start=-10]\n. -10\n. -9\n. -8\n");
-            todo!("assert_css: 'ol.arabic', output, 1");
-            todo!("assert_css: 'ol[start=-10]', output, 1");
+            let doc = Parser::default().parse("== List\n\n[start=-10]\n. -10\n. -9\n. -8\n");
+
+            assert_css(&doc, "ol.arabic", 1);
+            assert_css(&doc, "ol[start=-10]", 1);
         }
 
         // Backend-specific test omitted: DocBook.
