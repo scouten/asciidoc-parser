@@ -22,6 +22,9 @@ pub enum ListItemMarker<'src> {
     /// Letter followed by dot (alpha list).
     AlphaListCapital(Span<'src>),
 
+    /// Lowercase Roman numeral followed by closing paren.
+    RomanNumeralLower(Span<'src>),
+
     /// A term to be defined.
     DefinedTerm {
         /// The name of the term being defined.
@@ -62,6 +65,13 @@ impl<'src> ListItemMarker<'src> {
                 && first_char.is_ascii_uppercase()
             {
                 Self::AlphaListCapital(marker)
+            } else if marker_str.ends_with(')')
+                && marker_str
+                    .chars()
+                    .take(marker_str.len() - 1)
+                    .all(|c| "ivxlcdm".contains(c))
+            {
+                Self::RomanNumeralLower(marker)
             } else {
                 todo!("Not handled yet: {}", &captures[1]);
             };
@@ -120,6 +130,10 @@ impl<'src> ListItemMarker<'src> {
                 matches!(other, Self::AlphaListCapital(_other_span))
             }
 
+            Self::RomanNumeralLower(_self_span) => {
+                matches!(other, Self::RomanNumeralLower(_other_span))
+            }
+
             Self::DefinedTerm {
                 term: _,
                 marker: self_marker,
@@ -144,6 +158,7 @@ impl<'src> HasSpan<'src> for ListItemMarker<'src> {
             Self::Bullet(x) => *x,
             Self::Dots(x) => *x,
             Self::AlphaListCapital(x) => *x,
+            Self::RomanNumeralLower(x) => *x,
 
             Self::DefinedTerm {
                 term: _,
@@ -164,6 +179,11 @@ impl std::fmt::Debug for ListItemMarker<'_> {
 
             Self::AlphaListCapital(x) => f
                 .debug_tuple("ListItemMarker::AlphaListCapital")
+                .field(x)
+                .finish(),
+
+            Self::RomanNumeralLower(x) => f
+                .debug_tuple("ListItemMarker::RomanNumeralLower")
                 .field(x)
                 .finish(),
 
@@ -431,6 +451,71 @@ mod tests {
         assert_eq!(
             format!("{lim:#?}", lim = lim.item),
             "ListItemMarker::Dots(\n    Span {\n        data: \".....\",\n        line: 1,\n        col: 1,\n        offset: 0,\n    },\n)"
+        );
+    }
+
+    #[test]
+    fn roman_numeral_lower() {
+        assert!(lim_parse("i").is_none());
+        assert!(lim_parse("i.").is_none());
+
+        let lim = lim_parse("i) blah").unwrap();
+
+        assert_eq!(
+            lim.item,
+            ListItemMarker::RomanNumeralLower(Span {
+                data: "i)",
+                line: 1,
+                col: 1,
+                offset: 0,
+            },)
+        );
+
+        assert_eq!(
+            lim.after,
+            Span {
+                data: "blah",
+                line: 1,
+                col: 4,
+                offset: 3,
+            }
+        );
+
+        assert_eq!(
+            lim.item.span(),
+            Span {
+                data: "i)",
+                line: 1,
+                col: 1,
+                offset: 0,
+            }
+        );
+
+        assert_eq!(
+            format!("{lim:#?}", lim = lim.item),
+            "ListItemMarker::RomanNumeralLower(\n    Span {\n        data: \"i)\",\n        line: 1,\n        col: 1,\n        offset: 0,\n    },\n)"
+        );
+
+        let lim = lim_parse("xvii) blah").unwrap();
+
+        assert_eq!(
+            lim.item,
+            ListItemMarker::RomanNumeralLower(Span {
+                data: "xvii)",
+                line: 1,
+                col: 1,
+                offset: 0,
+            },)
+        );
+
+        assert_eq!(
+            lim.after,
+            Span {
+                data: "blah",
+                line: 1,
+                col: 7,
+                offset: 6,
+            }
         );
     }
 }

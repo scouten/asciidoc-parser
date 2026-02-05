@@ -1884,12 +1884,12 @@ mod ordered_lists {
         }
 
         #[test]
-        #[ignore]
         fn should_allow_list_style_to_be_specified_explicitly_when_using_markers_with_implicit_style()
          {
-            let _doc = Parser::default().parse("[loweralpha]\ni) 1\nii) 2\niii) 3\n");
-            todo!("assert_css: '.olist.loweralpha', output, 1");
-            todo!("assert_css: '.olist.lowerroman', output, 0");
+            let doc = Parser::default().parse("[loweralpha]\ni) 1\nii) 2\niii) 3\n");
+
+            assert_css(&doc, ".olist.loweralpha", 1);
+            assert_css(&doc, ".olist.lowerroman", 0);
         }
 
         #[test]

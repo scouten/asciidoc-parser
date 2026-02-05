@@ -9,6 +9,7 @@ pub(crate) enum ListItemMarker {
     #[allow(unused)] // TEMPORARY while building
     Bullet(Span),
     Dots(Span),
+    RomanNumeralLower(Span),
 
     #[allow(unused)] // TEMPORARY while building
     DefinedTerm {
@@ -25,6 +26,11 @@ impl fmt::Debug for ListItemMarker {
             Self::Asterisks(x) => f.debug_tuple("ListItemMarker::Asterisks").field(x).finish(),
             Self::Bullet(x) => f.debug_tuple("ListItemMarker::Bullet").field(x).finish(),
             Self::Dots(x) => f.debug_tuple("ListItemMarker::Dots").field(x).finish(),
+
+            Self::RomanNumeralLower(x) => f
+                .debug_tuple("ListItemMarker::RomanNumeralLower")
+                .field(x)
+                .finish(),
 
             Self::DefinedTerm {
                 term,
@@ -76,6 +82,13 @@ fn fixture_eq_observed(
 
         ListItemMarker::Dots(fixture_span) => match observed {
             crate::blocks::ListItemMarker::Dots(observed_span) => fixture_span == observed_span,
+            _ => false,
+        },
+
+        ListItemMarker::RomanNumeralLower(fixture_span) => match observed {
+            crate::blocks::ListItemMarker::RomanNumeralLower(observed_span) => {
+                fixture_span == observed_span
+            }
             _ => false,
         },
 

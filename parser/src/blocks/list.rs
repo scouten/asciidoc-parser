@@ -116,6 +116,7 @@ impl<'src> ListBlock<'src> {
             ListItemMarker::Bullet(_) => ListType::Unordered,
             ListItemMarker::Dots(_) => ListType::Ordered,
             ListItemMarker::AlphaListCapital(_) => ListType::Ordered,
+            ListItemMarker::RomanNumeralLower(_) => ListType::Ordered,
 
             ListItemMarker::DefinedTerm {
                 term: _,
