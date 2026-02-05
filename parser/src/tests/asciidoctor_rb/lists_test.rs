@@ -1994,11 +1994,11 @@ mod ordered_lists {
         }
 
         #[test]
-        #[ignore]
         fn should_honor_start_attribute_on_ordered_list() {
-            let _doc = Parser::default().parse("== List\n\n[start=7]\n. item 7\n. item 8\n");
-            todo!("assert_css: 'ol.arabic', output, 1");
-            todo!("assert_css: 'ol[start=7]', output, 1");
+            let doc = Parser::default().parse("== List\n\n[start=7]\n. item 7\n. item 8\n");
+
+            assert_css(&doc, "ol.arabic", 1);
+            assert_css(&doc, "ol[start=7]", 1);
         }
 
         #[test]
