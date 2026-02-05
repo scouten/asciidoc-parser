@@ -1910,11 +1910,11 @@ mod ordered_lists {
         }
 
         #[test]
-        #[ignore]
         fn should_represent_implicit_role_attribute_as_style_class() {
-            let _doc = Parser::default().parse("[.dry]\n. Once\n. Again\n. Refactor!\n");
-            todo!("assert_css: '.olist.arabic.dry', output, 1");
-            todo!("assert_css: '.olist ol.arabic', output, 1");
+            let doc = Parser::default().parse("[.dry]\n. Once\n. Again\n. Refactor!\n");
+
+            assert_css(&doc, ".olist.arabic.dry", 1);
+            assert_css(&doc, ".olist ol.arabic", 1);
         }
 
         #[test]
