@@ -27,7 +27,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [windows-latest, macos-latest, ubuntu-latest]
+        os: [windows-latest, namespace-profile-macos-latest, namespace-profile-default]
         rust_version: [stable, 1.88.0]
 
     steps:
@@ -83,7 +83,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [windows-latest, macos-latest, ubuntu-latest]
+        os: [windows-latest, namespace-profile-macos-latest, namespace-profile-default]
 
     steps:
       - name: Checkout repository
@@ -113,7 +113,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest]
+        os: [namespace-profile-default]
         rust_version: [stable]
 
     steps:
@@ -142,7 +142,7 @@ jobs:
       github.event.pull_request.user.login == 'dependabot[bot]' ||
       contains(github.event.pull_request.labels.*.name, 'safe to test')
 
-    runs-on: ubuntu-latest
+    runs-on: namespace-profile-default
 
     steps:
       - name: Checkout repository
@@ -169,7 +169,7 @@ jobs:
       github.event.pull_request.user.login == 'dependabot[bot]' ||
       contains(github.event.pull_request.labels.*.name, 'safe to test')
 
-    runs-on: ubuntu-latest
+    runs-on: namespace-profile-default
 
     steps:
       - name: Checkout repository
@@ -193,7 +193,7 @@ jobs:
       github.event.pull_request.user.login == 'dependabot[bot]' ||
       contains(github.event.pull_request.labels.*.name, 'safe to test')
 
-    runs-on: ubuntu-latest
+    runs-on: namespace-profile-default
 
     steps:
       - name: Checkout repository
@@ -215,7 +215,7 @@ jobs:
       github.event.pull_request.user.login == 'dependabot[bot]' ||
       contains(github.event.pull_request.labels.*.name, 'safe to test')
 
-    runs-on: ubuntu-latest
+    runs-on: namespace-profile-default
 
     steps:
       - name: Checkout repository
@@ -247,7 +247,7 @@ jobs:
       github.event.pull_request.user.login == 'dependabot[bot]' ||
       contains(github.event.pull_request.labels.*.name, 'safe to test')
 
-    runs-on: ubuntu-latest
+    runs-on: namespace-profile-default
 
     steps:
       - name: Checkout repository
@@ -271,7 +271,7 @@ jobs:
       github.event.pull_request.user.login == 'dependabot[bot]' ||
       contains(github.event.pull_request.labels.*.name, 'safe to test')
 
-    runs-on: ubuntu-latest
+    runs-on: namespace-profile-default
 
     strategy:
       fail-fast: false
@@ -302,7 +302,7 @@ jobs:
       github.event.pull_request.user.login == 'dependabot[bot]' ||
       contains(github.event.pull_request.labels.*.name, 'safe to test')
 
-    runs-on: ubuntu-latest
+    runs-on: namespace-profile-default
 
     steps:
       - name: Checkout repository
@@ -319,11 +319,11 @@ jobs:
 
   benchmarks:
     name: Test performance on benchmarks
-    runs-on: ubuntu-latest
+    runs-on: namespace-profile-default
     steps:
       - uses: actions/checkout@v6
 
-      - name: Setup rust toolchain, cache and cargo-codspeed binary
+      - name: Setup rust toolchain
         uses: moonrepo/setup-rust@v1
         with:
           channel: stable
@@ -342,7 +342,7 @@ jobs:
 
   spec-coverage:
     name: Generate spec coverage
-    runs-on: ubuntu-latest
+    runs-on: namespace-profile-default
 
     steps:
       - name: Checkout repository
