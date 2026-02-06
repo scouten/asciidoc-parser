@@ -146,6 +146,7 @@ impl<'src> ListBlock<'src> {
             ListItemMarker::AlphaListCapital(_) => ListType::Ordered,
             ListItemMarker::AlphaListLower(_) => ListType::Ordered,
             ListItemMarker::RomanNumeralLower(_) => ListType::Ordered,
+            ListItemMarker::RomanNumeralUpper(_) => ListType::Ordered,
             ListItemMarker::ArabicNumeral(_) => ListType::Ordered,
 
             ListItemMarker::DefinedTerm {
@@ -203,6 +204,8 @@ impl<'src> ListBlock<'src> {
             ListItemMarker::ArabicNumeral(_) => Some("arabic"),
             ListItemMarker::AlphaListLower(_) => Some("loweralpha"),
             ListItemMarker::AlphaListCapital(_) => Some("upperalpha"),
+            ListItemMarker::RomanNumeralLower(_) => Some("lowerroman"),
+            ListItemMarker::RomanNumeralUpper(_) => Some("upperroman"),
             _ => None,
         }
     }

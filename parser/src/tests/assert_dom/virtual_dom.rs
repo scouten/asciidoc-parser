@@ -393,8 +393,9 @@ fn list_block_to_node<'a>(list: &'a ListBlock<'a>) -> VirtualNode {
     let mut list_element = VirtualNode::new(list_tag);
 
     // For ordered lists, add style class to the list element based on marker
-    // length.
+    // length, but only if no explicit style is declared.
     if list.type_() == ListType::Ordered
+        && list.declared_style().is_none()
         && let Some(style) = list.marker_style()
     {
         list_element = list_element.with_class(style);
@@ -474,14 +475,17 @@ fn list_block_to_node<'a>(list: &'a ListBlock<'a>) -> VirtualNode {
     // Wrap the list in a div container (matching Asciidoctor's HTML structure).
     let mut wrapper = VirtualNode::new("div").with_class(base_class);
 
-    // For ordered lists, add style class to the wrapper based on marker length.
+    // For ordered lists, add style class to the wrapper based on marker length,
+    // but only if no explicit style is declared.
     if list.type_() == ListType::Ordered
+        && list.declared_style().is_none()
         && let Some(style) = list.marker_style()
     {
         wrapper = wrapper.with_class(style);
     }
 
-    // Add style class to the wrapper if present.
+    // Add style class to the wrapper if present (explicit style overrides marker
+    // style).
     if let Some(style) = list.declared_style() {
         wrapper = wrapper.with_class(style);
     }

@@ -28,6 +28,9 @@ pub enum ListItemMarker<'src> {
     /// Lowercase Roman numeral followed by closing paren.
     RomanNumeralLower(Span<'src>),
 
+    /// Uppercase Roman numeral followed by closing paren.
+    RomanNumeralUpper(Span<'src>),
+
     /// Explicit Arabic numeral followed by dot (e.g., "7.").
     ArabicNumeral(Span<'src>),
 
@@ -84,6 +87,13 @@ impl<'src> ListItemMarker<'src> {
                     .all(|c| "ivxlcdm".contains(c))
             {
                 Self::RomanNumeralLower(marker)
+            } else if marker_str.ends_with(')')
+                && marker_str
+                    .chars()
+                    .take(marker_str.len() - 1)
+                    .all(|c| "IVXLCDM".contains(c))
+            {
+                Self::RomanNumeralUpper(marker)
             } else if marker_str.ends_with('.')
                 && marker_str
                     .chars()
@@ -157,6 +167,10 @@ impl<'src> ListItemMarker<'src> {
                 matches!(other, Self::RomanNumeralLower(_other_span))
             }
 
+            Self::RomanNumeralUpper(_self_span) => {
+                matches!(other, Self::RomanNumeralUpper(_other_span))
+            }
+
             Self::ArabicNumeral(_self_span) => {
                 matches!(other, Self::ArabicNumeral(_other_span))
             }
@@ -205,6 +219,11 @@ impl<'src> ListItemMarker<'src> {
                 parse_roman_numeral(span.data().trim_end_matches(')'))
             }
 
+            Self::RomanNumeralUpper(span) => {
+                // "XVII)" -> 17
+                parse_roman_numeral(span.data().trim_end_matches(')'))
+            }
+
             // Implicit markers (dots, asterisks, etc.) don't have ordinal values.
             _ => None,
         }
@@ -236,6 +255,11 @@ impl<'src> ListItemMarker<'src> {
                 Some(to_roman_numeral_lower(ordinal))
             }
 
+            Self::RomanNumeralUpper(_) => {
+                // 17 -> "XVII"
+                Some(to_roman_numeral_upper(ordinal))
+            }
+
             // Implicit markers don't have ordinal display forms.
             _ => None,
         }
@@ -252,6 +276,7 @@ impl<'src> HasSpan<'src> for ListItemMarker<'src> {
             Self::AlphaListCapital(x) => *x,
             Self::AlphaListLower(x) => *x,
             Self::RomanNumeralLower(x) => *x,
+            Self::RomanNumeralUpper(x) => *x,
             Self::ArabicNumeral(x) => *x,
 
             Self::DefinedTerm {
@@ -283,6 +308,11 @@ impl std::fmt::Debug for ListItemMarker<'_> {
 
             Self::RomanNumeralLower(x) => f
                 .debug_tuple("ListItemMarker::RomanNumeralLower")
+                .field(x)
+                .finish(),
+
+            Self::RomanNumeralUpper(x) => f
+                .debug_tuple("ListItemMarker::RomanNumeralUpper")
                 .field(x)
                 .finish(),
 
@@ -384,6 +414,34 @@ fn to_roman_numeral_lower(mut n: u32) -> String {
         (5, "v"),
         (4, "iv"),
         (1, "i"),
+    ];
+
+    let mut result = String::new();
+    for &(value, numeral) in NUMERALS {
+        while n >= value {
+            result.push_str(numeral);
+            n -= value;
+        }
+    }
+    result
+}
+
+/// Converts a numeric value to an uppercase Roman numeral string.
+fn to_roman_numeral_upper(mut n: u32) -> String {
+    const NUMERALS: &[(u32, &str)] = &[
+        (1000, "M"),
+        (900, "CM"),
+        (500, "D"),
+        (400, "CD"),
+        (100, "C"),
+        (90, "XC"),
+        (50, "L"),
+        (40, "XL"),
+        (10, "X"),
+        (9, "IX"),
+        (5, "V"),
+        (4, "IV"),
+        (1, "I"),
     ];
 
     let mut result = String::new();
@@ -662,6 +720,71 @@ mod tests {
             lim.item,
             ListItemMarker::RomanNumeralLower(Span {
                 data: "xvii)",
+                line: 1,
+                col: 1,
+                offset: 0,
+            },)
+        );
+
+        assert_eq!(
+            lim.after,
+            Span {
+                data: "blah",
+                line: 1,
+                col: 7,
+                offset: 6,
+            }
+        );
+    }
+
+    #[test]
+    fn roman_numeral_upper() {
+        assert!(lim_parse("I").is_none());
+        assert!(lim_parse("I.").is_none());
+
+        let lim = lim_parse("I) blah").unwrap();
+
+        assert_eq!(
+            lim.item,
+            ListItemMarker::RomanNumeralUpper(Span {
+                data: "I)",
+                line: 1,
+                col: 1,
+                offset: 0,
+            },)
+        );
+
+        assert_eq!(
+            lim.after,
+            Span {
+                data: "blah",
+                line: 1,
+                col: 4,
+                offset: 3,
+            }
+        );
+
+        assert_eq!(
+            lim.item.span(),
+            Span {
+                data: "I)",
+                line: 1,
+                col: 1,
+                offset: 0,
+            }
+        );
+
+        assert_eq!(
+            format!("{lim:#?}", lim = lim.item),
+            "ListItemMarker::RomanNumeralUpper(\n    Span {\n        data: \"I)\",\n        line: 1,\n        col: 1,\n        offset: 0,\n    },\n)"
+        );
+
+        let lim = lim_parse("XVII) blah").unwrap();
+
+        assert_eq!(
+            lim.item,
+            ListItemMarker::RomanNumeralUpper(Span {
+                data: "XVII)",
                 line: 1,
                 col: 1,
                 offset: 0,

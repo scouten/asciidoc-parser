@@ -2043,7 +2043,6 @@ mod ordered_lists {
         }
 
         #[test]
-        #[ignore]
         fn should_implicitly_set_start_on_ordered_list_if_explicit_roman_numbering_does_not_start_at_1()
          {
             let doc = Parser::default().parse("== List\n\nIV) item 4\nV) item 5\n");
