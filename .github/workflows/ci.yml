@@ -27,7 +27,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [windows-latest, macos-latest, ubuntu-latest]
+        os: [depot-windows-latest, depot-macos-latest, depot-ubuntu-latest]
         rust_version: [stable, 1.88.0]
 
     steps:
