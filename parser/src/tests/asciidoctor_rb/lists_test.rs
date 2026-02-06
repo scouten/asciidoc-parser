@@ -2046,8 +2046,13 @@ mod ordered_lists {
         #[ignore]
         fn should_implicitly_set_start_on_ordered_list_if_explicit_roman_numbering_does_not_start_at_1()
          {
-            let _doc = Parser::default().parse("== List\n\nIV) item 4\nV) item 5\n");
-            todo!("memory logger test");
+            let doc = Parser::default().parse("== List\n\nIV) item 4\nV) item 5\n");
+
+            assert_css(&doc, "ol[start=4]", 1);
+            assert_css(&doc, "ol.upperroman", 1);
+            assert_css(&doc, "ol li", 2);
+
+            assert!(doc.warnings().next().is_none());
         }
 
         #[test]
