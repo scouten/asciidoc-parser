@@ -19,8 +19,11 @@ pub enum ListItemMarker<'src> {
     /// Ordered list (dots).
     Dots(Span<'src>),
 
-    /// Letter followed by dot (alpha list).
+    /// Uppercase letter followed by dot (alpha list).
     AlphaListCapital(Span<'src>),
+
+    /// Lowercase letter followed by dot (alpha list).
+    AlphaListLower(Span<'src>),
 
     /// Lowercase Roman numeral followed by closing paren.
     RomanNumeralLower(Span<'src>),
@@ -66,8 +69,14 @@ impl<'src> ListItemMarker<'src> {
                 Self::Dots(marker)
             } else if let Some(first_char) = first_char
                 && first_char.is_ascii_uppercase()
+                && marker_str.ends_with('.')
             {
                 Self::AlphaListCapital(marker)
+            } else if let Some(first_char) = first_char
+                && first_char.is_ascii_lowercase()
+                && marker_str.ends_with('.')
+            {
+                Self::AlphaListLower(marker)
             } else if marker_str.ends_with(')')
                 && marker_str
                     .chars()
@@ -140,6 +149,10 @@ impl<'src> ListItemMarker<'src> {
                 matches!(other, Self::AlphaListCapital(_other_span))
             }
 
+            Self::AlphaListLower(_self_span) => {
+                matches!(other, Self::AlphaListLower(_other_span))
+            }
+
             Self::RomanNumeralLower(_self_span) => {
                 matches!(other, Self::RomanNumeralLower(_other_span))
             }
@@ -162,6 +175,71 @@ impl<'src> ListItemMarker<'src> {
             },
         }
     }
+
+    /// Returns the ordinal value for explicit markers, or `None` for implicit
+    /// markers.
+    ///
+    /// Explicit markers like `x.`, `7.`, or `iv)` have specific sequence
+    /// values. Implicit markers like `.` or `*` don't have ordinal values.
+    pub(crate) fn ordinal_value(&self) -> Option<u32> {
+        match self {
+            Self::AlphaListLower(span) => {
+                // "x." -> 24 (1-indexed: a=1, b=2, ..., x=24)
+                let ch = span.data().chars().next()?;
+                Some((ch as u32) - ('a' as u32) + 1)
+            }
+
+            Self::AlphaListCapital(span) => {
+                // "X." -> 24 (1-indexed: A=1, B=2, ..., X=24)
+                let ch = span.data().chars().next()?;
+                Some((ch as u32) - ('A' as u32) + 1)
+            }
+
+            Self::ArabicNumeral(span) => {
+                // "7." -> 7
+                span.data().trim_end_matches('.').parse().ok()
+            }
+
+            Self::RomanNumeralLower(span) => {
+                // "xvii)" -> 17
+                parse_roman_numeral(span.data().trim_end_matches(')'))
+            }
+
+            // Implicit markers (dots, asterisks, etc.) don't have ordinal values.
+            _ => None,
+        }
+    }
+
+    /// Converts an ordinal value back to the display form for this marker type.
+    ///
+    /// Used to generate warning messages about expected vs. actual sequence
+    /// values.
+    pub(crate) fn ordinal_to_marker_text(&self, ordinal: u32) -> Option<String> {
+        match self {
+            Self::AlphaListLower(_) => {
+                // 24 -> "x"
+                char::from_u32('a' as u32 + ordinal - 1).map(|c| c.to_string())
+            }
+
+            Self::AlphaListCapital(_) => {
+                // 24 -> "X"
+                char::from_u32('A' as u32 + ordinal - 1).map(|c| c.to_string())
+            }
+
+            Self::ArabicNumeral(_) => {
+                // 7 -> "7"
+                Some(ordinal.to_string())
+            }
+
+            Self::RomanNumeralLower(_) => {
+                // 17 -> "xvii"
+                Some(to_roman_numeral_lower(ordinal))
+            }
+
+            // Implicit markers don't have ordinal display forms.
+            _ => None,
+        }
+    }
 }
 
 impl<'src> HasSpan<'src> for ListItemMarker<'src> {
@@ -172,6 +250,7 @@ impl<'src> HasSpan<'src> for ListItemMarker<'src> {
             Self::Bullet(x) => *x,
             Self::Dots(x) => *x,
             Self::AlphaListCapital(x) => *x,
+            Self::AlphaListLower(x) => *x,
             Self::RomanNumeralLower(x) => *x,
             Self::ArabicNumeral(x) => *x,
 
@@ -194,6 +273,11 @@ impl std::fmt::Debug for ListItemMarker<'_> {
 
             Self::AlphaListCapital(x) => f
                 .debug_tuple("ListItemMarker::AlphaListCapital")
+                .field(x)
+                .finish(),
+
+            Self::AlphaListLower(x) => f
+                .debug_tuple("ListItemMarker::AlphaListLower")
                 .field(x)
                 .finish(),
 
@@ -255,6 +339,62 @@ static DESCRIPTION_LIST_MARKER: LazyLock<Regex> = LazyLock::new(|| {
     )
     .unwrap()
 });
+
+/// Parses a lowercase Roman numeral string into its numeric value.
+fn parse_roman_numeral(s: &str) -> Option<u32> {
+    let mut result: u32 = 0;
+    let mut prev_value: u32 = 0;
+
+    for ch in s.chars().rev() {
+        let value = match ch {
+            'i' | 'I' => 1,
+            'v' | 'V' => 5,
+            'x' | 'X' => 10,
+            'l' | 'L' => 50,
+            'c' | 'C' => 100,
+            'd' | 'D' => 500,
+            'm' | 'M' => 1000,
+            _ => return None,
+        };
+
+        if value < prev_value {
+            result -= value;
+        } else {
+            result += value;
+        }
+        prev_value = value;
+    }
+
+    if result > 0 { Some(result) } else { None }
+}
+
+/// Converts a numeric value to a lowercase Roman numeral string.
+fn to_roman_numeral_lower(mut n: u32) -> String {
+    const NUMERALS: &[(u32, &str)] = &[
+        (1000, "m"),
+        (900, "cm"),
+        (500, "d"),
+        (400, "cd"),
+        (100, "c"),
+        (90, "xc"),
+        (50, "l"),
+        (40, "xl"),
+        (10, "x"),
+        (9, "ix"),
+        (5, "v"),
+        (4, "iv"),
+        (1, "i"),
+    ];
+
+    let mut result = String::new();
+    for &(value, numeral) in NUMERALS {
+        while n >= value {
+            result.push_str(numeral);
+            n -= value;
+        }
+    }
+    result
+}
 
 #[cfg(test)]
 mod tests {
@@ -535,6 +675,71 @@ mod tests {
                 line: 1,
                 col: 7,
                 offset: 6,
+            }
+        );
+    }
+
+    #[test]
+    fn alpha_list_lower() {
+        assert!(lim_parse("a").is_none());
+        assert!(lim_parse("a)").is_none());
+
+        let lim = lim_parse("a. blah").unwrap();
+
+        assert_eq!(
+            lim.item,
+            ListItemMarker::AlphaListLower(Span {
+                data: "a.",
+                line: 1,
+                col: 1,
+                offset: 0,
+            },)
+        );
+
+        assert_eq!(
+            lim.after,
+            Span {
+                data: "blah",
+                line: 1,
+                col: 4,
+                offset: 3,
+            }
+        );
+
+        assert_eq!(
+            lim.item.span(),
+            Span {
+                data: "a.",
+                line: 1,
+                col: 1,
+                offset: 0,
+            }
+        );
+
+        assert_eq!(
+            format!("{lim:#?}", lim = lim.item),
+            "ListItemMarker::AlphaListLower(\n    Span {\n        data: \"a.\",\n        line: 1,\n        col: 1,\n        offset: 0,\n    },\n)"
+        );
+
+        let lim = lim_parse("x. blah").unwrap();
+
+        assert_eq!(
+            lim.item,
+            ListItemMarker::AlphaListLower(Span {
+                data: "x.",
+                line: 1,
+                col: 1,
+                offset: 0,
+            },)
+        );
+
+        assert_eq!(
+            lim.after,
+            Span {
+                data: "blah",
+                line: 1,
+                col: 4,
+                offset: 3,
             }
         );
     }

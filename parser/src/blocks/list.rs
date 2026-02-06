@@ -7,7 +7,7 @@ use crate::{
     internal::debug::DebugSliceReference,
     span::MatchedItem,
     strings::CowStr,
-    warnings::Warning,
+    warnings::{Warning, WarningType},
 };
 
 /// A list contains a sequence of items prefixed with symbol, such as a disc
@@ -48,6 +48,7 @@ impl<'src> ListBlock<'src> {
         let mut items: Vec<Block<'src>> = vec![];
         let mut next_item_source = source;
         let mut first_marker: Option<ListItemMarker<'src>> = None;
+        let mut expected_ordinal: Option<u32> = None;
 
         loop {
             let next_line_mi = next_item_source.take_normalized_line();
@@ -91,8 +92,35 @@ impl<'src> ListBlock<'src> {
                     // hierarchy.
                     break;
                 }
+
+                // Check if the marker is in sequence for explicit ordered lists.
+                if let Some(actual_ordinal) = this_item_marker.ordinal_value() {
+                    if let Some(expected) = expected_ordinal {
+                        if actual_ordinal != expected {
+                            // Warn about out-of-sequence marker.
+                            if let (Some(expected_text), Some(actual_text)) = (
+                                first_marker.ordinal_to_marker_text(expected),
+                                first_marker.ordinal_to_marker_text(actual_ordinal),
+                            ) {
+                                warnings.push(Warning {
+                                    source: this_item_marker.span(),
+                                    warning: WarningType::ListItemOutOfSequence(
+                                        expected_text,
+                                        actual_text,
+                                    ),
+                                });
+                            }
+                        }
+                    }
+                    expected_ordinal = Some(actual_ordinal + 1);
+                }
             } else {
-                first_marker = Some(this_item_marker);
+                first_marker = Some(this_item_marker.clone());
+
+                // Initialize expected ordinal from first marker's value.
+                if let Some(ordinal) = this_item_marker.ordinal_value() {
+                    expected_ordinal = Some(ordinal + 1);
+                }
             }
 
             let Some(list_item_mi) =
@@ -116,6 +144,7 @@ impl<'src> ListBlock<'src> {
             ListItemMarker::Bullet(_) => ListType::Unordered,
             ListItemMarker::Dots(_) => ListType::Ordered,
             ListItemMarker::AlphaListCapital(_) => ListType::Ordered,
+            ListItemMarker::AlphaListLower(_) => ListType::Ordered,
             ListItemMarker::RomanNumeralLower(_) => ListType::Ordered,
             ListItemMarker::ArabicNumeral(_) => ListType::Ordered,
 
@@ -172,6 +201,8 @@ impl<'src> ListBlock<'src> {
                 }
             }
             ListItemMarker::ArabicNumeral(_) => Some("arabic"),
+            ListItemMarker::AlphaListLower(_) => Some("loweralpha"),
+            ListItemMarker::AlphaListCapital(_) => Some("upperalpha"),
             _ => None,
         }
     }

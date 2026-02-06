@@ -2056,10 +2056,26 @@ mod ordered_lists {
         }
 
         #[test]
-        #[ignore]
         fn should_warn_if_item_with_explicit_numbering_in_ordered_list_is_out_of_sequence() {
-            let _doc = Parser::default().parse("== List\n\nx. x\nz. z\n");
-            todo!("memory logger test");
+            let doc = Parser::default().parse("== List\n\nx. x\nz. z\n");
+
+            assert_css(&doc, "ol[start=24]", 1);
+            assert_css(&doc, "ol.loweralpha", 1);
+            assert_css(&doc, "ol li", 2);
+
+            let warnings: Vec<_> = doc.warnings().collect();
+            assert_eq!(warnings.len(), 1);
+
+            assert_eq!(
+                warnings[0].warning,
+                crate::warnings::WarningType::ListItemOutOfSequence(
+                    "y".to_string(),
+                    "z".to_string()
+                )
+            );
+
+            // Warning should point to line 4 (the "z. z" line).
+            assert_eq!(warnings[0].source.line(), 4);
         }
 
         #[test]
