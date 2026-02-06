@@ -2031,11 +2031,15 @@ mod ordered_lists {
         }
 
         #[test]
-        #[ignore]
         fn should_implicitly_set_start_on_ordered_list_if_explicit_arabic_numbering_does_not_start_at_1()
          {
-            let _doc = Parser::default().parse("== List\n\n7. item 7\n8. item 8\n");
-            todo!("memory logger test");
+            let doc = Parser::default().parse("== List\n\n7. item 7\n8. item 8\n");
+
+            assert_css(&doc, "ol[start=7]", 1);
+            assert_css(&doc, "ol.arabic", 1);
+            assert_css(&doc, "ol li", 2);
+
+            assert!(doc.warnings().next().is_none());
         }
 
         #[test]
