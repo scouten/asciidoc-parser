@@ -2245,14 +2245,16 @@ mod description_lists_dlist {
         }
 
         #[test]
-        #[ignore]
         fn should_allow_term_to_end_with_a_semicolon_when_using_double_semicolon_delimiter() {
-            let _doc = Parser::default().parse("term;;; def\n");
-            todo!("assert_css: 'dl', output, 1");
-            todo!("assert_css: 'dl > dt', output, 1");
-            todo!("assert_xpath: '(//dl/dt)[1][text() = \"term;\"]', output, 1");
-            todo!(
-                "assert_xpath: '(//dl/dt)[1]/following-sibling::dd/p[text() = \"def\"]', output, 1"
+            let doc = Parser::default().parse("term;;; def\n");
+
+            assert_css(&doc, "dl", 1);
+            assert_css(&doc, "dl > dt", 1);
+            assert_xpath(&doc, "(//dl/dt)[1][text() = \"term;\"]", 1);
+            assert_xpath(
+                &doc,
+                "(//dl/dt)[1]/following-sibling::dd/p[text() = \"def\"]",
+                1,
             );
         }
 
