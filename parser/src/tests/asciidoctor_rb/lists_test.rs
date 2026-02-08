@@ -2172,9 +2172,6 @@ mod description_lists_dlist {
         fn should_parse_a_dlist_if_term_is_include_and_principal_text_is_brackets() {
             let doc = Parser::default().parse("include:: []");
 
-            let vdom = doc.to_virtual_dom();
-            dbg!(&vdom);
-
             assert_css(&doc, "dl", 1);
             assert_css(&doc, "dl > dt", 1);
             assert_xpath(
