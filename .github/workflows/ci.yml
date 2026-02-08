@@ -319,7 +319,13 @@ jobs:
 
   benchmarks:
     name: Test performance on benchmarks
+
+    permissions:
+      contents: read
+      id-token: write
+
     runs-on: ubuntu-latest
+
     steps:
       - uses: actions/checkout@v6
 
@@ -338,7 +344,6 @@ jobs:
         with:
           mode: instrumentation
           run: cargo codspeed run
-          token: ${{ secrets.CODSPEED_TOKEN }}
 
   spec-coverage:
     name: Generate spec coverage
