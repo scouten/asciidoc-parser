@@ -96,21 +96,22 @@ impl<'src> ListBlock<'src> {
                 // Check if the marker is in sequence for explicit ordered lists.
                 if let Some(actual_ordinal) = this_item_marker.ordinal_value() {
                     if let Some(expected) = expected_ordinal
-                        && actual_ordinal != expected {
-                            // Warn about out-of-sequence marker.
-                            if let (Some(expected_text), Some(actual_text)) = (
-                                first_marker.ordinal_to_marker_text(expected),
-                                first_marker.ordinal_to_marker_text(actual_ordinal),
-                            ) {
-                                warnings.push(Warning {
-                                    source: this_item_marker.span(),
-                                    warning: WarningType::ListItemOutOfSequence(
-                                        expected_text,
-                                        actual_text,
-                                    ),
-                                });
-                            }
+                        && actual_ordinal != expected
+                    {
+                        // Warn about out-of-sequence marker.
+                        if let (Some(expected_text), Some(actual_text)) = (
+                            first_marker.ordinal_to_marker_text(expected),
+                            first_marker.ordinal_to_marker_text(actual_ordinal),
+                        ) {
+                            warnings.push(Warning {
+                                source: this_item_marker.span(),
+                                warning: WarningType::ListItemOutOfSequence(
+                                    expected_text,
+                                    actual_text,
+                                ),
+                            });
                         }
+                    }
                     expected_ordinal = Some(actual_ordinal + 1);
                 }
             } else {
