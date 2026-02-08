@@ -2095,10 +2095,24 @@ mod ordered_lists {
     }
 
     #[test]
-    #[ignore]
     fn should_warn_if_explicit_uppercase_roman_numerals_in_list_are_out_of_sequence() {
-        let _doc = Parser::default().parse("I) one\nIII) three\n");
-        todo!("memory logger test");
+        let doc = Parser::default().parse("I) one\nIII) three\n");
+
+        assert_xpath(&doc, "//ol/li", 2);
+
+        let warnings: Vec<_> = doc.warnings().collect();
+        assert_eq!(warnings.len(), 1);
+
+        assert_eq!(
+            warnings[0].warning,
+            crate::warnings::WarningType::ListItemOutOfSequence(
+                "II".to_string(),
+                "III".to_string()
+            )
+        );
+
+        // Warning should point to line 2 (the "III) three" line).
+        assert_eq!(warnings[0].source.line(), 2);
     }
 
     #[test]
