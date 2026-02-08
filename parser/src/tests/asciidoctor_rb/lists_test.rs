@@ -2182,13 +2182,16 @@ mod description_lists_dlist {
         }
 
         #[test]
-        #[ignore]
         fn should_parse_a_dlist_if_term_is_include_and_principal_text_matches_macro_form() {
-            let _doc = Parser::default().parse("include:: pass:[${{placeholder}}]");
-            todo!("assert_css: 'dl', output, 1");
-            todo!("assert_css: 'dl > dt', output, 1");
-            todo!(
-                "assert_xpath: '(//dl/dt)[1]/following-sibling::dd/p[text() = \"${{placeholder}}\"]', output, 1"
+            let doc = Parser::default().parse("include:: pass:[${placeholder}]");
+
+            assert_css(&doc, "dl", 1);
+            assert_css(&doc, "dl > dt", 1);
+
+            assert_xpath(
+                &doc,
+                "(//dl/dt)[1]/following-sibling::dd/p[text() = \"${placeholder}\"]",
+                1,
             );
         }
 
