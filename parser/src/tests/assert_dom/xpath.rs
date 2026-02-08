@@ -903,10 +903,12 @@ fn matches_predicate(node: &VirtualNode, predicate: &str) -> bool {
 
     // Handle multiple predicates by checking each one.
     while !predicate.is_empty() {
-        // Find the next closing bracket.
+        // Find the next opening bracket.
         if let Some(bracket_start) = predicate.find('[') {
-            if let Some(bracket_end) = predicate[bracket_start..].find(']') {
-                let bracket_end = bracket_start + bracket_end;
+            // Find the matching closing bracket, respecting quoted strings.
+            if let Some(bracket_end) =
+                find_closing_bracket(&predicate[bracket_start..]).map(|i| bracket_start + i)
+            {
                 let single_pred = &predicate[bracket_start + 1..bracket_end];
 
                 // Check this single predicate.
@@ -927,6 +929,42 @@ fn matches_predicate(node: &VirtualNode, predicate: &str) -> bool {
     }
 
     true
+}
+
+/// Finds the byte position of the closing bracket `]` that matches the opening
+/// `[`, while respecting quoted strings (both single and double quotes).
+/// Returns the byte index relative to the start of the input string.
+fn find_closing_bracket(s: &str) -> Option<usize> {
+    let mut depth = 0;
+    let mut in_single_quote = false;
+    let mut in_double_quote = false;
+    let mut prev_char = '\0';
+
+    // Use char_indices() to get byte positions instead of character indices.
+    for (byte_pos, ch) in s.char_indices() {
+        // Handle escape sequences.
+        if prev_char == '\\' {
+            prev_char = '\0'; // Reset to avoid double-escape issues.
+            continue;
+        }
+
+        match ch {
+            '"' if !in_single_quote => in_double_quote = !in_double_quote,
+            '\'' if !in_double_quote => in_single_quote = !in_single_quote,
+            '[' if !in_single_quote && !in_double_quote => depth += 1,
+            ']' if !in_single_quote && !in_double_quote => {
+                depth -= 1;
+                if depth == 0 {
+                    return Some(byte_pos);
+                }
+            }
+            _ => {}
+        }
+
+        prev_char = ch;
+    }
+
+    None
 }
 
 /// Gets the text content of a node, recursively collecting text from all

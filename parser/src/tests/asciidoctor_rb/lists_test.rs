@@ -2169,13 +2169,18 @@ mod description_lists_dlist {
         }
 
         #[test]
-        #[ignore]
         fn should_parse_a_dlist_if_term_is_include_and_principal_text_is_brackets() {
-            let _doc = Parser::default().parse("include:: []");
-            todo!("assert_css: 'dl', output, 1");
-            todo!("assert_css: 'dl > dt', output, 1");
-            todo!(
-                "assert_xpath: '(//dl/dt)[1]/following-sibling::dd/p[text() = \"[]\"]', output, 1"
+            let doc = Parser::default().parse("include:: []");
+
+            let vdom = doc.to_virtual_dom();
+            dbg!(&vdom);
+
+            assert_css(&doc, "dl", 1);
+            assert_css(&doc, "dl > dt", 1);
+            assert_xpath(
+                &doc,
+                "(//dl/dt)[1]/following-sibling::dd/p[text() = \"[]\"]",
+                1,
             );
         }
 
