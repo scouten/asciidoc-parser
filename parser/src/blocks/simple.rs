@@ -206,7 +206,7 @@ fn parse_lines<'src>(
         // `SimpleBlock::parse` in these conditions), but in case it is, we simply
         // ignore them on the first line.
         if !filtered_lines.is_empty() {
-            if stop_for_list_items && let Some(_marker) = ListItemMarker::parse(line) {
+            if stop_for_list_items && let Some(_marker) = ListItemMarker::parse(line, parser) {
                 break;
             }
 

@@ -73,7 +73,8 @@ impl<'src> ListBlock<'src> {
                 block_start: next_item_source,
             };
 
-            let Some(list_item_marker_mi) = ListItemMarker::parse(list_item_metadata.block_start)
+            let Some(list_item_marker_mi) =
+                ListItemMarker::parse(list_item_metadata.block_start, parser)
             else {
                 break;
             };

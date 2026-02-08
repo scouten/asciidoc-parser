@@ -331,7 +331,7 @@ impl<'src> Block<'src> {
             }
 
             if let Some(parent_list_markers) = parent_list_markers
-                && let Some(this_marker) = ListItemMarker::parse(line.item)
+                && let Some(this_marker) = ListItemMarker::parse(line.item, parser)
             {
                 if parent_list_markers
                     .iter()

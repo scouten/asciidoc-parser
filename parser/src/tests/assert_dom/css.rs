@@ -367,6 +367,13 @@ fn matches_pseudo_selector(node: &VirtualNode, pseudo: &str, parent: Option<&Vir
             // If no parent or no matching siblings, consider it first-of-type.
             true
         }
+
+        "empty" => {
+            // Check if this element has no children and no text content.
+            node.children.is_empty()
+                && (node.text.is_none() || node.text.as_ref().is_some_and(|t| t.is_empty()))
+        }
+
         _ => false, // Unknown pseudo-selector.
     }
 }

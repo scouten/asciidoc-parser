@@ -2160,12 +2160,12 @@ mod description_lists_dlist {
         }
 
         #[test]
-        #[ignore]
         fn should_parse_a_dlist_delimiter_preceded_by_a_blank_attribute_as_a_dlist() {
-            let _doc = Parser::default().parse("{blank}::");
-            todo!("assert_css: 'dl', output, 1");
-            todo!("assert_css: 'dl > dt', output, 1");
-            todo!("assert_css: 'dl > dt:empty', output, 1");
+            let doc = Parser::default().parse("{blank}::");
+
+            assert_css(&doc, "dl", 1);
+            assert_css(&doc, "dl > dt", 1);
+            assert_css(&doc, "dl > dt:empty", 1);
         }
 
         #[test]

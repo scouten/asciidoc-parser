@@ -39,7 +39,7 @@ impl<'src> ListItem<'src> {
     ) -> Option<MatchedItem<'src, Self>> {
         let source = metadata.block_start.discard_empty_lines();
 
-        let marker_mi = ListItemMarker::parse(source)?;
+        let marker_mi = ListItemMarker::parse(source, parser)?;
         let marker = marker_mi.item;
 
         let mut list_markers_including_peer = parent_list_markers.to_vec();
@@ -58,10 +58,20 @@ impl<'src> ListItem<'src> {
             block_start: marker_mi.after,
         };
 
-        let simple_block_mi = SimpleBlock::parse_for_list_item(&no_metadata, parser)?;
-        blocks.push(Block::Simple(simple_block_mi.item));
+        // For description lists, the content after the marker can be empty.
+        // For other list types, we require content.
+        let mut next =
+            if let Some(simple_block_mi) = SimpleBlock::parse_for_list_item(&no_metadata, parser) {
+                blocks.push(Block::Simple(simple_block_mi.item));
+                simple_block_mi.after
+            } else if matches!(marker, ListItemMarker::DefinedTerm { .. }) {
+                // Description list items can have empty content.
+                marker_mi.after
+            } else {
+                // Other list types require content after the marker.
+                return None;
+            };
 
-        let mut next = simple_block_mi.after;
         let mut next_block_must_be_indented = false;
         let mut continuation_active = false;
         let mut had_content_starting_with_plus = false;
@@ -102,7 +112,9 @@ impl<'src> ListItem<'src> {
             let is_indented = next.starts_with(' ') || next.starts_with('\t');
             let metadata = BlockMetadata::parse(next, parser);
 
-            if let Some(list_item_marker_mi) = ListItemMarker::parse(metadata.item.block_start) {
+            if let Some(list_item_marker_mi) =
+                ListItemMarker::parse(metadata.item.block_start, parser)
+            {
                 // We've found a new list item. How does it compare with the existing item in
                 // the hierarchy?
                 let new_item_marker = list_item_marker_mi.item;

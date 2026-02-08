@@ -2,7 +2,11 @@ use std::sync::LazyLock;
 
 use regex::Regex;
 
-use crate::{HasSpan, Span, content::Content, span::MatchedItem};
+use crate::{
+    HasSpan, Parser, Span,
+    content::{Content, SubstitutionStep},
+    span::MatchedItem,
+};
 
 /// A list item is signaled by one of several designated marker sequences.
 #[derive(Clone, Eq, PartialEq)]
@@ -52,7 +56,7 @@ impl<'src> ListItemMarker<'src> {
         LIST_ITEM_MARKER.is_match(source.data())
     }
 
-    pub(crate) fn parse(source: Span<'src>) -> Option<MatchedItem<'src, Self>> {
+    pub(crate) fn parse(source: Span<'src>, parser: &Parser) -> Option<MatchedItem<'src, Self>> {
         let source = source.discard_whitespace();
 
         if let Some(captures) = LIST_ITEM_MARKER.captures(source.data()) {
@@ -117,7 +121,12 @@ impl<'src> ListItemMarker<'src> {
 
             let term_len = captures[1].len();
             let term = source.slice(0..term_len);
-            let term: Content<'src> = term.into();
+            let mut term: Content<'src> = term.into();
+
+            // Apply attribute substitution to the term so that attribute references
+            // like `{blank}` are resolved before determining if this is a valid
+            // definition list marker.
+            SubstitutionStep::AttributeReferences.apply(&mut term, parser, None);
 
             let marker = source.slice_from(term_len..);
 
@@ -461,12 +470,13 @@ mod tests {
 
     use pretty_assertions_sorted::assert_eq;
 
-    use crate::{HasSpan, span::MatchedItem, tests::prelude::*};
+    use crate::{HasSpan, Parser, span::MatchedItem, tests::prelude::*};
 
     fn lim_parse<'a>(
         source: &'a str,
     ) -> Option<MatchedItem<'a, crate::blocks::ListItemMarker<'a>>> {
-        crate::blocks::ListItemMarker::parse(crate::Span::new(source))
+        let parser = Parser::default();
+        crate::blocks::ListItemMarker::parse(crate::Span::new(source), &parser)
     }
 
     #[test]
