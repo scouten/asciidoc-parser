@@ -2221,19 +2221,26 @@ mod description_lists_dlist {
         }
 
         #[test]
-        #[ignore]
         fn should_parse_sibling_items_using_same_rules() {
-            let _doc = Parser::default().parse("term1;; ;; def1\nterm2;; ;; def2\n");
-            todo!("assert_xpath: '//dl', output, 1");
-            todo!("assert_xpath: '//dl/dt', output, 2");
-            todo!("assert_xpath: '//dl/dt/following-sibling::dd', output, 2");
-            todo!("assert_xpath: '(//dl/dt)[1][normalize-space(text()) = \"term1\"]', output, 1");
-            todo!(
-                "assert_xpath: '(//dl/dt)[1]/following-sibling::dd/p[text() = \";; def1\"]', output, 1"
+            let doc = Parser::default().parse("term1;; ;; def1\nterm2;; ;; def2\n");
+
+            assert_xpath(&doc, "//dl", 1);
+            assert_xpath(&doc, "//dl/dt", 2);
+            assert_xpath(&doc, "//dl/dt/following-sibling::dd", 2);
+            assert_xpath(&doc, "(//dl/dt)[1][normalize-space(text()) = \"term1\"]", 1);
+
+            assert_xpath(
+                &doc,
+                "(//dl/dt)[1]/following-sibling::dd/p[text() = \";; def1\"]",
+                1,
             );
-            todo!("assert_xpath: '(//dl/dt)[2][normalize-space(text()) = \"term2\"]', output, 1");
-            todo!(
-                "assert_xpath: '(//dl/dt)[2]/following-sibling::dd/p[text() = \";; def2\"]', output, 1"
+
+            assert_xpath(&doc, "(//dl/dt)[2][normalize-space(text()) = \"term2\"]", 1);
+
+            assert_xpath(
+                &doc,
+                "(//dl/dt)[2]/following-sibling::dd/p[text() = \";; def2\"]",
+                1,
             );
         }
 

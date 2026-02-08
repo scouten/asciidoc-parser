@@ -145,6 +145,7 @@ impl<'src> Block<'src> {
                 '.' | '#' | '=' | '/' | '-' | '+' | '*' | '_' | '[' | ':' | '\'' | '<' | '•'
             )
             && !first_line.contains("::")
+            && !first_line.contains(";;")
             && !ListItemMarker::starts_with_marker(first_line)
             && parent_list_markers.is_none()
             && let Some(MatchedItem {
