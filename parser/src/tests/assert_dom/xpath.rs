@@ -5,6 +5,21 @@
 
 use crate::tests::assert_dom::virtual_dom::VirtualNode;
 
+/// Removes duplicate nodes from a vector by comparing pointers.
+/// Preserves document order (first occurrence is kept).
+fn deduplicate_nodes<'a>(nodes: Vec<&'a VirtualNode>) -> Vec<&'a VirtualNode> {
+    let mut seen: Vec<*const VirtualNode> = Vec::new();
+    let mut result = Vec::new();
+    for node in nodes {
+        let ptr = node as *const VirtualNode;
+        if !seen.contains(&ptr) {
+            seen.push(ptr);
+            result.push(node);
+        }
+    }
+    result
+}
+
 /// Queries a virtual DOM tree using an XPath-like selector.
 ///
 /// Supports the following patterns:
@@ -454,7 +469,8 @@ fn query_descendant_or_self<'a>(node: &'a VirtualNode, pattern: &str) -> Vec<&'a
                     final_results.extend(siblings);
                 }
             }
-            return final_results;
+            // Deduplicate results since the same sibling may be found from multiple nodes.
+            return deduplicate_nodes(final_results);
         }
 
         if let Some(axis_rest) = rest.strip_prefix("following-sibling::") {
@@ -491,7 +507,8 @@ fn query_descendant_or_self<'a>(node: &'a VirtualNode, pattern: &str) -> Vec<&'a
                     final_results.extend(siblings);
                 }
             }
-            return final_results;
+            // Deduplicate results since the same sibling may be found from multiple nodes.
+            return deduplicate_nodes(final_results);
         }
 
         // Find all nodes matching first part.
@@ -600,7 +617,8 @@ fn query_from_root<'a>(node: &'a VirtualNode, pattern: &str) -> Vec<&'a VirtualN
                     }
                 }
             }
-            return final_results;
+            // Deduplicate results since the same sibling may be found from multiple nodes.
+            return deduplicate_nodes(final_results);
         }
 
         if let Some(axis_rest) = rest.strip_prefix("preceding-sibling::") {
@@ -630,7 +648,8 @@ fn query_from_root<'a>(node: &'a VirtualNode, pattern: &str) -> Vec<&'a VirtualN
                     }
                 }
             }
-            return final_results;
+            // Deduplicate results since the same sibling may be found from multiple nodes.
+            return deduplicate_nodes(final_results);
         }
 
         // First, collect all matching children.
