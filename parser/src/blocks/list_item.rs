@@ -65,8 +65,27 @@ impl<'src> ListItem<'src> {
                 blocks.push(Block::Simple(simple_block_mi.item));
                 simple_block_mi.after
             } else if matches!(marker, ListItemMarker::DefinedTerm { .. }) {
-                // Description list items can have empty content.
-                marker_mi.after
+                // Description list items can have empty content on the same line as the marker.
+                // The content may be on subsequent lines, so we try to parse from the next
+                // non-empty line.
+                let next_source = marker_mi.after.discard_empty_lines();
+                let next_line_metadata = BlockMetadata {
+                    title_source: None,
+                    title: None,
+                    anchor: None,
+                    anchor_reftext: None,
+                    attrlist: None,
+                    source: next_source,
+                    block_start: next_source,
+                };
+                if let Some(simple_block_mi) =
+                    SimpleBlock::parse_for_list_item(&next_line_metadata, parser)
+                {
+                    blocks.push(Block::Simple(simple_block_mi.item));
+                    simple_block_mi.after
+                } else {
+                    marker_mi.after
+                }
             } else {
                 // Other list types require content after the marker.
                 return None;

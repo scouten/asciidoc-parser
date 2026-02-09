@@ -113,10 +113,17 @@ impl<'src> ListItemMarker<'src> {
         } else {
             let captures = DESCRIPTION_LIST_MARKER.captures(source.data())?;
 
-            let after = source.slice_from(captures[0].len()..).discard_whitespace();
+            // With multi-line mode enabled, ^ can match at any line start.
+            // We only accept matches that start at the beginning of the source.
+            let full_match = captures.get(0)?;
+            if full_match.start() != 0 {
+                return None;
+            }
+
+            let after = source.slice_from(full_match.end()..).discard_whitespace();
 
             let source = source
-                .slice_to(..captures[0].len())
+                .slice_to(..full_match.end())
                 .trim_trailing_whitespace();
 
             let term_len = captures[1].len();
@@ -366,7 +373,7 @@ static LIST_ITEM_MARKER: LazyLock<Regex> = LazyLock::new(|| {
 static DESCRIPTION_LIST_MARKER: LazyLock<Regex> = LazyLock::new(|| {
     #[allow(clippy::unwrap_used)]
     Regex::new(
-        r#"(?x)
+        r#"(?xm)
             ^                       # Start of line
             (                       # Capture group 1: Term being defined
                 [^\ \t]                 # At least one non-whitespace character (start of term)
