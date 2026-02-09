@@ -2321,6 +2321,8 @@ mod description_lists_dlist {
 
         #[test]
         #[ignore]
+        // TODO (https://github.com/scouten/asciidoc-parser/issues/474):
+        // Enable this test when rulers are implemented.
         fn a_ruler_between_elements_should_divide_them_into_separate_lists() {
             let _doc = Parser::default().parse("term1:: def1\n\n'''\n\nterm2:: def2\n");
             todo!("assert_xpath: '//dl', output, 2");
@@ -2331,15 +2333,18 @@ mod description_lists_dlist {
         }
 
         #[test]
-        #[ignore]
         fn a_block_title_between_elements_should_divide_them_into_separate_lists() {
-            let _doc = Parser::default().parse("term1:: def1\n\n.Some more\nterm2:: def2\n");
-            todo!("assert_xpath: '//dl', output, 2");
-            todo!("assert_xpath: '//dl/dt', output, 2");
-            todo!("assert_xpath: '(//dl)[1]/dt', output, 1");
-            todo!("assert_xpath: '(//dl)[2]/dt', output, 1");
-            todo!(
-                "assert_xpath: '(//dl)[2]/preceding-sibling::*[@class=\"title\"][text() = \"Some more\"]', output, 1"
+            let doc = Parser::default().parse("term1:: def1\n\n.Some more\nterm2:: def2\n");
+
+            assert_xpath(&doc, "//dl", 2);
+            assert_xpath(&doc, "//dl/dt", 2);
+            assert_xpath(&doc, "(//dl)[1]/dt", 1);
+            assert_xpath(&doc, "(//dl)[2]/dt", 1);
+
+            assert_xpath(
+                &doc,
+                "(//dl)[2]/preceding-sibling::*[@class=\"title\"][text() = \"Some more\"]",
+                1,
             );
         }
 
