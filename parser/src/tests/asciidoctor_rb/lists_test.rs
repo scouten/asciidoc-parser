@@ -2301,12 +2301,12 @@ mod description_lists_dlist {
         }
 
         #[test]
-        #[ignore]
         fn single_line_elements_separated_by_blank_line_should_create_a_single_list() {
-            let _doc = Parser::default().parse("term1:: def1\n\nterm2:: def2\n");
-            todo!("assert_xpath: '//dl', output, 1");
-            todo!("assert_xpath: '//dl/dt', output, 2");
-            todo!("assert_xpath: '//dl/dt/following-sibling::dd', output, 2");
+            let doc = Parser::default().parse("term1:: def1\n\nterm2:: def2\n");
+
+            assert_xpath(&doc, "//dl", 1);
+            assert_xpath(&doc, "//dl/dt", 2);
+            assert_xpath(&doc, "//dl/dt/following-sibling::dd", 2);
         }
 
         #[test]
