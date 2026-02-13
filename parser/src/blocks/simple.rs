@@ -67,7 +67,13 @@ impl<'src> SimpleBlock<'src> {
         let MatchedItem {
             item: (content, style),
             after,
-        } = parse_lines(metadata.block_start, &metadata.attrlist, false, parser)?;
+        } = parse_lines(
+            metadata.block_start,
+            &metadata.attrlist,
+            false,
+            false,
+            parser,
+        )?;
 
         Some(MatchedItem {
             item: Self {
@@ -94,7 +100,44 @@ impl<'src> SimpleBlock<'src> {
         let MatchedItem {
             item: (content, style),
             after,
-        } = parse_lines(metadata.block_start, &metadata.attrlist, true, parser)?;
+        } = parse_lines(
+            metadata.block_start,
+            &metadata.attrlist,
+            true,
+            false,
+            parser,
+        )?;
+
+        Some(MatchedItem {
+            item: Self {
+                content,
+                source: metadata
+                    .source
+                    .trim_remainder(after)
+                    .trim_trailing_whitespace(),
+                style,
+                title_source: metadata.title_source,
+                title: metadata.title.clone(),
+                anchor: metadata.anchor,
+                anchor_reftext: metadata.anchor_reftext,
+                attrlist: metadata.attrlist.clone(),
+            },
+            after,
+        })
+    }
+
+    /// Parse a simple block for use in a definition list item.
+    ///
+    /// In definition lists, indented content is treated as a paragraph
+    /// with the indentation stripped, not as a literal block.
+    pub(crate) fn parse_for_definition_list(
+        metadata: &BlockMetadata<'src>,
+        parser: &mut Parser,
+    ) -> Option<MatchedItem<'src, Self>> {
+        let MatchedItem {
+            item: (content, style),
+            after,
+        } = parse_lines(metadata.block_start, &metadata.attrlist, true, true, parser)?;
 
         Some(MatchedItem {
             item: Self {
@@ -121,7 +164,7 @@ impl<'src> SimpleBlock<'src> {
         let MatchedItem {
             item: (content, style),
             after,
-        } = parse_lines(source, &None, false, parser)?;
+        } = parse_lines(source, &None, false, false, parser)?;
 
         let source = content.original();
 
@@ -152,18 +195,35 @@ impl<'src> SimpleBlock<'src> {
 }
 
 /// Parse the content-bearing lines for this block.
+///
+/// If `force_paragraph_style` is true, indented content is treated as a
+/// paragraph (with indentation stripped) rather than as a literal block. This
+/// is used for definition list items where indentation is purely visual
+/// formatting.
 fn parse_lines<'src>(
     source: Span<'src>,
     attrlist: &Option<Attrlist<'src>>,
     mut stop_for_list_items: bool,
+    force_paragraph_style: bool,
     parser: &Parser,
 ) -> Option<MatchedItem<'src, (Content<'src>, SimpleBlockStyle)>> {
     let source_after_whitespace = source.discard_whitespace();
     let strip_indent = source_after_whitespace.col() - 1;
 
-    let mut style = if source_after_whitespace.col() == source.col() {
+    // Track if we're in "indented literal" mode (literal style from indentation).
+    // In this mode, we should still stop for list markers that are NOT indented.
+    let mut indented_literal_mode = false;
+
+    let mut style = if source_after_whitespace.col() == source.col() || force_paragraph_style {
+        // When force_paragraph_style is true, we still need to track that the content
+        // is indented so we can properly stop at unindented list markers.
+        if source_after_whitespace.col() != source.col() {
+            indented_literal_mode = true;
+        }
         SimpleBlockStyle::Paragraph
     } else {
+        // Indented content treated as literal: don't stop for list markers
+        // (they become part of the literal content).
         stop_for_list_items = false;
         SimpleBlockStyle::Literal
     };
@@ -178,16 +238,19 @@ fn parse_lines<'src>(
 
             Some("literal") => {
                 stop_for_list_items = false;
+                indented_literal_mode = false;
                 style = SimpleBlockStyle::Literal;
             }
 
             Some("listing") => {
                 stop_for_list_items = false;
+                indented_literal_mode = false;
                 style = SimpleBlockStyle::Listing;
             }
 
             Some("source") => {
                 stop_for_list_items = false;
+                indented_literal_mode = false;
                 style = SimpleBlockStyle::Source;
             }
 
@@ -206,7 +269,14 @@ fn parse_lines<'src>(
         // `SimpleBlock::parse` in these conditions), but in case it is, we simply
         // ignore them on the first line.
         if !filtered_lines.is_empty() {
-            if stop_for_list_items && let Some(_marker) = ListItemMarker::parse(line, parser) {
+            // In indented literal mode, only stop for list markers that are NOT indented
+            // (at column 1). This allows definition list items to be properly separated.
+            let should_check_for_list_marker =
+                stop_for_list_items && (!indented_literal_mode || line.col() == 1);
+
+            if should_check_for_list_marker
+                && let Some(_marker) = ListItemMarker::parse(line, parser)
+            {
                 break;
             }
 

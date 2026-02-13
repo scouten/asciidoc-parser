@@ -78,8 +78,11 @@ impl<'src> ListItem<'src> {
                     source: next_source,
                     block_start: next_source,
                 };
+
+                // For definition lists, indented content is treated as a paragraph
+                // (not literal), with the indentation stripped.
                 if let Some(simple_block_mi) =
-                    SimpleBlock::parse_for_list_item(&next_line_metadata, parser)
+                    SimpleBlock::parse_for_definition_list(&next_line_metadata, parser)
                 {
                     blocks.push(Block::Simple(simple_block_mi.item));
                     simple_block_mi.after
