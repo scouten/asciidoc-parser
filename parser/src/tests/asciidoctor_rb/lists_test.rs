@@ -2406,12 +2406,15 @@ mod description_lists_dlist {
             assert_xpath(&doc, "//dl/dt", 2);
             assert_xpath(&doc, "//dl/dt/following-sibling::dd", 2);
             assert_xpath(&doc, "(//dl/dt)[1][normalize-space(text()) = \"term1\"]", 1);
+
             assert_xpath(
                 &doc,
                 "(//dl/dt)[1]/following-sibling::dd/p[text() = \"def1\"]",
                 1,
             );
+
             assert_xpath(&doc, "(//dl/dt)[2][normalize-space(text()) = \"term2\"]", 1);
+
             assert_xpath(
                 &doc,
                 "(//dl/dt)[2]/following-sibling::dd/p[text() = \"def2\ndef2 continued\"]",
@@ -2420,12 +2423,15 @@ mod description_lists_dlist {
         }
 
         #[test]
-        #[ignore]
         fn should_not_strip_comment_line_in_literal_paragraph_block_attached_to_list_item() {
-            let _doc = Parser::default().parse("term1::\n+\n line 1\n// not a comment\n line 3\n");
-            todo!("assert_xpath: '//*[@class=\"literalblock\"]', output, 1");
-            todo!(
-                "assert_xpath: '//*[@class=\"literalblock\"]//pre[text()=\" line 1\\n// not a comment\\n line 3\"]', output, 1"
+            let doc = Parser::default().parse("term1::\n+\n line 1\n// not a comment\n line 3\n");
+
+            assert_xpath(&doc, "//*[@class=\"literalblock\"]", 1);
+
+            assert_xpath(
+                &doc,
+                "//*[@class=\"literalblock\"]//pre[text()=\" line 1\n// not a comment\n line 3\"]",
+                1,
             );
         }
 

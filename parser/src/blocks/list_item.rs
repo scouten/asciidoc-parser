@@ -60,15 +60,25 @@ impl<'src> ListItem<'src> {
 
         // For description lists, the content after the marker can be empty.
         // For other list types, we require content.
-        let mut next =
-            if let Some(simple_block_mi) = SimpleBlock::parse_for_list_item(&no_metadata, parser) {
-                blocks.push(Block::Simple(simple_block_mi.item));
-                simple_block_mi.after
-            } else if matches!(marker, ListItemMarker::DefinedTerm { .. }) {
-                // Description list items can have empty content on the same line as the marker.
-                // The content may be on subsequent lines, so we try to parse from the next
-                // non-empty line.
-                let next_source = marker_mi.after.discard_empty_lines();
+        let mut next = if let Some(simple_block_mi) =
+            SimpleBlock::parse_for_list_item(&no_metadata, parser, false)
+        {
+            blocks.push(Block::Simple(simple_block_mi.item));
+            simple_block_mi.after
+        } else if matches!(marker, ListItemMarker::DefinedTerm { .. }) {
+            // Description list items can have empty content on the same line as the marker.
+            // The content may be on subsequent lines, so we try to parse from the next
+            // non-empty line.
+            let next_source = marker_mi.after.discard_empty_lines();
+
+            // Check for continuation marker before parsing. If a continuation marker is
+            // present, skip directly to the main loop which handles continuations properly.
+            let next_line_mi = next_source.take_normalized_line();
+
+            if next_line_mi.item.data() == "+" {
+                // Continuation marker found; skip straight to the main loop.
+                marker_mi.after
+            } else {
                 let next_line_metadata = BlockMetadata {
                     title_source: None,
                     title: None,
@@ -89,10 +99,11 @@ impl<'src> ListItem<'src> {
                 } else {
                     marker_mi.after
                 }
-            } else {
-                // Other list types require content after the marker.
-                return None;
-            };
+            }
+        } else {
+            // Other list types require content after the marker.
+            return None;
+        };
 
         let mut next_block_must_be_indented = false;
         let mut continuation_active = false;
@@ -197,8 +208,18 @@ impl<'src> ListItem<'src> {
 
             // A list item does not terminate if subsequent blocks are indented (i.e. use
             // literal syntax).
-            let indented_block_maw =
-                Block::parse_for_list_item(next, parser, &list_markers_including_peer);
+            //
+            // For description lists with continuation, preserve literal block indentation.
+            // For other list types, strip indentation as normal.
+            let is_dlist_continuation =
+                continuation_active && matches!(marker, ListItemMarker::DefinedTerm { .. });
+
+            let indented_block_maw = Block::parse_for_list_item(
+                next,
+                parser,
+                &list_markers_including_peer,
+                is_dlist_continuation,
+            );
             warnings.extend(indented_block_maw.warnings);
 
             let Some(indented_block_mi) = indented_block_maw.item else {

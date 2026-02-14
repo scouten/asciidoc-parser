@@ -72,6 +72,7 @@ impl<'src> SimpleBlock<'src> {
             &metadata.attrlist,
             false,
             false,
+            false,
             parser,
         )?;
 
@@ -96,6 +97,7 @@ impl<'src> SimpleBlock<'src> {
     pub(crate) fn parse_for_list_item(
         metadata: &BlockMetadata<'src>,
         parser: &mut Parser,
+        is_continuation: bool,
     ) -> Option<MatchedItem<'src, Self>> {
         let MatchedItem {
             item: (content, style),
@@ -105,6 +107,7 @@ impl<'src> SimpleBlock<'src> {
             &metadata.attrlist,
             true,
             false,
+            is_continuation,
             parser,
         )?;
 
@@ -137,7 +140,14 @@ impl<'src> SimpleBlock<'src> {
         let MatchedItem {
             item: (content, style),
             after,
-        } = parse_lines(metadata.block_start, &metadata.attrlist, true, true, parser)?;
+        } = parse_lines(
+            metadata.block_start,
+            &metadata.attrlist,
+            true,
+            true,
+            false,
+            parser,
+        )?;
 
         Some(MatchedItem {
             item: Self {
@@ -164,7 +174,7 @@ impl<'src> SimpleBlock<'src> {
         let MatchedItem {
             item: (content, style),
             after,
-        } = parse_lines(source, &None, false, false, parser)?;
+        } = parse_lines(source, &None, false, false, false, parser)?;
 
         let source = content.original();
 
@@ -200,11 +210,15 @@ impl<'src> SimpleBlock<'src> {
 /// paragraph (with indentation stripped) rather than as a literal block. This
 /// is used for definition list items where indentation is purely visual
 /// formatting.
+///
+/// If `preserve_literal_indent` is true and the content is a literal block,
+/// indentation is preserved as-is (used for `+` continuation content).
 fn parse_lines<'src>(
     source: Span<'src>,
     attrlist: &Option<Attrlist<'src>>,
     mut stop_for_list_items: bool,
     force_paragraph_style: bool,
+    preserve_literal_indent: bool,
     parser: &Parser,
 ) -> Option<MatchedItem<'src, (Content<'src>, SimpleBlockStyle)>> {
     let source_after_whitespace = source.discard_whitespace();
@@ -304,15 +318,22 @@ fn parse_lines<'src>(
 
         next = line_mi.after;
 
-        if line.starts_with("//") && !line.starts_with("///") {
+        // Only strip comment lines in paragraph style. In literal/listing/source
+        // blocks, "//" lines are preserved as content.
+        if style == SimpleBlockStyle::Paragraph
+            && line.starts_with("//")
+            && !line.starts_with("///")
+        {
             continue;
         }
 
         // Strip at most the number of leading whitespace characters found on the first
-        // line.
-        if strip_indent > 0
-            && let Some(n) = line.position(|c| c != ' ' && c != '\t')
-        {
+        // line. Skip stripping for literal blocks when preserve_literal_indent is set
+        // (used for `+` continuation content).
+        let should_strip_indent =
+            strip_indent > 0 && !(preserve_literal_indent && style == SimpleBlockStyle::Literal);
+
+        if should_strip_indent && let Some(n) = line.position(|c| c != ' ' && c != '\t') {
             line = line.into_parse_result(n.min(strip_indent)).after;
         };
 

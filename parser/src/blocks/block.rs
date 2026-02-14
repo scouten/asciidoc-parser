@@ -109,7 +109,7 @@ impl<'src> Block<'src> {
         source: Span<'src>,
         parser: &mut Parser,
     ) -> MatchAndWarnings<'src, Option<MatchedItem<'src, Self>>> {
-        Self::parse_internal(source, parser, None)
+        Self::parse_internal(source, parser, None, false)
     }
 
     /// Parse a block of any type and return a `Block` that describes it.
@@ -118,12 +118,17 @@ impl<'src> Block<'src> {
     /// context.
     ///
     /// Consumes any blank lines before and after the block.
+    ///
+    /// If `is_continuation` is true, this content was attached via a `+`
+    /// continuation marker and literal blocks should preserve their
+    /// indentation.
     pub(crate) fn parse_for_list_item(
         source: Span<'src>,
         parser: &mut Parser,
         parent_list_markers: &[ListItemMarker<'src>],
+        is_continuation: bool,
     ) -> MatchAndWarnings<'src, Option<MatchedItem<'src, Self>>> {
-        Self::parse_internal(source, parser, Some(parent_list_markers))
+        Self::parse_internal(source, parser, Some(parent_list_markers), is_continuation)
     }
 
     /// Shared parser for [`Block::parse`] and [`Block::parse_for_list_item`].
@@ -131,6 +136,7 @@ impl<'src> Block<'src> {
         source: Span<'src>,
         parser: &mut Parser,
         parent_list_markers: Option<&[ListItemMarker<'src>]>,
+        is_continuation: bool,
     ) -> MatchAndWarnings<'src, Option<MatchedItem<'src, Self>>> {
         // Optimization: If the first line doesn't match any of the early indications
         // for delimited blocks, titles, or attrlists, we can skip directly to treating
@@ -392,7 +398,7 @@ impl<'src> Block<'src> {
 
             // The following check disables that spin loop.
             let simple_block_mi = if parent_list_markers.is_some() {
-                SimpleBlock::parse_for_list_item(&metadata, parser)
+                SimpleBlock::parse_for_list_item(&metadata, parser, is_continuation)
             } else {
                 SimpleBlock::parse(&metadata, parser)
             };
@@ -418,7 +424,7 @@ impl<'src> Block<'src> {
 
         // If no other block kind matches, we can always use SimpleBlock.
         let simple_block_mi = if parent_list_markers.is_some() {
-            SimpleBlock::parse_for_list_item(&metadata, parser)
+            SimpleBlock::parse_for_list_item(&metadata, parser, is_continuation)
         } else {
             SimpleBlock::parse(&metadata, parser)
         };

@@ -428,10 +428,25 @@ fn parse_selector_with_predicates(pattern: &str) -> (&str, Option<&str>, Option<
 
 /// Queries for descendants or self matching the pattern.
 fn query_descendant_or_self<'a>(node: &'a VirtualNode, pattern: &str) -> Vec<&'a VirtualNode> {
-    // Split on first '/' to handle paths like "ul/li".
-    if let Some((first, rest)) = pattern.split_once('/') {
-        let first = first.trim();
-        let rest = rest.trim();
+    // Use parse_selector_with_predicates to properly handle '/' inside quoted
+    // strings.
+    let (base_selector, predicate_part, continuation) = parse_selector_with_predicates(pattern);
+
+    // If there's a continuation (path separator found), handle it.
+    if let Some(cont) = continuation {
+        // Combine base selector and predicate to get the full first part.
+        let first_str = if let Some(pred) = predicate_part {
+            format!("{}{}", base_selector.trim(), pred)
+        } else {
+            base_selector.trim().to_string()
+        };
+
+        let first = first_str.as_str();
+
+        // Determine if this is a descendant (//) or direct child (/) path.
+        // `cont` starts with at least one '/'. Check if it's '//'.
+        let is_descendant_path = cont.starts_with("//");
+        let rest = cont.trim_start_matches('/');
 
         // Check for axis specifiers like "preceding-sibling::" or
         // "following-sibling::".
@@ -521,10 +536,9 @@ fn query_descendant_or_self<'a>(node: &'a VirtualNode, pattern: &str) -> Vec<&'a
         // For each matching node, query its children with the rest of the path.
         let mut final_results = Vec::new();
         for matched_node in results {
-            if rest.starts_with('/') {
+            if is_descendant_path {
                 // Descendant pattern continues: //
-                let descendants =
-                    query_descendant_or_self(matched_node, rest.trim_start_matches('/'));
+                let descendants = query_descendant_or_self(matched_node, rest);
                 final_results.extend(descendants);
             } else {
                 // Direct child pattern: continue with rest as a path from this node.
