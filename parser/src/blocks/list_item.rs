@@ -40,7 +40,11 @@ impl<'src> ListItem<'src> {
         let source = metadata.block_start.discard_empty_lines();
 
         let marker_mi = ListItemMarker::parse(source, parser)?;
-        let marker = marker_mi.item;
+        let mut marker = marker_mi.item;
+
+        // Register any leading inline anchors in the description list term and apply
+        // macros substitution to render the anchor.
+        marker.register_leading_anchors(parser, warnings);
 
         let mut list_markers_including_peer = parent_list_markers.to_vec();
         list_markers_including_peer.push(marker.clone());

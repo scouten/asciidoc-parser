@@ -2582,10 +2582,31 @@ mod description_lists_dlist {
 
         #[test]
         #[ignore]
+        // TODO (https://github.com/asciidoc-rs/asciidoc-parser/issues/476):
+        // Enable this test when << >> xrefs are implemented.
         fn should_discover_anchor_at_start_of_description_term_text_and_register_it_as_a_reference()
         {
-            let _doc = Parser::default().parse("The highest peak in the Front Range is <<grays-peak>>, which tops <<mount-evans>> by just a few feet.\n\n[[mount-evans,Mount Evans]]Mount Evans:: 14,271 feet\n[[grays-peak]]Grays Peak:: 14,278 feet\n");
-            todo!("document_from_string test");
+            let doc = Parser::default().parse("The highest peak in the Front Range is <<grays-peak>>, which tops <<mount-evans>> by just a few feet.\n\n[[mount-evans,Mount Evans]]Mount Evans:: 14,271 feet\n[[grays-peak]]Grays Peak:: 14,278 feet\n");
+
+            dbg!(&doc);
+            // refs = doc.catalog[:refs]
+            // assert refs.key?('mount-evans')
+            // assert refs.key?('grays-peak')
+
+            assert_xpath(
+                &doc,
+                "(//p)[1]/a[@href=\"#grays-peak\"][text()=\"Grays Peak\"]",
+                1,
+            );
+            assert_xpath(
+                &doc,
+                "(//p)[1]/a[@href=\"#mount-evans\"][text()=\"Mount Evans\"]",
+                1,
+            );
+            assert_xpath(&doc, "//dl", 1);
+            assert_xpath(&doc, "//dl/dt", 2);
+            assert_xpath(&doc, "(//dl/dt)[1]/a[@id=\"mount-evans\"]", 1);
+            assert_xpath(&doc, "(//dl/dt)[2]/a[@id=\"grays-peak\"]", 1);
         }
 
         #[test]

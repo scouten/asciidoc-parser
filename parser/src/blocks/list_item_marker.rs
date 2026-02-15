@@ -5,7 +5,9 @@ use regex::Regex;
 use crate::{
     HasSpan, Parser, Span,
     content::{Content, SubstitutionStep},
+    document::RefType,
     span::MatchedItem,
+    warnings::{Warning, WarningType},
 };
 
 /// A list item is signaled by one of several designated marker sequences.
@@ -146,6 +148,65 @@ impl<'src> ListItemMarker<'src> {
                 after,
             })
         }
+    }
+
+    /// Register any leading inline anchors found in a description list term.
+    ///
+    /// This should be called after parsing a `DefinedTerm` marker when the list
+    /// item is being kept (not just checked for existence). It detects anchors
+    /// like `[[id]]` or `[[id,reftext]]` at the start of the term text,
+    /// registers them in the catalog, and applies macros substitution to
+    /// render the anchor.
+    ///
+    /// This method is a no-op for non-`DefinedTerm` markers.
+    pub(crate) fn register_leading_anchors(
+        &mut self,
+        parser: &mut Parser,
+        warnings: &mut Vec<Warning<'src>>,
+    ) {
+        let Self::DefinedTerm {
+            term,
+            marker: _,
+            source: _,
+        } = self
+        else {
+            return;
+        };
+
+        // Check if term starts with `[[` indicating a potential inline anchor.
+        let term_text = term.rendered();
+        if !term_text.starts_with("[[") {
+            // Apply macros substitution even if no leading anchor.
+            SubstitutionStep::Macros.apply(term, parser, None);
+            return;
+        }
+
+        // Detect leading inline anchor pattern: [[id]] or [[id,reftext]]
+        if let Some(captures) = LEADING_INLINE_ANCHOR.captures(term_text) {
+            let id = &captures[1];
+
+            // If reftext is provided, use it. Otherwise, use the text after the anchor
+            // as the default reftext.
+            let reftext = captures.get(2).map(|m| m.as_str().to_string()).or_else(|| {
+                // Use the text after the anchor as default reftext.
+                captures.get(3).map(|m| m.as_str().trim().to_string())
+            });
+
+            // Register the anchor in the catalog.
+            if let Some(catalog) = parser.catalog_mut() {
+                if let Err(_duplicate_error) =
+                    catalog.register_ref(id, reftext.as_deref(), RefType::Anchor)
+                {
+                    warnings.push(Warning {
+                        source: term.original(),
+                        warning: WarningType::DuplicateId(id.to_string()),
+                    });
+                }
+            }
+        }
+
+        // Apply macros substitution to render the inline anchor as HTML.
+        SubstitutionStep::Macros.apply(term, parser, None);
     }
 
     /// Test for equality, disregarding span offsets.
@@ -381,6 +442,29 @@ static DESCRIPTION_LIST_MARKER: LazyLock<Regex> = LazyLock::new(|| {
             )
             (?::::?:?|;;)           # Delimiter: ::, :::, ::::, or ;;
             (?:$|[\ \t])            # End of line or whitespace after marker
+        "#,
+    )
+    .unwrap()
+});
+
+/// Matches a leading inline anchor at the start of text.
+///
+/// Captures:
+/// - Group 1: The anchor ID
+/// - Group 2: Optional reftext (after comma)
+/// - Group 3: Text after the anchor (used as default reftext if group 2 is
+///   absent)
+static LEADING_INLINE_ANCHOR: LazyLock<Regex> = LazyLock::new(|| {
+    #[allow(clippy::unwrap_used)]
+    Regex::new(
+        r#"(?x)
+            ^                           # Start of string
+            \[\[                        # Opening [[
+            ([\p{Alphabetic}_:]         # (1) Anchor ID: first char must be letter, _, or :
+             [\p{Alphabetic}\p{Nd}_\-:.]*)  # Rest of ID: letters, digits, _, -, :, .
+            (?:,\s*([^\]]+))?           # (2) Optional reftext after comma
+            \]\]                        # Closing ]]
+            (.*)                        # (3) Text after the anchor
         "#,
     )
     .unwrap()
