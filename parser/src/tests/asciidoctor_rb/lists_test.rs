@@ -2610,10 +2610,10 @@ mod description_lists_dlist {
         }
 
         #[test]
-        #[ignore]
         fn missing_space_before_term_does_not_produce_description_list() {
-            let _doc = Parser::default().parse("term1::def1\nterm2::def2\n");
-            todo!("assert_xpath: '//dl', output, 0");
+            let doc = Parser::default().parse("term1::def1\nterm2::def2\n");
+
+            assert_xpath(&doc, "//dl", 0);
         }
 
         #[test]
