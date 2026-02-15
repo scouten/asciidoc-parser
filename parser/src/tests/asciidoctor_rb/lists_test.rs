@@ -2436,19 +2436,26 @@ mod description_lists_dlist {
         }
 
         #[test]
-        #[ignore]
         fn should_escape_special_characters_in_all_literal_paragraphs_attached_to_list_item() {
-            let _doc = Parser::default().parse("term:: desc\n\n  <code>text</code>\n\n  more <code>text</code>\n\nanother term::\n\n  <code>text</code> in a paragraph\n");
-            todo!("assert_css: 'dt', output, 2");
-            todo!("assert_css: 'code', output, 0");
-            todo!("assert_css: 'dd:first-of-type > *', output, 3");
-            todo!("assert_css: 'dd:first-of-type pre', output, 2");
-            todo!("assert_xpath: '((//dd)[1]//pre)[1][text()=\"<code>text</code>\"]', output, 1");
-            todo!(
-                "assert_xpath: '((//dd)[1]//pre)[2][text()=\"more <code>text</code>\"]', output, 1"
+            let doc = Parser::default().parse("term:: desc\n\n  <code>text</code>\n\n  more <code>text</code>\n\nanother term::\n\n  <code>text</code> in a paragraph\n");
+
+            assert_css(&doc, "dt", 2);
+            assert_css(&doc, "code", 0);
+            assert_css(&doc, "dd:first-of-type > *", 3);
+            assert_css(&doc, "dd:first-of-type pre", 2);
+
+            assert_xpath(&doc, "((//dd)[1]//pre)[1][text()=\"<code>text</code>\"]", 1);
+
+            assert_xpath(
+                &doc,
+                "((//dd)[1]//pre)[2][text()=\"more <code>text</code>\"]",
+                1,
             );
-            todo!(
-                "assert_xpath: '((//dd)[2]//p)[1][text()=\"<code>text</code> in a paragraph\"]', output, 1"
+
+            assert_xpath(
+                &doc,
+                "((//dd)[2]//p)[1][text()=\"<code>text</code> in a paragraph\"]",
+                1,
             );
         }
 
