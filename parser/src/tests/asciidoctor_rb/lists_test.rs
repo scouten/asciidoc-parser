@@ -2654,11 +2654,11 @@ mod description_lists_dlist {
         }
 
         #[test]
-        #[ignore]
         fn open_block_inside_description_list() {
-            let _doc = Parser::default().parse("term::\n+\n--\nOpen block as description of term.\n\nAnd some more detail...\n--\nanotherterm:: def\n");
-            todo!("assert_xpath: '//dl/dd//p', output, 3");
-            todo!("assert_xpath: '(//dl/dd)[1]//*[@class=\"openblock\"]//p', output, 2");
+            let doc = Parser::default().parse("term::\n+\n--\nOpen block as description of term.\n\nAnd some more detail...\n--\nanotherterm:: def\n");
+
+            assert_xpath(&doc, "//dl/dd//p", 3);
+            assert_xpath(&doc, "(//dl/dd)[1]//*[@class=\"openblock\"]//p", 2);
         }
 
         #[test]
