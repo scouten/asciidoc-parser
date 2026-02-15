@@ -2643,14 +2643,14 @@ mod description_lists_dlist {
         }
 
         #[test]
-        #[ignore]
         fn multiple_listing_blocks_inside_description_list() {
-            let _doc = Parser::default().parse("term::\n+\n----\nlisting, line 1\n\nlisting, line 2\n----\n+\n----\nlisting, line 1\n\nlisting, line 2\n----\nanotherterm:: def\n");
-            todo!("assert_xpath: '//dl/dt', output, 2");
-            todo!("assert_xpath: '//dl/dd', output, 2");
-            todo!("assert_xpath: '//dl/dd//pre', output, 2");
-            todo!("assert_xpath: '(//dl/dd)[1]/*[@class=\"listingblock\"]//pre', output, 2");
-            todo!("assert_xpath: '(//dl/dd)[2]/p[text() = \"def\"]', output, 1");
+            let doc = Parser::default().parse("term::\n+\n----\nlisting, line 1\n\nlisting, line 2\n----\n+\n----\nlisting, line 1\n\nlisting, line 2\n----\nanotherterm:: def\n");
+
+            assert_xpath(&doc, "//dl/dt", 2);
+            assert_xpath(&doc, "//dl/dd", 2);
+            assert_xpath(&doc, "//dl/dd//pre", 2);
+            assert_xpath(&doc, "(//dl/dd)[1]/*[@class=\"listingblock\"]//pre", 2);
+            assert_xpath(&doc, "(//dl/dd)[2]/p[text() = \"def\"]", 1);
         }
 
         #[test]
