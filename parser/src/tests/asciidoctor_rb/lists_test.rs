@@ -2696,6 +2696,8 @@ mod description_lists_dlist {
 
         #[test]
         #[ignore]
+        // TO DO (https://github.com/asciidoc-rs/asciidoc-parser/issues/478):
+        // Enable this test after `attribute-missing` is handled.
         fn should_continue_to_parse_subsequent_blocks_attached_to_list_item_after_first_block_is_dropped()
          {
             let _doc = Parser::default().parse(
