@@ -7,7 +7,7 @@ use crate::tests::assert_dom::virtual_dom::VirtualNode;
 
 /// Removes duplicate nodes from a vector by comparing pointers.
 /// Preserves document order (first occurrence is kept).
-fn deduplicate_nodes<'a>(nodes: Vec<&'a VirtualNode>) -> Vec<&'a VirtualNode> {
+fn deduplicate_nodes(nodes: Vec<&VirtualNode>) -> Vec<&VirtualNode> {
     let mut seen: Vec<*const VirtualNode> = Vec::new();
     let mut result = Vec::new();
     for node in nodes {
