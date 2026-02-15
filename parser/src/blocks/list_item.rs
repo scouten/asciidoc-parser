@@ -78,6 +78,10 @@ impl<'src> ListItem<'src> {
             if next_line_mi.item.data() == "+" {
                 // Continuation marker found; skip straight to the main loop.
                 marker_mi.after
+            } else if ListItemMarker::parse(next_source, parser).is_some() {
+                // Next line is another list item marker (possibly a sibling term).
+                // Don't parse it as content; let the list parser handle it.
+                marker_mi.after
             } else {
                 let next_line_metadata = BlockMetadata {
                     title_source: None,

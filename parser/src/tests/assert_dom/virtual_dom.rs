@@ -440,31 +440,35 @@ fn list_block_to_node<'a>(list: &'a ListBlock<'a>) -> VirtualNode {
                     dt_node = dt_node.with_html_content(term.rendered().to_string());
                     list_element.children.push(dt_node);
 
-                    // Create dd node for the definition.
-                    let mut dd_node = VirtualNode::new("dd");
-
+                    // Create dd node for the definition, but only if the item has content.
+                    // Multiple consecutive terms can share a single definition.
                     let nested = list_item.nested_blocks().collect::<Vec<_>>();
-                    let has_multiple_blocks = nested.len() > 1;
 
-                    for (index, child) in nested.iter().enumerate() {
-                        let child_vdom = child.to_virtual_dom();
+                    if !nested.is_empty() {
+                        let mut dd_node = VirtualNode::new("dd");
 
-                        // Wrap paragraphs in div.paragraph when they appear after other blocks.
-                        if has_multiple_blocks
-                            && index > 0
-                            && child_vdom.tag == "p"
-                            && child_vdom.classes.is_empty()
-                        {
-                            let wrapper = VirtualNode::new("div")
-                                .with_class("paragraph")
-                                .with_child(child_vdom);
-                            dd_node.children.push(wrapper);
-                        } else {
-                            dd_node.children.push(child_vdom);
+                        let has_multiple_blocks = nested.len() > 1;
+
+                        for (index, child) in nested.iter().enumerate() {
+                            let child_vdom = child.to_virtual_dom();
+
+                            // Wrap paragraphs in div.paragraph when they appear after other blocks.
+                            if has_multiple_blocks
+                                && index > 0
+                                && child_vdom.tag == "p"
+                                && child_vdom.classes.is_empty()
+                            {
+                                let wrapper = VirtualNode::new("div")
+                                    .with_class("paragraph")
+                                    .with_child(child_vdom);
+                                dd_node.children.push(wrapper);
+                            } else {
+                                dd_node.children.push(child_vdom);
+                            }
                         }
-                    }
 
-                    list_element.children.push(dd_node);
+                        list_element.children.push(dd_node);
+                    }
                 }
             }
         } else {

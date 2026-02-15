@@ -2486,17 +2486,20 @@ mod description_lists_dlist {
         }
 
         #[test]
-        #[ignore]
         fn multi_line_element_with_multiple_terms() {
-            let _doc = Parser::default().parse("term1::\nterm2::\ndef2\n");
-            todo!("assert_xpath: '//dl', output, 1");
-            todo!("assert_xpath: '//dl/dt', output, 2");
-            todo!("assert_xpath: '//dl/dd', output, 1");
-            todo!("assert_xpath: '(//dl/dt)[1]/following-sibling::dt', output, 1");
-            todo!("assert_xpath: '(//dl/dt)[1][normalize-space(text()) = \"term1\"]', output, 1");
-            todo!("assert_xpath: '(//dl/dt)[2]/following-sibling::dd', output, 1");
-            todo!(
-                "assert_xpath: '(//dl/dt)[2]/following-sibling::dd/p[text() = \"def2\"]', output, 1"
+            let doc = Parser::default().parse("term1::\nterm2::\ndef2\n");
+
+            assert_xpath(&doc, "//dl", 1);
+            assert_xpath(&doc, "//dl/dt", 2);
+            assert_xpath(&doc, "//dl/dd", 1);
+            assert_xpath(&doc, "(//dl/dt)[1]/following-sibling::dt", 1);
+            assert_xpath(&doc, "(//dl/dt)[1][normalize-space(text()) = \"term1\"]", 1);
+            assert_xpath(&doc, "(//dl/dt)[2]/following-sibling::dd", 1);
+
+            assert_xpath(
+                &doc,
+                "(//dl/dt)[2]/following-sibling::dd/p[text() = \"def2\"]",
+                1,
             );
         }
 
