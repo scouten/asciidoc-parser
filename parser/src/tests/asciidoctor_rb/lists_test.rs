@@ -2662,15 +2662,18 @@ mod description_lists_dlist {
         }
 
         #[test]
-        #[ignore]
         fn paragraph_attached_by_a_list_continuation_on_either_side_in_a_description_list() {
-            let _doc = Parser::default().parse("term1:: def1\n+\nmore detail\n+\nterm2:: def2\n");
-            todo!("assert_xpath: '(//dl/dt)[1][normalize-space(text())=\"term1\"]', output, 1");
-            todo!("assert_xpath: '(//dl/dt)[2][normalize-space(text())=\"term2\"]', output, 1");
-            todo!("assert_xpath: '(//dl/dd)[1]//p', output, 2");
-            todo!("assert_xpath: '((//dl/dd)[1]//p)[1][text()=\"def1\"]', output, 1");
-            todo!(
-                "assert_xpath: '(//dl/dd)[1]/p/following-sibling::*[@class=\"paragraph\"]/p[text() = \"more detail\"]', output, 1"
+            let doc = Parser::default().parse("term1:: def1\n+\nmore detail\n+\nterm2:: def2\n");
+
+            assert_xpath(&doc, "(//dl/dt)[1][normalize-space(text())=\"term1\"]", 1);
+            assert_xpath(&doc, "(//dl/dt)[2][normalize-space(text())=\"term2\"]", 1);
+            assert_xpath(&doc, "(//dl/dd)[1]//p", 2);
+            assert_xpath(&doc, "((//dl/dd)[1]//p)[1][text()=\"def1\"]", 1);
+
+            assert_xpath(
+                &doc,
+                "(//dl/dd)[1]/p/following-sibling::*[@class=\"paragraph\"]/p[text() = \"more detail\"]",
+                1,
             );
         }
 
