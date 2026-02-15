@@ -87,6 +87,8 @@ pub(super) fn apply_macros(content: &mut Content<'_>, parser: &Parser) {
         }
     }
 
+    // TODO (https://github.com/asciidoc-rs/asciidoc-parser/issues/476):
+    // Handle double-angle-bracket cross-reference syntax.
     /*
     if (text.contains('&') && text.contains(";&l") || (found_macroish && text.contains("xref:"))) {
         todo!("Port cross-reference macro");
