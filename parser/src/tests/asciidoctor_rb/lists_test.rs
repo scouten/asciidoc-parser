@@ -2617,16 +2617,16 @@ mod description_lists_dlist {
         }
 
         #[test]
-        #[ignore]
         fn literal_block_inside_description_list() {
-            let _doc = Parser::default().parse(
+            let doc = Parser::default().parse(
                 "term::\n+\n....\nliteral, line 1\n\nliteral, line 2\n....\nanotherterm:: def\n",
             );
-            todo!("assert_xpath: '//dl/dt', output, 2");
-            todo!("assert_xpath: '//dl/dd', output, 2");
-            todo!("assert_xpath: '//dl/dd//pre', output, 1");
-            todo!("assert_xpath: '(//dl/dd)[1]/*[@class=\"literalblock\"]//pre', output, 1");
-            todo!("assert_xpath: '(//dl/dd)[2]/p[text() = \"def\"]', output, 1");
+
+            assert_xpath(&doc, "//dl/dt", 2);
+            assert_xpath(&doc, "//dl/dd", 2);
+            assert_xpath(&doc, "//dl/dd//pre", 1);
+            assert_xpath(&doc, "(//dl/dd)[1]/*[@class=\"literalblock\"]//pre", 1);
+            assert_xpath(&doc, "(//dl/dd)[2]/p[text() = \"def\"]", 1);
         }
 
         #[test]
