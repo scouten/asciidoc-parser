@@ -293,11 +293,11 @@ impl ToVirtualDom for Block<'_> {
 
                 let mut node = simple_block_to_node(simple);
 
-                // For literal blocks, add a <pre> element containing the content.
+                // For literal and verse blocks, add a <pre> element containing the content.
                 if simple.style() == SimpleBlockStyle::Literal
                     || simple.declared_style() == Some("literal")
+                    || simple.declared_style() == Some("verse")
                 {
-                    // For literal blocks, add a <pre> element containing the content.
                     let pre_node =
                         VirtualNode::new("pre").with_text(simple.content().rendered().to_string());
                     node = node.with_child(pre_node);

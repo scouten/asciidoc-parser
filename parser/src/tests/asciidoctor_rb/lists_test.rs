@@ -2711,13 +2711,15 @@ mod description_lists_dlist {
         }
 
         #[test]
-        #[ignore]
         fn verse_paragraph_inside_a_description_list() {
-            let _doc =
-                Parser::default().parse("term1:: def\n+\n[verse]\nla la la\n\nterm2:: def\n");
-            todo!("assert_xpath: '//dl/dd//p', output, 2");
-            todo!(
-                "assert_xpath: '(//dl/dd)[1]/*[@class=\"verseblock\"]/pre[text() = \"la la la\"]', output, 1"
+            let doc = Parser::default().parse("term1:: def\n+\n[verse]\nla la la\n\nterm2:: def\n");
+
+            assert_xpath(&doc, "//dl/dd//p", 2);
+            
+            assert_xpath(
+                &doc,
+                "(//dl/dd)[1]/*[@class=\"verseblock\"]/pre[text() = \"la la la\"]",
+                1,
             );
         }
 
