@@ -2863,53 +2863,53 @@ mod description_lists_dlist {
         }
 
         #[test]
-        #[ignore]
         fn should_not_match_comment_line_that_looks_like_sibling_description_list_term() {
-            let _doc = Parser::default().parse("before\n\nfoo:: bar\n//yin:: yang\n\nafter\n");
-            todo!("assert_css: '.dlist', output, 1");
-            todo!("assert_css: '.dlist dt', output, 1");
-            todo!("refute_includes output, 'yin'");
+            let doc = Parser::default().parse("before\n\nfoo:: bar\n//yin:: yang\n\nafter\n");
+
+            assert_css(&doc, ".dlist", 1);
+            assert_css(&doc, ".dlist dt", 1);
+            refute_output_contains(&doc, "yin");
         }
 
         #[test]
-        #[ignore]
         fn should_not_hang_on_description_list_item_in_list_that_begins_with_triple_slash() {
-            let _doc = Parser::default().parse("* a\n///b::\nc\n");
-            todo!("assert_css: 'ul', output, 1");
-            todo!("assert_css: 'ul li dl', output, 1");
-            todo!("assert_xpath: '//ul/li/p[text()=\"a\"]', output, 1");
-            todo!("assert_xpath: '//dt[text()=\"///b\"]', output, 1");
-            todo!("assert_xpath: '//dd/p[text()=\"c\"]', output, 1");
+            let doc = Parser::default().parse("* a\n///b::\nc\n");
+
+            assert_css(&doc, "ul", 1);
+            assert_css(&doc, "ul li dl", 1);
+            assert_xpath(&doc, "//ul/li/p[text()=\"a\"]", 1);
+            assert_xpath(&doc, "//dt[text()=\"///b\"]", 1);
+            assert_xpath(&doc, "//dd/p[text()=\"c\"]", 1);
         }
 
         #[test]
-        #[ignore]
         fn should_not_hang_on_sibling_description_list_item_that_begins_with_triple_slash() {
-            let _doc = Parser::default().parse("a::\n///b::\nc\n");
-            todo!("assert_css: 'dl', output, 1");
-            todo!("assert_xpath: '(//dl/dt)[1][text()=\"a\"]', output, 1");
-            todo!("assert_xpath: '(//dl/dt)[2][text()=\"///b\"]', output, 1");
-            todo!("assert_xpath: '//dl/dd/p[text()=\"c\"]', output, 1");
+            let doc = Parser::default().parse("a::\n///b::\nc\n");
+
+            assert_css(&doc, "dl", 1);
+            assert_xpath(&doc, "(//dl/dt)[1][text()=\"a\"]", 1);
+            assert_xpath(&doc, "(//dl/dt)[2][text()=\"///b\"]", 1);
+            assert_xpath(&doc, "//dl/dd/p[text()=\"c\"]", 1);
         }
 
         #[test]
-        #[ignore]
         fn should_skip_dlist_term_that_begins_with_double_slash_unless_it_begins_with_triple_slash()
         {
-            let _doc = Parser::default()
+            let doc = Parser::default()
                 .parse("category a::\n//ignored term:: def\n\ncategory b::\n///term:: def\n");
-            todo!("refute_includes output, 'ignored term'");
-            todo!("assert_xpath: '//dt[text()=\"///term\"]', output, 1");
+
+            refute_output_contains(&doc, "ignored term");
+            assert_xpath(&doc, "//dt[text()=\"///term\"]", 1);
         }
 
         #[test]
-        #[ignore]
         fn more_than_4_consecutive_colons_should_become_part_of_description_list_term() {
-            let _doc = Parser::default().parse("A term::::: a description\n");
-            todo!("assert_css: 'dl', output, 1");
-            todo!("assert_css: 'dl > dt', output, 1");
-            todo!("assert_xpath: '//dl/dt[text()=\"A term:\"]', output, 1");
-            todo!("assert_xpath: '//dl/dd/p[text()=\"a description\"]', output, 1");
+            let doc = Parser::default().parse("A term::::: a description\n");
+
+            assert_css(&doc, "dl", 1);
+            assert_css(&doc, "dl > dt", 1);
+            assert_xpath(&doc, "//dl/dt[text()=\"A term:\"]", 1);
+            assert_xpath(&doc, "//dl/dd/p[text()=\"a description\"]", 1);
         }
 
         #[test]
@@ -2920,19 +2920,19 @@ mod description_lists_dlist {
         }
 
         #[test]
-        #[ignore]
         fn should_match_trailing_line_separator_in_text_of_list_item() {
-            let _doc = Parser::default().parse("A:: a\nB:: b\u{2028}\nC:: c");
-            todo!("assert_css: 'dd', output, 3");
-            todo!("assert_xpath: '(//dd)[2]/p[text()=b with line separator]', output, 1");
+            let doc = Parser::default().parse("A:: a\nB:: b\u{2028}\nC:: c");
+
+            assert_css(&doc, "dd", 3);
+            assert_xpath(&doc, "(//dd)[2]/p[text()=\"b\u{2028}\"]", 1);
         }
 
         #[test]
-        #[ignore]
         fn should_match_line_separator_in_text_of_list_item() {
-            let _doc = Parser::default().parse("A:: a\nB:: b\u{2028}b\nC:: c");
-            todo!("assert_css: 'dd', output, 3");
-            todo!("assert_xpath: '(//dd)[2]/p[text()=b with line separator b]', output, 1");
+            let doc = Parser::default().parse("A:: a\nB:: b\u{2028}b\nC:: c");
+
+            assert_css(&doc, "dd", 3);
+            assert_xpath(&doc, "(//dd)[2]/p[text()=\"b\u{2028}b\"]", 1);
         }
     }
 
@@ -2940,19 +2940,19 @@ mod description_lists_dlist {
         use super::*;
 
         #[test]
-        #[ignore]
         fn should_not_parse_a_nested_dlist_delimiter_without_a_term_as_a_dlist() {
-            let _doc = Parser::default().parse("t::\n;;\n");
-            todo!("assert_xpath: '//dl', output, 1");
-            todo!("assert_xpath: '//dl/dd/p[text()=\";;\"]', output, 1");
+            let doc = Parser::default().parse("t::\n;;\n");
+
+            assert_xpath(&doc, "//dl", 1);
+            assert_xpath(&doc, "//dl/dd/p[text()=\";;\"]", 1);
         }
 
         #[test]
-        #[ignore]
         fn should_not_parse_a_nested_indented_dlist_delimiter_without_a_term_as_a_dlist() {
-            let _doc = Parser::default().parse("t::\ndesc\n  ;;\n");
-            todo!("assert_xpath: '//dl', output, 1");
-            todo!("assert_xpath: '//dl/dd/p[text()=\"desc\\n  ;;\"]', output, 1");
+            let doc = Parser::default().parse("t::\ndesc\n  ;;\n");
+
+            assert_xpath(&doc, "//dl", 1);
+            assert_xpath(&doc, "//dl/dd/p[text()=\"desc\n  ;;\"]" , 1);
         }
 
         #[test]
@@ -3370,77 +3370,77 @@ mod description_lists_redux {
         use super::*;
 
         #[test]
-        #[ignore]
         fn folds_text_from_subsequent_line() {
-            let _doc = Parser::default().parse("== Lists\n\nterm1::\ndef1\n");
-            todo!("assert_xpath: '//*[@class=\"dlist\"]/dl', output, 1");
-            todo!("assert_xpath: '//*[@class=\"dlist\"]//dd', output, 1");
-            todo!("assert_xpath: '//*[@class=\"dlist\"]//dd/p[text()=\"def1\"]', output, 1");
+            let doc = Parser::default().parse("== Lists\n\nterm1::\ndef1\n");
+
+            assert_xpath(&doc, "//*[@class=\"dlist\"]/dl", 1);
+            assert_xpath(&doc, "//*[@class=\"dlist\"]//dd", 1);
+            assert_xpath(&doc, "//*[@class=\"dlist\"]//dd/p[text()=\"def1\"]", 1);
         }
 
         #[test]
-        #[ignore]
         fn folds_text_from_first_line_after_blank_lines() {
-            let _doc = Parser::default().parse("== Lists\n\nterm1::\n\n\ndef1\n");
-            todo!("assert_xpath: '//*[@class=\"dlist\"]/dl', output, 1");
-            todo!("assert_xpath: '//*[@class=\"dlist\"]//dd', output, 1");
-            todo!("assert_xpath: '//*[@class=\"dlist\"]//dd/p[text()=\"def1\"]', output, 1");
+            let doc = Parser::default().parse("== Lists\n\nterm1::\n\n\ndef1\n");
+
+            assert_xpath(&doc, "//*[@class=\"dlist\"]/dl", 1);
+            assert_xpath(&doc, "//*[@class=\"dlist\"]//dd", 1);
+            assert_xpath(&doc, "//*[@class=\"dlist\"]//dd/p[text()=\"def1\"]", 1);
         }
 
         #[test]
-        #[ignore]
         fn folds_text_from_first_line_after_blank_line_and_immediately_preceding_next_item() {
-            let _doc = Parser::default().parse("== Lists\n\nterm1::\n\ndef1\nterm2:: def2\n");
-            todo!("assert_xpath: '//*[@class=\"dlist\"]/dl', output, 1");
-            todo!("assert_xpath: '//*[@class=\"dlist\"]//dd', output, 2");
-            todo!("assert_xpath: '(//*[@class=\"dlist\"]//dd)[1]/p[text()=\"def1\"]', output, 1");
+            let doc = Parser::default().parse("== Lists\n\nterm1::\n\ndef1\nterm2:: def2\n");
+
+            assert_xpath(&doc, "//*[@class=\"dlist\"]/dl", 1);
+            assert_xpath(&doc, "//*[@class=\"dlist\"]//dd", 2);
+            assert_xpath(&doc, "(//*[@class=\"dlist\"]//dd)[1]/p[text()=\"def1\"]", 1);
         }
 
         #[test]
-        #[ignore]
         fn paragraph_offset_by_blank_lines_does_not_break_list_if_label_does_not_have_inline_text()
         {
-            let _doc = Parser::default().parse("== Lists\n\nterm1::\n\ndef1\n\nterm2:: def2\n");
-            todo!("assert_css: 'dl', output, 1");
-            todo!("assert_css: 'dl > dt', output, 2");
-            todo!("assert_css: 'dl > dd', output, 2");
-            todo!("assert_xpath: '(//dl/dd)[1]/p[text()=\"def1\"]', output, 1");
+            let doc = Parser::default().parse("== Lists\n\nterm1::\n\ndef1\n\nterm2:: def2\n");
+
+            assert_css(&doc, "dl", 1);
+            assert_css(&doc, "dl > dt", 2);
+            assert_css(&doc, "dl > dd", 2);
+            assert_xpath(&doc, "(//dl/dd)[1]/p[text()=\"def1\"]", 1);
         }
 
         #[test]
-        #[ignore]
         fn folds_text_from_first_line_after_comment_line() {
-            let _doc = Parser::default().parse("== Lists\n\nterm1::\n// comment\ndef1\n");
-            todo!("assert_xpath: '//*[@class=\"dlist\"]/dl', output, 1");
-            todo!("assert_xpath: '//*[@class=\"dlist\"]//dd', output, 1");
-            todo!("assert_xpath: '//*[@class=\"dlist\"]//dd/p[text()=\"def1\"]', output, 1");
+            let doc = Parser::default().parse("== Lists\n\nterm1::\n// comment\ndef1\n");
+
+            assert_xpath(&doc, "//*[@class=\"dlist\"]/dl", 1);
+            assert_xpath(&doc, "//*[@class=\"dlist\"]//dd", 1);
+            assert_xpath(&doc, "//*[@class=\"dlist\"]//dd/p[text()=\"def1\"]", 1);
         }
 
         #[test]
-        #[ignore]
         fn folds_text_from_line_following_comment_line_offset_by_blank_line() {
-            let _doc = Parser::default().parse("== Lists\n\nterm1::\n\n// comment\ndef1\n");
-            todo!("assert_xpath: '//*[@class=\"dlist\"]/dl', output, 1");
-            todo!("assert_xpath: '//*[@class=\"dlist\"]//dd', output, 1");
-            todo!("assert_xpath: '//*[@class=\"dlist\"]//dd/p[text()=\"def1\"]', output, 1");
+            let doc = Parser::default().parse("== Lists\n\nterm1::\n\n// comment\ndef1\n");
+
+            assert_xpath(&doc, "//*[@class=\"dlist\"]/dl", 1);
+            assert_xpath(&doc, "//*[@class=\"dlist\"]//dd", 1);
+            assert_xpath(&doc, "//*[@class=\"dlist\"]//dd/p[text()=\"def1\"]", 1);
         }
 
         #[test]
-        #[ignore]
         fn folds_text_from_subsequent_indented_line() {
-            let _doc = Parser::default().parse("== Lists\n\nterm1::\n  def1\n");
-            todo!("assert_xpath: '//*[@class=\"dlist\"]/dl', output, 1");
-            todo!("assert_xpath: '//*[@class=\"dlist\"]//dd', output, 1");
-            todo!("assert_xpath: '//*[@class=\"dlist\"]//dd/p[text()=\"def1\"]', output, 1");
+            let doc = Parser::default().parse("== Lists\n\nterm1::\n  def1\n");
+
+            assert_xpath(&doc, "//*[@class=\"dlist\"]/dl", 1);
+            assert_xpath(&doc, "//*[@class=\"dlist\"]//dd", 1);
+            assert_xpath(&doc, "//*[@class=\"dlist\"]//dd/p[text()=\"def1\"]", 1);
         }
 
         #[test]
-        #[ignore]
         fn folds_text_from_indented_line_after_blank_line() {
-            let _doc = Parser::default().parse("== Lists\n\nterm1::\n\n  def1\n");
-            todo!("assert_xpath: '//*[@class=\"dlist\"]/dl', output, 1");
-            todo!("assert_xpath: '//*[@class=\"dlist\"]//dd', output, 1");
-            todo!("assert_xpath: '//*[@class=\"dlist\"]//dd/p[text()=\"def1\"]', output, 1");
+            let doc = Parser::default().parse("== Lists\n\nterm1::\n\n  def1\n");
+
+            assert_xpath(&doc, "//*[@class=\"dlist\"]/dl", 1);
+            assert_xpath(&doc, "//*[@class=\"dlist\"]//dd", 1);
+            assert_xpath(&doc, "//*[@class=\"dlist\"]//dd/p[text()=\"def1\"]", 1);
         }
 
         #[test]
@@ -3473,42 +3473,44 @@ mod description_lists_redux {
         }
 
         #[test]
-        #[ignore]
         fn folds_text_that_looks_like_title_offset_by_blank_line() {
-            let _doc = Parser::default().parse("== Lists\n\nterm1::\n\n.def1\n");
-            todo!("assert_xpath: '//*[@class=\"dlist\"]/dl', output, 1");
-            todo!("assert_xpath: '//*[@class=\"dlist\"]//dd', output, 1");
-            todo!("assert_xpath: '//*[@class=\"dlist\"]//dd/p[text()=\".def1\"]', output, 1");
+            let doc = Parser::default().parse("== Lists\n\nterm1::\n\n.def1\n");
+
+            assert_xpath(&doc, "//*[@class=\"dlist\"]/dl", 1);
+            assert_xpath(&doc, "//*[@class=\"dlist\"]//dd", 1);
+            assert_xpath(&doc, "//*[@class=\"dlist\"]//dd/p[text()=\".def1\"]", 1);
         }
 
         #[test]
-        #[ignore]
         fn folds_text_that_looks_like_title_offset_by_blank_line_and_line_comment() {
-            let _doc = Parser::default().parse("== Lists\n\nterm1::\n\n// comment\n.def1\n");
-            todo!("assert_xpath: '//*[@class=\"dlist\"]/dl', output, 1");
-            todo!("assert_xpath: '//*[@class=\"dlist\"]//dd', output, 1");
-            todo!("assert_xpath: '//*[@class=\"dlist\"]//dd/p[text()=\".def1\"]', output, 1");
+            let doc = Parser::default().parse("== Lists\n\nterm1::\n\n// comment\n.def1\n");
+
+            assert_xpath(&doc, "//*[@class=\"dlist\"]/dl", 1);
+            assert_xpath(&doc, "//*[@class=\"dlist\"]//dd", 1);
+            assert_xpath(&doc, "//*[@class=\"dlist\"]//dd/p[text()=\".def1\"]", 1);
         }
 
         #[test]
-        #[ignore]
         fn folds_text_that_looks_like_admonition_offset_by_blank_line() {
-            let _doc = Parser::default().parse("== Lists\n\nterm1::\n\nNOTE: def1\n");
-            todo!("assert_xpath: '//*[@class=\"dlist\"]/dl', output, 1");
-            todo!("assert_xpath: '//*[@class=\"dlist\"]//dd', output, 1");
-            todo!("assert_xpath: '//*[@class=\"dlist\"]//dd/p[text()=\"NOTE: def1\"]', output, 1");
+            let doc = Parser::default().parse("== Lists\n\nterm1::\n\nNOTE: def1\n");
+
+            assert_xpath(&doc, "//*[@class=\"dlist\"]/dl", 1);
+            assert_xpath(&doc, "//*[@class=\"dlist\"]//dd", 1);
+            assert_xpath(&doc, "//*[@class=\"dlist\"]//dd/p[text()=\"NOTE: def1\"]", 1);
         }
 
         #[test]
-        #[ignore]
         fn folds_text_that_looks_like_section_title_offset_by_blank_line() {
-            let _doc = Parser::default().parse("== Lists\n\nterm1::\n\n== Another Section\n");
-            todo!("assert_xpath: '//*[@class=\"dlist\"]/dl', output, 1");
-            todo!("assert_xpath: '//*[@class=\"dlist\"]//dd', output, 1");
-            todo!(
-                "assert_xpath: '//*[@class=\"dlist\"]//dd/p[text()=\"== Another Section\"]', output, 1"
+            let doc = Parser::default().parse("== Lists\n\nterm1::\n\n== Another Section\n");
+
+            assert_xpath(&doc, "//*[@class=\"dlist\"]/dl", 1);
+            assert_xpath(&doc, "//*[@class=\"dlist\"]//dd", 1);
+            assert_xpath(
+                &doc,
+                "//*[@class=\"dlist\"]//dd/p[text()=\"== Another Section\"]",
+                1,
             );
-            todo!("assert_xpath: '//h2', output, 1");
+            assert_xpath(&doc, "//h2", 1);
         }
 
         #[test]
@@ -3929,61 +3931,73 @@ mod description_lists_redux {
         use super::*;
 
         #[test]
-        #[ignore]
         fn folds_text_from_inline_description_and_subsequent_line() {
-            let _doc = Parser::default().parse("== Lists\n\nterm1:: def1\ncontinued\n");
-            todo!("assert_xpath: '//*[@class=\"dlist\"]/dl', output, 1");
-            todo!("assert_xpath: '//*[@class=\"dlist\"]//dd', output, 1");
-            todo!(
-                "assert_xpath: '//*[@class=\"dlist\"]//dd/p[text()=\"def1\\ncontinued\"]', output, 1"
+            let doc = Parser::default().parse("== Lists\n\nterm1:: def1\ncontinued\n");
+
+            assert_xpath(&doc, "//*[@class=\"dlist\"]/dl", 1);
+            assert_xpath(&doc, "//*[@class=\"dlist\"]//dd", 1);
+            assert_xpath(
+                &doc,
+                "//*[@class=\"dlist\"]//dd/p[text()=\"def1\ncontinued\"]",
+                1,
             );
         }
 
         #[test]
-        #[ignore]
         fn folds_text_from_inline_description_and_subsequent_lines() {
-            let _doc = Parser::default().parse("== Lists\n\nterm1:: def1\ncontinued\ncontinued\n");
-            todo!("assert_xpath: '//*[@class=\"dlist\"]/dl', output, 1");
-            todo!("assert_xpath: '//*[@class=\"dlist\"]//dd', output, 1");
-            todo!(
-                "assert_xpath: '//*[@class=\"dlist\"]//dd/p[text()=\"def1\\ncontinued\\ncontinued\"]', output, 1"
+            let doc = Parser::default().parse("== Lists\n\nterm1:: def1\ncontinued\ncontinued\n");
+
+            assert_xpath(&doc, "//*[@class=\"dlist\"]/dl", 1);
+            assert_xpath(&doc, "//*[@class=\"dlist\"]//dd", 1);
+            assert_xpath(
+                &doc,
+                "//*[@class=\"dlist\"]//dd/p[text()=\"def1\ncontinued\ncontinued\"]",
+                1,
             );
         }
 
         #[test]
-        #[ignore]
         fn folds_text_from_inline_description_and_line_following_comment_line() {
-            let _doc = Parser::default().parse("== Lists\n\nterm1:: def1\n// comment\ncontinued\n");
-            todo!("assert_xpath: '//*[@class=\"dlist\"]/dl', output, 1");
-            todo!("assert_xpath: '//*[@class=\"dlist\"]//dd', output, 1");
-            todo!(
-                "assert_xpath: '//*[@class=\"dlist\"]//dd/p[text()=\"def1\\ncontinued\"]', output, 1"
+            let doc = Parser::default().parse("== Lists\n\nterm1:: def1\n// comment\ncontinued\n");
+
+            assert_xpath(&doc, "//*[@class=\"dlist\"]/dl", 1);
+            assert_xpath(&doc, "//*[@class=\"dlist\"]//dd", 1);
+            assert_xpath(
+                &doc,
+                "//*[@class=\"dlist\"]//dd/p[text()=\"def1\ncontinued\"]",
+                1,
             );
         }
 
         #[test]
-        #[ignore]
         fn folds_text_from_inline_description_and_subsequent_indented_line() {
-            let _doc = Parser::default().parse("== List\n\nterm1:: def1\n  continued\n");
-            todo!("assert_xpath: '//*[@class=\"dlist\"]/dl', output, 1");
-            todo!("assert_xpath: '//*[@class=\"dlist\"]//dd', output, 1");
-            todo!(
-                "assert_xpath: '//*[@class=\"dlist\"]//dd/p[text()=\"def1\\ncontinued\"]', output, 1"
+            let doc = Parser::default().parse("== List\n\nterm1:: def1\n  continued\n");
+
+            assert_xpath(&doc, "//*[@class=\"dlist\"]/dl", 1);
+            assert_xpath(&doc, "//*[@class=\"dlist\"]//dd", 1);
+            assert_xpath(
+                &doc,
+                "//*[@class=\"dlist\"]//dd/p[text()=\"def1\ncontinued\"]",
+                1,
             );
         }
 
         #[test]
-        #[ignore]
         fn appends_literal_line_offset_by_blank_line_as_block_if_item_has_inline_description() {
-            let _doc = Parser::default().parse("== Lists\n\nterm1:: def1\n\n  literal\n");
-            todo!("assert_xpath: '//*[@class=\"dlist\"]/dl', output, 1");
-            todo!("assert_xpath: '//*[@class=\"dlist\"]//dd', output, 1");
-            todo!("assert_xpath: '//*[@class=\"dlist\"]//dd/p[text()=\"def1\"]', output, 1");
-            todo!(
-                "assert_xpath: '//*[@class=\"dlist\"]//dd/p/following-sibling::*[@class=\"literalblock\"]', output, 1"
+            let doc = Parser::default().parse("== Lists\n\nterm1:: def1\n\n  literal\n");
+
+            assert_xpath(&doc, "//*[@class=\"dlist\"]/dl", 1);
+            assert_xpath(&doc, "//*[@class=\"dlist\"]//dd", 1);
+            assert_xpath(&doc, "//*[@class=\"dlist\"]//dd/p[text()=\"def1\"]", 1);
+            assert_xpath(
+                &doc,
+                "//*[@class=\"dlist\"]//dd/p/following-sibling::*[@class=\"literalblock\"]",
+                1,
             );
-            todo!(
-                "assert_xpath: '//*[@class=\"dlist\"]//dd/p/following-sibling::*[@class=\"literalblock\"]//pre[text()=\"literal\"]', output, 1"
+            assert_xpath(
+                &doc,
+                "//*[@class=\"dlist\"]//dd/p/following-sibling::*[@class=\"literalblock\"]//pre[text()=\"literal\"]",
+                1,
             );
         }
 
@@ -4032,17 +4046,21 @@ mod description_lists_redux {
         }
 
         #[test]
-        #[ignore]
         fn appends_list_if_item_has_inline_description() {
-            let _doc =
+            let doc =
                 Parser::default().parse("== Lists\n\nterm1:: def1\n\n* one\n* two\n* three\n");
-            todo!("assert_xpath: '//*[@class=\"dlist\"]/dl', output, 1");
-            todo!("assert_xpath: '//*[@class=\"dlist\"]//dd/p[text()=\"def1\"]', output, 1");
-            todo!(
-                "assert_xpath: '//*[@class=\"dlist\"]//dd/p/following-sibling::*[@class=\"ulist\"]', output, 1"
+
+            assert_xpath(&doc, "//*[@class=\"dlist\"]/dl", 1);
+            assert_xpath(&doc, "//*[@class=\"dlist\"]//dd/p[text()=\"def1\"]", 1);
+            assert_xpath(
+                &doc,
+                "//*[@class=\"dlist\"]//dd/p/following-sibling::*[@class=\"ulist\"]",
+                1,
             );
-            todo!(
-                "assert_xpath: '//*[@class=\"dlist\"]//dd/p/following-sibling::*[@class=\"ulist\"]/ul/li', output, 3"
+            assert_xpath(
+                &doc,
+                "//*[@class=\"dlist\"]//dd/p/following-sibling::*[@class=\"ulist\"]/ul/li",
+                3,
             );
         }
 
@@ -4064,17 +4082,21 @@ mod description_lists_redux {
         }
 
         #[test]
-        #[ignore]
         fn line_offset_by_blank_line_breaks_list_if_term_has_inline_description() {
-            let _doc = Parser::default().parse("== Lists\n\nterm1:: def1\n\ndetached\n");
-            todo!("assert_xpath: '//*[@class=\"dlist\"]/dl', output, 1");
-            todo!("assert_xpath: '//*[@class=\"dlist\"]//dd', output, 1");
-            todo!("assert_xpath: '//*[@class=\"dlist\"]//dd/p[text()=\"def1\"]', output, 1");
-            todo!(
-                "assert_xpath: '//*[@class=\"dlist\"]/following-sibling::*[@class=\"paragraph\"]', output, 1"
+            let doc = Parser::default().parse("== Lists\n\nterm1:: def1\n\ndetached\n");
+
+            assert_xpath(&doc, "//*[@class=\"dlist\"]/dl", 1);
+            assert_xpath(&doc, "//*[@class=\"dlist\"]//dd", 1);
+            assert_xpath(&doc, "//*[@class=\"dlist\"]//dd/p[text()=\"def1\"]", 1);
+            assert_xpath(
+                &doc,
+                "//*[@class=\"dlist\"]/following-sibling::*[@class=\"paragraph\"]",
+                1,
             );
-            todo!(
-                "assert_xpath: '//*[@class=\"dlist\"]/following-sibling::*[@class=\"paragraph\"]/p[text()=\"detached\"]', output, 1"
+            assert_xpath(
+                &doc,
+                "//*[@class=\"dlist\"]/following-sibling::*[@class=\"paragraph\"]/p[text()=\"detached\"]",
+                1,
             );
         }
 
@@ -4169,10 +4191,10 @@ mod description_lists_redux {
         }
 
         #[test]
-        #[ignore]
         fn line_comment_offset_by_blank_line_divides_lists_because_item_has_text() {
-            let _doc = Parser::default().parse("== Lists\n\nterm1:: def1\n\n//\n\nterm2:: def2\n");
-            todo!("assert_xpath: '//*[@class=\"dlist\"]/dl', output, 2");
+            let doc = Parser::default().parse("== Lists\n\nterm1:: def1\n\n//\n\nterm2:: def2\n");
+
+            assert_xpath(&doc, "//*[@class=\"dlist\"]/dl", 2);
         }
 
         #[test]
