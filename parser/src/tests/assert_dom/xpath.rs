@@ -1022,6 +1022,31 @@ fn get_text_content(node: &VirtualNode) -> String {
 fn matches_single_predicate(node: &VirtualNode, predicate: &str) -> bool {
     let predicate = predicate.trim();
 
+    // Check for `normalize-space(text())` predicate.
+    if let Some(rest) = predicate.strip_prefix("normalize-space(text())") {
+        let rest = rest.trim();
+
+        // Handle normalize-space(text()) = 'value' or = "value".
+        if let Some(value_part) = rest.strip_prefix('=').map(|s| s.trim()) {
+            // Try single-quoted string first.
+            if let Some(value) = value_part.strip_prefix('\'') {
+                if let Some(value) = value.strip_suffix('\'') {
+                    let unescaped = unescape_xpath_string(value);
+                    return normalize_space(&get_text_content(node)) == unescaped;
+                }
+            }
+            // Try double-quoted string.
+            else if let Some(value) = value_part.strip_prefix('"')
+                && let Some(value) = value.strip_suffix('"')
+            {
+                let unescaped = unescape_xpath_string(value);
+                return normalize_space(&get_text_content(node)) == unescaped;
+            }
+        }
+
+        return false;
+    }
+
     // Check for `starts-with()` predicate.
     if let Some(rest) = predicate.strip_prefix("starts-with(") {
         // Parse starts-with(text(), "value").
@@ -1109,6 +1134,13 @@ fn matches_single_predicate(node: &VirtualNode, predicate: &str) -> bool {
     // Numeric predicate [N]: Would need to be handled by caller with context.
     // For now, just return `true` to pass through.
     true
+}
+
+/// Normalizes whitespace in a string, matching XPath normalize-space()
+/// semantics. Strips leading/trailing whitespace and replaces sequences of
+/// whitespace with a single space.
+fn normalize_space(s: &str) -> String {
+    s.split_whitespace().collect::<Vec<_>>().join(" ")
 }
 
 /// Unescapes XPath string literals.
