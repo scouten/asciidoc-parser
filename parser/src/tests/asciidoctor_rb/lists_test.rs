@@ -2840,10 +2840,10 @@ mod description_lists_dlist {
         }
 
         #[test]
-        #[ignore]
         fn should_not_match_comment_line_that_looks_like_description_list_term() {
-            let _doc = Parser::default().parse("before\n\n//key:: val\n\nafter\n");
-            todo!("assert_css: 'dl', output, 0");
+            let doc = Parser::default().parse("before\n\n//key:: val\n\nafter\n");
+
+            assert_css(&doc, "dl", 0);
         }
 
         #[test]

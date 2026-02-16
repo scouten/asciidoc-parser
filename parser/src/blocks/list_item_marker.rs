@@ -113,7 +113,14 @@ impl<'src> ListItemMarker<'src> {
 
             Some(MatchedItem { item, after })
         } else {
-            let captures = DESCRIPTION_LIST_MARKER.captures(source.data())?;
+            // Don't match description list markers in comment lines.
+            // Comment lines start with // but not /// (which is a valid term).
+            let source_data = source.data();
+            if source_data.starts_with("//") && !source_data.starts_with("///") {
+                return None;
+            }
+
+            let captures = DESCRIPTION_LIST_MARKER.captures(source_data)?;
 
             // With multi-line mode enabled, ^ can match at any line start.
             // We only accept matches that start at the beginning of the source.
