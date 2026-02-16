@@ -3272,29 +3272,47 @@ mod description_lists_dlist {
         }
 
         #[test]
-        #[ignore]
         fn multi_line_nested_elements_separated_by_blank_line_at_nested_level_repeated() {
-            let _doc = Parser::default()
+            let doc = Parser::default()
                 .parse("term1::\ndef1\nlabel1:::\n\ndetail1\nlabel2:::\ndetail2\n\nterm2:: def2\n");
-            todo!("assert_xpath: '//dl', output, 2");
-            todo!("assert_xpath: '//dl//dl', output, 1");
-            todo!(
-                "assert_xpath: '(//dl)[1]/dt[1][normalize-space(text()) = \"term1\"]', output, 1"
+
+            assert_xpath(&doc, "//dl", 2);
+            assert_xpath(&doc, "//dl//dl", 1);
+
+            assert_xpath(
+                &doc,
+                "(//dl)[1]/dt[1][normalize-space(text()) = \"term1\"]",
+                1,
             );
-            todo!(
-                "assert_xpath: '(//dl)[1]/dt[1]/following-sibling::dd/p[text() = \"def1\"]', output, 1"
+
+            assert_xpath(
+                &doc,
+                "(//dl)[1]/dt[1]/following-sibling::dd/p[text() = \"def1\"]",
+                1,
             );
-            todo!(
-                "assert_xpath: '(//dl//dl/dt)[1][normalize-space(text()) = \"label1\"]', output, 1"
+
+            assert_xpath(
+                &doc,
+                "(//dl//dl/dt)[1][normalize-space(text()) = \"label1\"]",
+                1,
             );
-            todo!(
-                "assert_xpath: '(//dl//dl/dt)[1]/following-sibling::dd/p[text() = \"detail1\"]', output, 1"
+
+            assert_xpath(
+                &doc,
+                "(//dl//dl/dt)[1]/following-sibling::dd/p[text() = \"detail1\"]",
+                1,
             );
-            todo!(
-                "assert_xpath: '(//dl//dl/dt)[2][normalize-space(text()) = \"label2\"]', output, 1"
+
+            assert_xpath(
+                &doc,
+                "(//dl//dl/dt)[2][normalize-space(text()) = \"label2\"]",
+                1,
             );
-            todo!(
-                "assert_xpath: '(//dl//dl/dt)[2]/following-sibling::dd/p[text() = \"detail2\"]', output, 1"
+
+            assert_xpath(
+                &doc,
+                "(//dl//dl/dt)[2]/following-sibling::dd/p[text() = \"detail2\"]",
+                1,
             );
         }
 
