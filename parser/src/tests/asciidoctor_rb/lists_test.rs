@@ -2847,15 +2847,18 @@ mod description_lists_dlist {
         }
 
         #[test]
-        #[ignore]
         fn should_not_match_comment_line_following_list_that_looks_like_description_list_term() {
-            let _doc =
+            let doc =
                 Parser::default().parse("* item\n\n//term:: desc\n== Section\n\nsection text\n");
-            todo!("assert_xpath: '/*[@class=\"ulist\"]', output, 1");
-            todo!("assert_xpath: '/*[@class=\"sect1\"]', output, 1");
-            todo!("assert_xpath: '/*[@class=\"sect1\"]/h2[text()=\"Section\"]', output, 1");
-            todo!(
-                "assert_xpath: '/*[@class=\"ulist\"]/following-sibling::*[@class=\"sect1\"]', output, 1"
+
+            assert_xpath(&doc, "/*[@class=\"ulist\"]", 1);
+            assert_xpath(&doc, "/*[@class=\"sect1\"]", 1);
+            assert_xpath(&doc, "/*[@class=\"sect1\"]/h2[text()=\"Section\"]", 1);
+
+            assert_xpath(
+                &doc,
+                "/*[@class=\"ulist\"]/following-sibling::*[@class=\"sect1\"]",
+                1,
             );
         }
 

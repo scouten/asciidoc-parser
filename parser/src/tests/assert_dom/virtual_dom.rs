@@ -564,8 +564,8 @@ fn list_item_to_node<'a>(item: &'a ListItem<'a>) -> VirtualNode {
 }
 
 fn section_to_node<'a>(section: &'a SectionBlock<'a>) -> VirtualNode {
-    // TODO: Adjust class depending on section level.
-    let mut node = VirtualNode::new("div").with_class("sect1");
+    let class = format!("sect{}", section.level());
+    let mut node = VirtualNode::new("div").with_class(class);
 
     for role in section.roles() {
         node = node.with_class(role);

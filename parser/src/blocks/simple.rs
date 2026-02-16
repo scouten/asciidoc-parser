@@ -274,9 +274,21 @@ fn parse_lines<'src>(
 
     let mut next = source;
     let mut filtered_lines: Vec<&'src str> = vec![];
+    let mut skipped_comment_line = false;
 
     while let Some(line_mi) = next.take_non_empty_line() {
         let mut line = line_mi.item;
+
+        // If we've skipped a comment line and this is a section header, stop here
+        // so the section can be parsed as a separate block. Only do this at the
+        // top level (not inside lists), indicated by stop_for_list_items being false.
+        if !stop_for_list_items
+            && skipped_comment_line
+            && style == SimpleBlockStyle::Paragraph
+            && is_section_header(line.data())
+        {
+            break;
+        }
 
         // There are several stop conditions for simple paragraph blocks. These
         // "shouldn't" be encountered on the first line (we shouldn't be calling
@@ -324,6 +336,7 @@ fn parse_lines<'src>(
             && line.starts_with("//")
             && !line.starts_with("///")
         {
+            skipped_comment_line = true;
             continue;
         }
 
@@ -407,6 +420,28 @@ impl<'src> HasSpan<'src> for SimpleBlock<'src> {
     fn span(&self) -> Span<'src> {
         self.source
     }
+}
+
+/// Returns true if the line looks like a section header.
+/// Matches `== `, `=== `, etc. (AsciiDoc) or `## `, `### `, etc. (Markdown).
+fn is_section_header(line: &str) -> bool {
+    // AsciiDoc style: `== `, `=== `, etc. (at least 2 `=` followed by space)
+    if line.starts_with("==") {
+        let rest = line.trim_start_matches('=');
+        if rest.starts_with(' ') {
+            return true;
+        }
+    }
+
+    // Markdown style: `## `, `### `, etc. (at least 2 `#` followed by space)
+    if line.starts_with("##") {
+        let rest = line.trim_start_matches('#');
+        if rest.starts_with(' ') {
+            return true;
+        }
+    }
+
+    false
 }
 
 #[cfg(test)]
