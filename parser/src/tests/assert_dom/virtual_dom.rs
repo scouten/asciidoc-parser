@@ -278,8 +278,21 @@ fn add_block_with_title<'a>(parent: &mut VirtualNode, block: &'a Block<'a>) {
         parent.children.push(title_node);
     }
 
-    // Add the block itself (which will handle its own title if applicable).
-    parent.children.push(block.to_virtual_dom());
+    // Check if this is a paragraph that needs to be wrapped in div.paragraph.
+    // Asciidoctor wraps top-level paragraphs in <div
+    // class="paragraph"><p>...</p></div>.
+    if let Block::Simple(simple) = block
+        && simple.declared_style().is_none()
+        && simple.style() == SimpleBlockStyle::Paragraph
+    {
+        let p_node = block.to_virtual_dom();
+        let mut wrapper = VirtualNode::new("div").with_class("paragraph");
+        wrapper.children.push(p_node);
+        parent.children.push(wrapper);
+    } else {
+        // Add the block itself (which will handle its own title if applicable).
+        parent.children.push(block.to_virtual_dom());
+    }
 }
 
 impl ToVirtualDom for Block<'_> {
@@ -729,7 +742,13 @@ mod tests {
         assert_eq!(vdom.classes, vec!["document"]);
         assert_eq!(vdom.children.len(), 1);
 
-        let para = &vdom.children[0];
+        // Top-level paragraphs are wrapped in div.paragraph.
+        let wrapper = &vdom.children[0];
+        assert_eq!(wrapper.tag, "div");
+        assert!(wrapper.classes.contains(&"paragraph".to_string()));
+        assert_eq!(wrapper.children.len(), 1);
+
+        let para = &wrapper.children[0];
         assert_eq!(para.tag, "p");
         assert_eq!(para.text.as_deref(), Some("Hello, world!"));
     }
@@ -766,9 +785,16 @@ mod tests {
         assert_eq!(section.tag, "div");
         assert!(section.classes.contains(&"sect1".to_string()));
 
+        // Section contains heading and paragraph wrapper.
         assert_eq!(section.children.len(), 2);
         assert_eq!(section.children[0].tag, "h2");
-        assert_eq!(section.children[1].tag, "p");
+
+        // Paragraph is wrapped in div.paragraph.
+        let para_wrapper = &section.children[1];
+        assert_eq!(para_wrapper.tag, "div");
+        assert!(para_wrapper.classes.contains(&"paragraph".to_string()));
+        assert_eq!(para_wrapper.children.len(), 1);
+        assert_eq!(para_wrapper.children[0].tag, "p");
     }
 
     #[test]
@@ -803,7 +829,13 @@ mod tests {
 
         assert_eq!(vdom.children.len(), 1);
 
-        let para = &vdom.children[0];
+        // Top-level paragraphs are wrapped in div.paragraph.
+        let wrapper = &vdom.children[0];
+        assert_eq!(wrapper.tag, "div");
+        assert!(wrapper.classes.contains(&"paragraph".to_string()));
+        assert_eq!(wrapper.children.len(), 1);
+
+        let para = &wrapper.children[0];
         assert_eq!(para.tag, "p");
 
         // Should have parsed HTML into child nodes.
