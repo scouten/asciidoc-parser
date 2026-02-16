@@ -2141,7 +2141,10 @@ mod description_lists_dlist {
     use crate::{Parser, tests::prelude::*};
 
     mod simple_lists {
+        use std::collections::HashMap;
+
         use super::*;
+        use crate::blocks::{ListType, SimpleBlockStyle};
 
         #[test]
         fn should_not_parse_a_bare_dlist_delimiter_as_a_dlist() {
@@ -2913,10 +2916,111 @@ mod description_lists_dlist {
         }
 
         #[test]
-        #[ignore]
         fn text_method_of_dd_node_should_return_nil_if_dd_node_only_contains_blocks() {
-            let _doc = Parser::default().parse("term::\n+\nparagraph\n");
-            todo!("document_from_string test");
+            let doc = Parser::default().parse("term::\n+\nparagraph\n");
+
+            assert_eq!(
+                doc,
+                Document {
+                    header: Header {
+                        title_source: None,
+                        title: None,
+                        attributes: &[],
+                        author_line: None,
+                        revision_line: None,
+                        comments: &[],
+                        source: Span {
+                            data: "",
+                            line: 1,
+                            col: 1,
+                            offset: 0,
+                        },
+                    },
+                    blocks: &[Block::List(ListBlock {
+                        type_: ListType::Description,
+                        items: &[Block::ListItem(ListItem {
+                            marker: ListItemMarker::DefinedTerm {
+                                term: Content {
+                                    original: Span {
+                                        data: "term",
+                                        line: 1,
+                                        col: 1,
+                                        offset: 0,
+                                    },
+                                    rendered: "term",
+                                },
+                                marker: Span {
+                                    data: "::",
+                                    line: 1,
+                                    col: 5,
+                                    offset: 4,
+                                },
+                                source: Span {
+                                    data: "term::",
+                                    line: 1,
+                                    col: 1,
+                                    offset: 0,
+                                },
+                            },
+                            blocks: &[Block::Simple(SimpleBlock {
+                                content: Content {
+                                    original: Span {
+                                        data: "paragraph",
+                                        line: 3,
+                                        col: 1,
+                                        offset: 9,
+                                    },
+                                    rendered: "paragraph",
+                                },
+                                source: Span {
+                                    data: "paragraph",
+                                    line: 3,
+                                    col: 1,
+                                    offset: 9,
+                                },
+                                style: SimpleBlockStyle::Paragraph,
+                                title_source: None,
+                                title: None,
+                                anchor: None,
+                                anchor_reftext: None,
+                                attrlist: None,
+                            },),],
+                            source: Span {
+                                data: "term::\n+\nparagraph",
+                                line: 1,
+                                col: 1,
+                                offset: 0,
+                            },
+                            anchor: None,
+                            anchor_reftext: None,
+                            attrlist: None,
+                        },),],
+                        source: Span {
+                            data: "term::\n+\nparagraph",
+                            line: 1,
+                            col: 1,
+                            offset: 0,
+                        },
+                        title_source: None,
+                        title: None,
+                        anchor: None,
+                        anchor_reftext: None,
+                        attrlist: None,
+                    },),],
+                    source: Span {
+                        data: "term::\n+\nparagraph",
+                        line: 1,
+                        col: 1,
+                        offset: 0,
+                    },
+                    warnings: &[],
+                    source_map: SourceMap(&[]),
+                    catalog: Catalog {
+                        refs: HashMap::from([]),
+                        reftext_to_id: HashMap::from([]),
+                    },
+                }
+            );
         }
 
         #[test]
