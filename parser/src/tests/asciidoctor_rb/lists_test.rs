@@ -3100,13 +3100,13 @@ mod description_lists_dlist {
         }
 
         #[test]
-        #[ignore]
         fn single_line_adjacent_maximum_nested_elements() {
-            let _doc = Parser::default().parse(
+            let doc = Parser::default().parse(
                 "term1:: def1\nlabel1::: detail1\nname1:::: value1\nitem1;; price1\nterm2:: def2\n",
             );
-            todo!("assert_xpath: '//dl', output, 4");
-            todo!("assert_xpath: '//dl//dl//dl//dl', output, 1");
+
+            assert_xpath(&doc, "//dl", 4);
+            assert_xpath(&doc, "//dl//dl//dl//dl", 1);
         }
 
         #[test]
