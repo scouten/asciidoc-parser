@@ -2952,7 +2952,7 @@ mod description_lists_dlist {
             let doc = Parser::default().parse("t::\ndesc\n  ;;\n");
 
             assert_xpath(&doc, "//dl", 1);
-            assert_xpath(&doc, "//dl/dd/p[text()=\"desc\n  ;;\"]" , 1);
+            assert_xpath(&doc, "//dl/dd/p[text()=\"desc\n  ;;\"]", 1);
         }
 
         #[test]
@@ -3496,7 +3496,11 @@ mod description_lists_redux {
 
             assert_xpath(&doc, "//*[@class=\"dlist\"]/dl", 1);
             assert_xpath(&doc, "//*[@class=\"dlist\"]//dd", 1);
-            assert_xpath(&doc, "//*[@class=\"dlist\"]//dd/p[text()=\"NOTE: def1\"]", 1);
+            assert_xpath(
+                &doc,
+                "//*[@class=\"dlist\"]//dd/p[text()=\"NOTE: def1\"]",
+                1,
+            );
         }
 
         #[test]
