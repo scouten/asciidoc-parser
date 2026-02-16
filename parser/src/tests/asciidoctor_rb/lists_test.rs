@@ -2805,25 +2805,37 @@ mod description_lists_dlist {
         }
 
         #[test]
-        #[ignore]
         fn should_append_subsequent_paragraph_literals_to_list_item_as_block_content() {
-            let _doc = Parser::default()
+            let doc = Parser::default()
                 .parse("term1::\n\ndef1\n\nterm2::\n\n  def2\n\n  literal\n\nA new paragraph.\n");
-            todo!("assert_xpath: '//dl', output, 1");
-            todo!("assert_xpath: '//dl/dd', output, 2");
-            todo!("assert_xpath: '(//dl/dd)[1]/p[text() = \"def1\"]', output, 1");
-            todo!("assert_xpath: '(//dl/dd)[2]/p[text() = \"def2\"]', output, 1");
-            todo!(
-                "assert_xpath: '(//dl/dd)[2]/p/following-sibling::*[@class=\"literalblock\"]', output, 1"
+
+            assert_xpath(&doc, "//dl", 1);
+            assert_xpath(&doc, "//dl/dd", 2);
+            assert_xpath(&doc, "(//dl/dd)[1]/p[text() = \"def1\"]", 1);
+            assert_xpath(&doc, "(//dl/dd)[2]/p[text() = \"def2\"]", 1);
+
+            assert_xpath(
+                &doc,
+                "(//dl/dd)[2]/p/following-sibling::*[@class=\"literalblock\"]",
+                1,
             );
-            todo!(
-                "assert_xpath: '(//dl/dd)[2]/p/following-sibling::*[@class=\"literalblock\"]//pre[text() = \"literal\"]', output, 1"
+
+            assert_xpath(
+                &doc,
+                "(//dl/dd)[2]/p/following-sibling::*[@class=\"literalblock\"]//pre[text() = \"literal\"]",
+                1,
             );
-            todo!(
-                "assert_xpath: '//*[@class=\"dlist\"]/following-sibling::*[@class=\"paragraph\"]', output, 1"
+
+            assert_xpath(
+                &doc,
+                "//*[@class=\"dlist\"]/following-sibling::*[@class=\"paragraph\"]",
+                1,
             );
-            todo!(
-                "assert_xpath: '(//*[@class=\"dlist\"]/following-sibling::*[@class=\"paragraph\"])[1]/p[text() = \"A new paragraph.\"]', output, 1"
+
+            assert_xpath(
+                &doc,
+                "(//*[@class=\"dlist\"]/following-sibling::*[@class=\"paragraph\"])[1]/p[text() = \"A new paragraph.\"]",
+                1,
             );
         }
 
