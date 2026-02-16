@@ -2735,14 +2735,14 @@ mod description_lists_dlist {
         }
 
         #[test]
-        #[ignore]
         fn list_inside_a_description_list_offset_by_blank_lines() {
-            let _doc = Parser::default()
+            let doc = Parser::default()
                 .parse("term1::\n\n* level 1\n** level 2\n* level 1\n\nterm2:: def\n");
-            todo!("assert_xpath: '//dl/dd', output, 2");
-            todo!("assert_xpath: '//dl/dd/p', output, 1");
-            todo!("assert_xpath: '(//dl/dd)[1]//ul', output, 2");
-            todo!("assert_xpath: '((//dl/dd)[1]//ul)[1]//ul', output, 1");
+
+            assert_xpath(&doc, "//dl/dd", 2);
+            assert_xpath(&doc, "//dl/dd/p", 1);
+            assert_xpath(&doc, "(//dl/dd)[1]//ul", 2);
+            assert_xpath(&doc, "((//dl/dd)[1]//ul)[1]//ul", 1);
         }
 
         #[test]
