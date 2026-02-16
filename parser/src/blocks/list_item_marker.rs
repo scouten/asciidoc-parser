@@ -200,15 +200,14 @@ impl<'src> ListItemMarker<'src> {
             });
 
             // Register the anchor in the catalog.
-            if let Some(catalog) = parser.catalog_mut() {
-                if let Err(_duplicate_error) =
+            if let Some(catalog) = parser.catalog_mut()
+                && let Err(_duplicate_error) =
                     catalog.register_ref(id, reftext.as_deref(), RefType::Anchor)
-                {
-                    warnings.push(Warning {
-                        source: term.original(),
-                        warning: WarningType::DuplicateId(id.to_string()),
-                    });
-                }
+            {
+                warnings.push(Warning {
+                    source: term.original(),
+                    warning: WarningType::DuplicateId(id.to_string()),
+                });
             }
         }
 
