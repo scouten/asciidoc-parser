@@ -706,18 +706,17 @@ fn query_from_root<'a>(node: &'a VirtualNode, pattern: &str) -> Vec<&'a VirtualN
     }
 }
 
-/// Recursively collects all descendants (including self) that match the
-/// selector.
+/// Recursively collects all descendants that match the selector.
+/// Note: This does NOT include self - only true descendants.
 fn collect_descendants_matching<'a>(
     node: &'a VirtualNode,
     selector: &str,
     results: &mut Vec<&'a VirtualNode>,
 ) {
-    if matches_selector(node, selector) {
-        results.push(node);
-    }
-
     for child in &node.children {
+        if matches_selector(child, selector) {
+            results.push(child);
+        }
         collect_descendants_matching(child, selector, results);
     }
 }
