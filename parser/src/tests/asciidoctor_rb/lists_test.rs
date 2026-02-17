@@ -3723,6 +3723,7 @@ mod description_lists_redux {
 
             assert_xpath(&doc, "//*[@class=\"dlist\"]/dl", 1);
             assert_xpath(&doc, "//*[@class=\"dlist\"]//dd", 1);
+
             assert_xpath(
                 &doc,
                 "//*[@class=\"dlist\"]//dd/p[text()=\"NOTE: def1\"]",
@@ -3736,11 +3737,13 @@ mod description_lists_redux {
 
             assert_xpath(&doc, "//*[@class=\"dlist\"]/dl", 1);
             assert_xpath(&doc, "//*[@class=\"dlist\"]//dd", 1);
+
             assert_xpath(
                 &doc,
                 "//*[@class=\"dlist\"]//dd/p[text()=\"== Another Section\"]",
                 1,
             );
+
             assert_xpath(&doc, "//h2", 1);
         }
 
