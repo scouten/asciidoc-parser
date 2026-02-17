@@ -3486,64 +3486,21 @@ mod description_lists_dlist {
 
         // Backend-specific test omitted: DocBook.
 
-        #[test]
-        #[ignore]
-        fn should_convert_horizontal_list_with_proper_markup() {
-            let _doc = Parser::default().parse("[horizontal]\nfirst term:: description\n+\nmore detail\n\nsecond term:: description\n");
-            todo!("assert_css: '.hdlist', output, 1");
-            todo!("assert_css: '.hdlist table', output, 1");
-            todo!("assert_css: '.hdlist table colgroup', output, 0");
-            todo!("assert_css: '.hdlist table tr', output, 2");
-            todo!("refute_includes output, '<tbody>'");
-            todo!("assert_xpath with tbody_path conditionals");
-        }
-
-        #[test]
-        #[ignore]
-        fn should_set_col_widths_of_item_and_label_if_specified() {
-            let _doc = Parser::default()
-                .parse("[horizontal]\n[labelwidth=\"25\", itemwidth=\"75\"]\nterm:: def\n");
-            todo!("assert_css: 'table', output, 1");
-            todo!("assert_css: 'table > colgroup', output, 1");
-            todo!("assert_css: 'table > colgroup > col', output, 2");
-            todo!("assert_xpath: '(//table/colgroup/col)[1][@width=\"25%\"]', output, 1");
-            todo!("assert_xpath: '(//table/colgroup/col)[2][@width=\"75%\"]', output, 1");
-        }
+        // Skipping tests 'should convert horizontal list with proper markup' and
+        // 'should set col widths of item and label if specified' because we don't do
+        // HTML rendering from this crate. The role should appear automatically.
 
         // Backend-specific test omitted: DocBook.
 
-        #[test]
-        #[ignore]
-        fn should_add_strong_class_to_label_if_strong_option_is_set() {
-            let _doc = Parser::default().parse("[horizontal, options=\"strong\"]\nterm:: def\n");
-            todo!("assert_css: '.hdlist', output, 1");
-            todo!("assert_css: '.hdlist td.hdlist1.strong', output, 1");
-        }
-
-        #[test]
-        #[ignore]
-        fn consecutive_terms_in_horizontal_list_should_share_same_cell() {
-            let _doc = Parser::default()
-                .parse("[horizontal]\nterm::\nalt term::\ndescription\n\nlast::\n");
-            todo!("assert_xpath: '//tr', output, 2");
-            todo!("assert_xpath: '(//tr)[1]/td[@class=\"hdlist1\"]', output, 1");
-            // NOTE: I'm trimming the trailing <br> in Asciidoctor.
-            todo!("assert_xpath: '(//tr)[1]/td[@class=\"hdlist1\"]/br', output, 1");
-            todo!("assert_xpath: '(//tr)[2]/td[@class=\"hdlist2\"]', output, 1");
-        }
+        // Skipping tests 'should add strong class to label if strong option is set' and
+        // 'consecutive terms in horizontal list should share same cell' because we
+        // don't do HTML rendering from this crate.
 
         // Backend-specific test omitted: DocBook.
         // Backend-specific test omitted: DocBook.
 
-        #[test]
-        #[ignore]
-        fn should_convert_qanda_list_in_html_with_proper_semantics() {
-            let _doc = Parser::default().parse("[qanda]\nQuestion 1::\n        Answer 1.\nQuestion 2::\n        Answer 2.\n+\nNOTE: A note about Answer 2.\n");
-            todo!("assert_css: '.qlist.qanda', output, 1");
-            todo!("assert_css: '.qanda > ol', output, 1");
-            todo!("assert_css: '.qanda > ol > li', output, 2");
-            todo!("loop assertions for each question/answer pair");
-        }
+        // Skipping test 'should convert qanda list in HTML with proper semantics'
+        // because we don't do HTML rendering from this crate.
 
         // Backend-specific test omitted: DocBook.
         // Backend-specific test omitted: DocBook.
