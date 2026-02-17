@@ -3748,19 +3748,25 @@ mod description_lists_redux {
         }
 
         #[test]
-        #[ignore]
         fn folds_text_of_first_literal_line_offset_by_blank_line_appends_subsequent_literals_offset_by_blank_line_as_blocks()
          {
-            let _doc = Parser::default()
+            let doc = Parser::default()
                 .parse("== Lists\n\nterm1::\n\n  def1\n\n  literal\n\n\n  literal\n");
-            todo!("assert_xpath: '//*[@class=\"dlist\"]/dl', output, 1");
-            todo!("assert_xpath: '//*[@class=\"dlist\"]//dd', output, 1");
-            todo!("assert_xpath: '//*[@class=\"dlist\"]//dd/p[text()=\"def1\"]', output, 1");
-            todo!(
-                "assert_xpath: '//*[@class=\"dlist\"]//dd/p/following-sibling::*[@class=\"literalblock\"]', output, 2"
+
+            assert_xpath(&doc, "//*[@class=\"dlist\"]/dl", 1);
+            assert_xpath(&doc, "//*[@class=\"dlist\"]//dd", 1);
+            assert_xpath(&doc, "//*[@class=\"dlist\"]//dd/p[text()=\"def1\"]", 1);
+
+            assert_xpath(
+                &doc,
+                "//*[@class=\"dlist\"]//dd/p/following-sibling::*[@class=\"literalblock\"]",
+                2,
             );
-            todo!(
-                "assert_xpath: '//*[@class=\"dlist\"]//dd/p/following-sibling::*[@class=\"literalblock\"]//pre[text()=\"literal\"]', output, 2"
+
+            assert_xpath(
+                &doc,
+                "//*[@class=\"dlist\"]//dd/p/following-sibling::*[@class=\"literalblock\"]//pre[text()=\"literal\"]",
+                2,
             );
         }
 
