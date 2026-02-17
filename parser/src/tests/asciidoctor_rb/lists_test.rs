@@ -3447,19 +3447,28 @@ mod description_lists_dlist {
         }
 
         #[test]
-        #[ignore]
         fn nested_dlist_with_attached_block_offset_by_empty_line() {
-            let _doc = Parser::default().parse("category::\n\nterm 1:::\n+\n--\ndef 1\n--\n");
-            todo!("assert_xpath: '//dl', output, 2");
-            todo!("assert_xpath: '//dl//dl', output, 1");
-            todo!(
-                "assert_xpath: '(//dl)[1]/dt[1][normalize-space(text()) = \"category\"]', output, 1"
+            let doc = Parser::default().parse("category::\n\nterm 1:::\n+\n--\ndef 1\n--\n");
+
+            assert_xpath(&doc, "//dl", 2);
+            assert_xpath(&doc, "//dl//dl", 1);
+
+            assert_xpath(
+                &doc,
+                "(//dl)[1]/dt[1][normalize-space(text()) = \"category\"]",
+                1,
             );
-            todo!(
-                "assert_xpath: '(//dl)[1]//dl/dt[1][normalize-space(text()) = \"term 1\"]', output, 1"
+
+            assert_xpath(
+                &doc,
+                "(//dl)[1]//dl/dt[1][normalize-space(text()) = \"term 1\"]",
+                1,
             );
-            todo!(
-                "assert_xpath: '(//dl)[1]//dl/dt[1]/following-sibling::dd//p[starts-with(text(), \"def 1\")]', output, 1"
+
+            assert_xpath(
+                &doc,
+                "(//dl)[1]//dl/dt[1]/following-sibling::dd//p[starts-with(text(), \"def 1\")]",
+                1,
             );
         }
     }
