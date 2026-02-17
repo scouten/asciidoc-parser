@@ -3785,7 +3785,7 @@ mod description_lists_redux {
                 "(//*[@class=\"dlist\"]//dd)[1]/p/following-sibling::*[@class=\"literalblock\"]",
                 1,
             );
-            
+
             assert_xpath(
                 &doc,
                 "(//*[@class=\"dlist\"]//dd)[1]/p/following-sibling::*[@class=\"literalblock\"]//pre[text()=\"literal\"]",
@@ -3794,18 +3794,24 @@ mod description_lists_redux {
         }
 
         #[test]
-        #[ignore]
         fn appends_literal_line_attached_by_continuation_as_block_if_item_has_no_inline_description()
          {
-            let _doc = Parser::default().parse("== Lists\n\nterm1::\n+\n  literal\n");
-            todo!("assert_xpath: '//*[@class=\"dlist\"]/dl', output, 1");
-            todo!("assert_xpath: '//*[@class=\"dlist\"]//dd', output, 1");
-            todo!("assert_xpath: '//*[@class=\"dlist\"]//dd/p', output, 0");
-            todo!(
-                "assert_xpath: '//*[@class=\"dlist\"]//dd/*[@class=\"literalblock\"]', output, 1"
+            let doc = Parser::default().parse("== Lists\n\nterm1::\n+\n  literal\n");
+
+            assert_xpath(&doc, "//*[@class=\"dlist\"]/dl", 1);
+            assert_xpath(&doc, "//*[@class=\"dlist\"]//dd", 1);
+            assert_xpath(&doc, "//*[@class=\"dlist\"]//dd/p", 0);
+
+            assert_xpath(
+                &doc,
+                "//*[@class=\"dlist\"]//dd/*[@class=\"literalblock\"]",
+                1,
             );
-            todo!(
-                "assert_xpath: '//*[@class=\"dlist\"]//dd/*[@class=\"literalblock\"]//pre[text()=\"literal\"]', output, 1"
+
+            assert_xpath(
+                &doc,
+                "//*[@class=\"dlist\"]//dd/*[@class=\"literalblock\"]//pre[text()=\"literal\"]",
+                1,
             );
         }
 

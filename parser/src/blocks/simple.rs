@@ -222,7 +222,7 @@ fn parse_lines<'src>(
     parser: &Parser,
 ) -> Option<MatchedItem<'src, (Content<'src>, SimpleBlockStyle)>> {
     let source_after_whitespace = source.discard_whitespace();
-    let strip_indent = source_after_whitespace.col() - 1;
+    let first_line_indent = source_after_whitespace.col() - 1;
 
     // Track if we're in "indented literal" mode (literal style from indentation).
     // In this mode, we should still stop for list markers that are NOT indented.
@@ -275,6 +275,54 @@ fn parse_lines<'src>(
     let mut next = source;
     let mut filtered_lines: Vec<&'src str> = vec![];
     let mut skipped_comment_line = false;
+
+    // For literal blocks when preserve_literal_indent is set, we need to calculate
+    // minimum indentation first to determine if we should strip anything.
+    // If any line has 0 indentation, preserve all indentation.
+    let strip_indent = if preserve_literal_indent && style == SimpleBlockStyle::Literal {
+        // Two-pass approach: first collect lines to find minimum indentation.
+        let mut scan = source;
+        let mut min_indent = first_line_indent;
+        let mut line_count = 0;
+
+        while let Some(line_mi) = scan.take_non_empty_line() {
+            let line = line_mi.item;
+
+            // Apply same stop conditions as the main loop.
+            if line_count > 0 {
+                if line.data() == "+" {
+                    break;
+                }
+
+                if line.starts_with('[') && line.ends_with(']') {
+                    break;
+                }
+
+                if (line.starts_with('/')
+                    || line.starts_with('-')
+                    || line.starts_with('.')
+                    || line.starts_with('+')
+                    || line.starts_with('=')
+                    || line.starts_with('*')
+                    || line.starts_with('_'))
+                    && (RawDelimitedBlock::is_valid_delimiter(&line)
+                        || CompoundDelimitedBlock::is_valid_delimiter(&line))
+                {
+                    break;
+                }
+            }
+
+            if let Some(n) = line.position(|c| c != ' ' && c != '\t') {
+                min_indent = min_indent.min(n);
+            }
+
+            line_count += 1;
+            scan = line_mi.after;
+        }
+        min_indent
+    } else {
+        first_line_indent
+    };
 
     while let Some(line_mi) = next.take_non_empty_line() {
         let mut line = line_mi.item;
@@ -340,11 +388,8 @@ fn parse_lines<'src>(
             continue;
         }
 
-        // Strip at most the number of leading whitespace characters found on the first
-        // line. Skip stripping for literal blocks when preserve_literal_indent is set
-        // (used for `+` continuation content).
-        let should_strip_indent =
-            strip_indent > 0 && !(preserve_literal_indent && style == SimpleBlockStyle::Literal);
+        // Strip at most the calculated indentation amount.
+        let should_strip_indent = strip_indent > 0;
 
         if should_strip_indent && let Some(n) = line.position(|c| c != ' ' && c != '\t') {
             line = line.into_parse_result(n.min(strip_indent)).after;
