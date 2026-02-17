@@ -3771,19 +3771,25 @@ mod description_lists_redux {
         }
 
         #[test]
-        #[ignore]
         fn folds_text_of_subsequent_line_and_appends_following_literal_line_offset_by_blank_line_as_block_if_term_has_no_inline_description()
          {
-            let _doc =
+            let doc =
                 Parser::default().parse("== Lists\n\nterm1::\ndef1\n\n  literal\n\nterm2:: def2\n");
-            todo!("assert_xpath: '//*[@class=\"dlist\"]/dl', output, 1");
-            todo!("assert_xpath: '//*[@class=\"dlist\"]//dd', output, 2");
-            todo!("assert_xpath: '(//*[@class=\"dlist\"]//dd)[1]/p[text()=\"def1\"]', output, 1");
-            todo!(
-                "assert_xpath: '(//*[@class=\"dlist\"]//dd)[1]/p/following-sibling::*[@class=\"literalblock\"]', output, 1"
+
+            assert_xpath(&doc, "//*[@class=\"dlist\"]/dl", 1);
+            assert_xpath(&doc, "//*[@class=\"dlist\"]//dd", 2);
+            assert_xpath(&doc, "(//*[@class=\"dlist\"]//dd)[1]/p[text()=\"def1\"]", 1);
+
+            assert_xpath(
+                &doc,
+                "(//*[@class=\"dlist\"]//dd)[1]/p/following-sibling::*[@class=\"literalblock\"]",
+                1,
             );
-            todo!(
-                "assert_xpath: '(//*[@class=\"dlist\"]//dd)[1]/p/following-sibling::*[@class=\"literalblock\"]//pre[text()=\"literal\"]', output, 1"
+            
+            assert_xpath(
+                &doc,
+                "(//*[@class=\"dlist\"]//dd)[1]/p/following-sibling::*[@class=\"literalblock\"]//pre[text()=\"literal\"]",
+                1,
             );
         }
 
