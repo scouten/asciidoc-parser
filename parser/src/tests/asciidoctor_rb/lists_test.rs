@@ -3687,13 +3687,15 @@ mod description_lists_redux {
         }
 
         #[test]
-        #[ignore]
         fn folds_text_that_looks_like_ruler_and_the_line_following_it_offset_by_blank_line() {
-            let _doc = Parser::default().parse("== Lists\n\nterm1::\n\n'''\ncontinued\n");
-            todo!("assert_xpath: '//*[@class=\"dlist\"]/dl', output, 1");
-            todo!("assert_xpath: '//*[@class=\"dlist\"]//dd', output, 1");
-            todo!(
-                "assert_xpath: '//*[@class=\"dlist\"]//dd/p[normalize-space(text())=\"''' continued\"]', output, 1"
+            let doc = Parser::default().parse("== Lists\n\nterm1::\n\n'''\ncontinued\n");
+
+            assert_xpath(&doc, "//*[@class=\"dlist\"]/dl", 1);
+            assert_xpath(&doc, "//*[@class=\"dlist\"]//dd", 1);
+            assert_xpath(
+                &doc,
+                "//*[@class=\"dlist\"]//dd/p[normalize-space(text())=\"''' continued\"]",
+                1,
             );
         }
 
