@@ -3402,23 +3402,36 @@ mod description_lists_dlist {
         }
 
         #[test]
-        #[ignore]
         fn multi_line_elements_with_first_paragraph_folded_to_text_with_adjacent_nested_element() {
-            let _doc = Parser::default().parse("term1:: def1\ncontinued\nlabel1:::\ndetail1\n");
-            todo!("assert_xpath: '//dl', output, 2");
-            todo!("assert_xpath: '//dl//dl', output, 1");
-            todo!(
-                "assert_xpath: '(//dl)[1]/dt[1][normalize-space(text()) = \"term1\"]', output, 1"
+            let doc = Parser::default().parse("term1:: def1\ncontinued\nlabel1:::\ndetail1\n");
+
+            assert_xpath(&doc, "//dl", 2);
+            assert_xpath(&doc, "//dl//dl", 1);
+
+            assert_xpath(
+                &doc,
+                "(//dl)[1]/dt[1][normalize-space(text()) = \"term1\"]",
+                1,
             );
-            todo!(
-                "assert_xpath: '(//dl)[1]/dt[1]/following-sibling::dd/p[starts-with(text(), \"def1\")]', output, 1"
+
+            assert_xpath(
+                &doc,
+                "(//dl)[1]/dt[1]/following-sibling::dd/p[starts-with(text(), \"def1\")]",
+                1,
             );
-            todo!(
-                "assert_xpath: '(//dl)[1]/dt[1]/following-sibling::dd/p[contains(text(), \"continued\")]', output, 1"
+
+            assert_xpath(
+                &doc,
+                "(//dl)[1]/dt[1]/following-sibling::dd/p[contains(text(), \"continued\")]",
+                1,
             );
-            todo!("assert_xpath: '//dl//dl/dt[normalize-space(text()) = \"label1\"]', output, 1");
-            todo!(
-                "assert_xpath: '//dl//dl/dt/following-sibling::dd/p[text() = \"detail1\"]', output, 1"
+
+            assert_xpath(&doc, "//dl//dl/dt[normalize-space(text()) = \"label1\"]", 1);
+
+            assert_xpath(
+                &doc,
+                "//dl//dl/dt/following-sibling::dd/p[text() = \"detail1\"]",
+                1,
             );
         }
 
