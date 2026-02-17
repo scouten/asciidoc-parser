@@ -3507,6 +3507,8 @@ mod description_lists_dlist {
 
         #[test]
         #[ignore]
+        // TO DO (https://github.com/asciidoc-rs/asciidoc-parser/issues/479):
+        // Enable this test when bibliography parsing is enabled.
         fn should_convert_bibliography_list_with_proper_semantics() {
             let _doc = Parser::default().parse("[bibliography]\n- [[[taoup]]] Eric Steven Raymond. _The Art of Unix\n  Programming_. Addison-Wesley. ISBN 0-13-142901-9.\n- [[[walsh-muellner]]] Norman Walsh & Leonard Muellner.\n  _DocBook - The Definitive Guide_. O'Reilly & Associates. 1999.\n  ISBN 1-56592-580-7.\n");
             todo!("assert_css: '.ulist.bibliography', output, 1");
@@ -3524,6 +3526,8 @@ mod description_lists_dlist {
 
         #[test]
         #[ignore]
+        // TO DO (https://github.com/asciidoc-rs/asciidoc-parser/issues/479):
+        // Enable this test when bibliography parsing is enabled.
         fn should_warn_if_a_bibliography_id_is_already_in_use() {
             let _doc = Parser::default().parse("[bibliography]\n* [[[Fowler]]] Fowler M. _Analysis Patterns: Reusable Object Models_.\nAddison-Wesley. 1997.\n* [[[Fowler]]] Fowler M. _Analysis Patterns: Reusable Object Models_.\nAddison-Wesley. 1997.\n");
             todo!("memory logger test");
@@ -3531,6 +3535,8 @@ mod description_lists_dlist {
 
         #[test]
         #[ignore]
+        // TO DO (https://github.com/asciidoc-rs/asciidoc-parser/issues/479):
+        // Enable this test when bibliography parsing is enabled.
         fn should_automatically_add_bibliography_style_to_top_level_lists_in_bibliography_section()
         {
             let _doc = Parser::default().parse("[bibliography]\n== Bibliography\n\n.Books\n* [[[taoup]]] Eric Steven Raymond. _The Art of Unix\n  Programming_. Addison-Wesley. ISBN 0-13-142901-9.\n* [[[walsh-muellner]]] Norman Walsh & Leonard Muellner.\n  _DocBook - The Definitive Guide_. O'Reilly & Associates. 1999.\n  ISBN 1-56592-580-7.\n\n.Periodicals\n* [[[doc-writer]]] Doc Writer. _Documentation As Code_. Static Times, 54. August 2016.\n");
@@ -3539,6 +3545,8 @@ mod description_lists_dlist {
 
         #[test]
         #[ignore]
+        // TO DO (https://github.com/asciidoc-rs/asciidoc-parser/issues/479):
+        // Enable this test when bibliography parsing is enabled.
         fn should_not_recognize_bibliography_anchor_that_begins_with_a_digit() {
             let _doc = Parser::default().parse(
                 "[bibliography]\n- [[[1984]]] George Orwell. _1984_. New American Library. 1950.\n",
@@ -3549,6 +3557,8 @@ mod description_lists_dlist {
 
         #[test]
         #[ignore]
+        // TO DO (https://github.com/asciidoc-rs/asciidoc-parser/issues/479):
+        // Enable this test when bibliography parsing is enabled.
         fn should_recognize_bibliography_anchor_that_contains_a_digit_but_does_not_start_with_one()
         {
             let _doc = Parser::default().parse("[bibliography]\n- [[[_1984]]] George Orwell. __1984__. New American Library. 1950.\n");
@@ -3566,6 +3576,8 @@ mod description_lists_dlist {
 
         #[test]
         #[ignore]
+        // TO DO (https://github.com/asciidoc-rs/asciidoc-parser/issues/479):
+        // Enable this test when bibliography parsing is enabled.
         fn should_use_reftext_from_bibliography_anchor_at_xref_and_entry() {
             let _doc = Parser::default().parse("= Article Title\n\nBegin with <<TMMM>>.\nThen move on to <<Fowler_1997>>.\n\n[bibliography]\n== References\n\n* [[[TMMM]]] Brooks F. _The Mythical Man-Month_. Addison-Wesley. 1975.\n* [[[Fowler_1997,1]]] Fowler M. _Analysis Patterns: Reusable Object Models_. Addison-Wesley. 1997.\n");
             todo!("document_from_string test");
