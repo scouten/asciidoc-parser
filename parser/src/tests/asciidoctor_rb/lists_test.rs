@@ -3679,10 +3679,11 @@ mod description_lists_redux {
         #[test]
         #[ignore]
         fn folds_text_that_looks_like_ruler_offset_by_blank_line_and_line_comment() {
-            let _doc = Parser::default().parse("== Lists\n\nterm1::\n\n// comment\n'''\n");
-            todo!("assert_xpath: '//*[@class=\"dlist\"]/dl', output, 1");
-            todo!("assert_xpath: '//*[@class=\"dlist\"]//dd', output, 1");
-            todo!("assert_xpath: '//*[@class=\"dlist\"]//dd/p[text()=\"'''\"]', output, 1");
+            let doc = Parser::default().parse("== Lists\n\nterm1::\n\n// comment\n'''\n");
+
+            assert_xpath(&doc, "//*[@class=\"dlist\"]/dl", 1);
+            assert_xpath(&doc, "//*[@class=\"dlist\"]//dd", 1);
+            assert_xpath(&doc, "//*[@class=\"dlist\"]//dd/p[text()=\"'''\"]", 1);
         }
 
         #[test]
