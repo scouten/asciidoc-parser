@@ -12,6 +12,7 @@ use crate::tests::assert_dom::virtual_dom::VirtualNode;
 /// - `tag child` - Find child elements as direct children of tag elements
 /// - `tag > child` - Find direct children only
 /// - `tag:first-of-type` - Find first occurrence of tag among siblings
+/// - `tag:not(selector)` - Find elements that do NOT match the inner selector
 ///
 /// # Example
 ///
@@ -395,6 +396,15 @@ fn matches_selector_with_context(
 fn matches_pseudo_selector(node: &VirtualNode, pseudo: &str, parent: Option<&VirtualNode>) -> bool {
     let pseudo = pseudo.trim();
 
+    // Handle :not() pseudo-class.
+    if let Some(inner) = pseudo.strip_prefix("not(") {
+        if let Some(inner) = inner.strip_suffix(')') {
+            // The inner selector should NOT match.
+            return !matches_inner_not_selector(node, inner.trim());
+        }
+        return false; // Malformed :not().
+    }
+
     match pseudo {
         "first-of-type" => {
             // Check if this is the first child with the same tag among its siblings.
@@ -419,6 +429,35 @@ fn matches_pseudo_selector(node: &VirtualNode, pseudo: &str, parent: Option<&Vir
 
         _ => false, // Unknown pseudo-selector.
     }
+}
+
+/// Checks if a node matches the inner selector of a :not() pseudo-class.
+/// This handles the subset of selectors that can appear inside :not().
+fn matches_inner_not_selector(node: &VirtualNode, selector: &str) -> bool {
+    let selector = selector.trim();
+
+    // Handle attribute selector: [attr] or [attr="value"].
+    if selector.starts_with('[') && selector.ends_with(']') {
+        let inner = &selector[1..selector.len() - 1];
+        return matches_single_predicate(node, inner);
+    }
+
+    // Handle class selector: .classname.
+    if let Some(class_name) = selector.strip_prefix('.') {
+        return node.classes.iter().any(|c| c == class_name);
+    }
+
+    // Handle ID selector: #id.
+    if let Some(id) = selector.strip_prefix('#') {
+        return node.id.as_deref() == Some(id);
+    }
+
+    // Handle tag selector.
+    if !selector.is_empty() && !selector.contains('[') {
+        return node.tag == selector;
+    }
+
+    false
 }
 
 /// Checks if a node matches a predicate like `[@class="value"]` or
@@ -694,6 +733,51 @@ mod tests {
             with_start_xpath.len(),
             1,
             "Should find one ol with start attribute (XPath-style)"
+        );
+    }
+
+    #[test]
+    fn query_not_selector() {
+        // Test :not() pseudo-class with attribute selector.
+        let doc = Parser::default().parse("[glossary]\nterm 1:: def 1\nterm 2:: def 2\n");
+        let vdom = doc.to_virtual_dom();
+
+        // Find dt elements that don't have a class attribute.
+        let dt_no_class = query_css(&vdom, "dt:not([class])");
+        assert_eq!(
+            dt_no_class.len(),
+            2,
+            "Should find 2 dt elements without class"
+        );
+
+        // All dt elements should match since none have class attributes.
+        let all_dt = query_css(&vdom, "dt");
+        assert_eq!(all_dt.len(), 2, "Should find 2 dt elements total");
+    }
+
+    #[test]
+    fn query_not_selector_with_class() {
+        // Test :not() pseudo-class with class selector.
+        let doc = Parser::default().parse("* item");
+        let vdom = doc.to_virtual_dom();
+
+        // The ulist div should match .ulist.
+        let ulist_divs = query_css(&vdom, "div.ulist");
+        assert_eq!(ulist_divs.len(), 1, "Should find 1 .ulist div");
+
+        // Find divs that have the .ulist class - :not(.ulist) should exclude them.
+        let ulist_with_not = query_css(&vdom, ".ulist:not(.olist)");
+        assert_eq!(
+            ulist_with_not.len(),
+            1,
+            "Should find 1 .ulist that is not .olist"
+        );
+
+        // Test that :not() properly excludes matching elements.
+        let excluded = query_css(&vdom, "div:not(.nonexistent)");
+        assert!(
+            excluded.len() >= 1,
+            "Should find divs that don't have .nonexistent class"
         );
     }
 }

@@ -3477,11 +3477,11 @@ mod description_lists_dlist {
         use super::*;
 
         #[test]
-        #[ignore]
         fn should_convert_glossary_list_with_proper_semantics() {
-            let _doc = Parser::default().parse("[glossary]\nterm 1:: def 1\nterm 2:: def 2\n");
-            todo!("assert_css: '.dlist.glossary', output, 1");
-            todo!("assert_css: '.dlist dt:not([class])', output, 2");
+            let doc = Parser::default().parse("[glossary]\nterm 1:: def 1\nterm 2:: def 2\n");
+
+            assert_css(&doc, ".dlist.glossary", 1);
+            assert_css(&doc, ".dlist dt:not([class])", 2);
         }
 
         // Backend-specific test omitted: DocBook.
