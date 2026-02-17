@@ -121,6 +121,34 @@ fn query_descendant_or_self<'a>(node: &'a VirtualNode, pattern: &str) -> Vec<&'a
         return final_results;
     }
 
+    // Handle adjacent sibling combinator: "tag + sibling".
+    if let Some((first, rest)) = pattern.split_once('+') {
+        let first = first.trim();
+        let rest = rest.trim();
+
+        // Find all nodes matching first part.
+        let mut results = Vec::new();
+        collect_descendants_matching_with_siblings(node, first, &mut results);
+
+        // For each matching node, find its next sibling and check if it matches rest.
+        let mut final_results = Vec::new();
+        for (_matched_node, parent, child_index) in results {
+            if let Some(next_sibling) = parent.children.get(child_index + 1) {
+                // If rest has more combinators, recursively process.
+                if rest.contains('>') || rest.contains('+') {
+                    let further = query_descendant_or_self(next_sibling, rest);
+                    final_results.extend(further);
+                } else {
+                    // Simple selector - just check next sibling directly.
+                    if matches_selector_with_context(next_sibling, rest, Some(parent)) {
+                        final_results.push(next_sibling);
+                    }
+                }
+            }
+        }
+        return final_results;
+    }
+
     // Simple tag match: Find all descendants (or self) matching this selector.
     let mut results = Vec::new();
     collect_descendants_matching(node, pattern.trim(), &mut results);
@@ -151,6 +179,21 @@ fn collect_descendants_matching_with_parent<'a>(
 
     for child in &node.children {
         collect_descendants_matching_with_parent(child, selector, Some(node), results);
+    }
+}
+
+/// Recursively collects all descendants (including self) that match the
+/// selector, along with their parent and child index for sibling lookups.
+fn collect_descendants_matching_with_siblings<'a>(
+    node: &'a VirtualNode,
+    selector: &str,
+    results: &mut Vec<(&'a VirtualNode, &'a VirtualNode, usize)>,
+) {
+    for (index, child) in node.children.iter().enumerate() {
+        if matches_selector_with_context(child, selector, Some(node)) {
+            results.push((child, node, index));
+        }
+        collect_descendants_matching_with_siblings(child, selector, results);
     }
 }
 

@@ -3436,14 +3436,14 @@ mod description_lists_dlist {
         }
 
         #[test]
-        #[ignore]
         fn nested_dlist_attached_by_list_continuation_should_not_consume_detached_paragraph() {
-            let _doc =
-                Parser::default().parse("term:: text\n+\nnested term::: text\n\nparagraph\n");
-            todo!("assert_xpath: '//dl', output, 2");
-            todo!("assert_xpath: '//dl//dl', output, 1");
-            todo!("assert_css: '.dlist .paragraph', output, 0");
-            todo!("assert_css: '.dlist + .paragraph', output, 1");
+            let doc = Parser::default().parse("term:: text\n+\nnested term::: text\n\nparagraph\n");
+
+            assert_xpath(&doc, "//dl", 2);
+            assert_xpath(&doc, "//dl//dl", 1);
+
+            assert_css(&doc, ".dlist .paragraph", 0);
+            assert_css(&doc, ".dlist + .paragraph", 1);
         }
 
         #[test]
