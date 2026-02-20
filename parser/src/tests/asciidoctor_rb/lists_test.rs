@@ -3569,6 +3569,8 @@ mod description_lists_dlist {
 
         #[test]
         #[ignore]
+        // TO DO (https://github.com/asciidoc-rs/asciidoc-parser/issues/479):
+        // Enable this test when bibliography parsing is enabled.
         fn should_catalog_bibliography_anchors_in_bibliography_list() {
             let _doc = Parser::default().parse("= Article Title\n\nPlease read <<Fowler_1997>>.\n\n[bibliography]\n== References\n\n* [[[Fowler_1997]]] Fowler M. _Analysis Patterns: Reusable Object Models_. Addison-Wesley. 1997.\n");
             todo!("document_from_string test");
@@ -3677,7 +3679,8 @@ mod description_lists_redux {
         }
 
         #[test]
-        #[ignore]
+        // TODO (https://github.com/scouten/asciidoc-parser/issues/474):
+        // Enable this test when rulers are implemented.
         fn folds_text_that_looks_like_ruler_offset_by_blank_line_and_line_comment() {
             let doc = Parser::default().parse("== Lists\n\nterm1::\n\n// comment\n'''\n");
 
@@ -3841,17 +3844,22 @@ mod description_lists_redux {
 
         #[test]
         #[ignore]
+        // TODO (https://github.com/scouten/asciidoc-parser/issues/474):
+        // Enable this test when rulers are implemented.
         fn appends_line_attached_by_continuation_as_block_if_item_has_no_inline_description_followed_by_ruler()
          {
-            let _doc = Parser::default().parse("== Lists\n\nterm1::\n+\npara\n\n'''\n");
-            todo!("assert_xpath: '//*[@class=\"dlist\"]/dl', output, 1");
-            todo!("assert_xpath: '//*[@class=\"dlist\"]//dd', output, 1");
-            todo!("assert_xpath: '//*[@class=\"dlist\"]//dd/p', output, 0");
-            todo!("assert_xpath: '//*[@class=\"dlist\"]//dd/*[@class=\"paragraph\"]', output, 1");
-            todo!(
-                "assert_xpath: '//*[@class=\"dlist\"]//dd/*[@class=\"paragraph\"]/p[text()=\"para\"]', output, 1"
+            let doc = Parser::default().parse("== Lists\n\nterm1::\n+\npara\n\n'''\n");
+
+            assert_xpath(&doc, "//*[@class=\"dlist\"]/dl", 1);
+            assert_xpath(&doc, "//*[@class=\"dlist\"]//dd", 1);
+            assert_xpath(&doc, "//*[@class=\"dlist\"]//dd/p", 0);
+            assert_xpath(&doc, "//*[@class=\"dlist\"]//dd/*[@class=\"paragraph\"]", 1);
+            assert_xpath(
+                &doc,
+                "//*[@class=\"dlist\"]//dd/*[@class=\"paragraph\"]/p[text()=\"para\"]",
+                1,
             );
-            todo!("assert_xpath: '//*[@class=\"dlist\"]/following-sibling::hr', output, 1");
+            assert_xpath(&doc, "//*[@class=\"dlist\"]/following-sibling::hr", 1);
         }
 
         #[test]
